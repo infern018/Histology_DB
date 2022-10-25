@@ -1,0 +1,105 @@
+const HistSchema = mongoose.Schema({
+    identification:{
+        collectionCode:{
+            type:String,
+            required:true
+        },
+        itemCode:{ // name+"_"+part+"_"+staining+"_"+generateRandomAlphaNumeric(name)
+            type:String,
+            required:true
+        },
+        individualCode:{  //name+"_"+generateRandomAlphaNumeric(name)
+            type:String,
+            required:true
+        },
+        NCBITaxonomyCode:{ //entered by the user
+            type:Number
+        },
+        wikipediaSpeciesName:{ //concatenating name with wiki link if(binomialName) then use that else archivalSpeciesName use as name
+            type:String
+        },
+        bionomialSpeciesName: { //if NCBI ID is specified, then get it from rest ensembl API
+            type:String
+        }
+    },
+    archivalIdentification:{
+        archivalIndividualCode:{ 
+            type:String
+        },
+        archivalSpeciesCode:{
+            type:String,
+        },
+        archivalSpeciesOrder:{
+            type:String
+        },
+        archivalSpeciesName:{
+            type:String
+        },
+    },
+    physiologicalInformation:{
+        age:{
+            developmentalStage : {
+                type:String,
+                enum :  ['embryo', 'fetus', 'neonat', 'infant', 'juvenile', 'adult',`---`],
+                // enum : Object.values( ['embryo', 'fetus', 'neonat', 'infant', 'juvenile', 'adult',`---`]).concat([null]),
+                // default:null
+            },
+            number : {
+                type:Number
+            },
+            unitOfNumber : {
+                type:String,
+                enum:['days','weeks','months','years',``],
+                default:'days'
+            },
+            origin : {
+                type:String,
+                enum : ['postNatal','postConception',``],
+                default : 'postNatal'
+            }
+        },
+        sex:{
+            type:String
+        },
+        bodyWeight:{
+            type:Number, //standard unit : grams
+            default:0
+        },
+        brainWeight:{
+            type:Number,
+            default:0
+        }
+    },
+
+    histologicalInformation:{
+        stainingMethod:{
+            type:String,
+        },
+        sectionThickness:{
+            type:String //default unit um
+        },
+        planeOfSectioning:{
+            type:String,
+            // required:true
+        },
+        interSectionDistance:{
+            type:String
+        },
+        brainPart:{
+            type:String,
+        },
+
+        //work on this field
+        dataThumbnailImage:{
+            type:String
+        },
+        comments:{
+            type:String
+        }
+
+    },
+
+    provenanceDB_ID:{
+        type:String
+    }
+})

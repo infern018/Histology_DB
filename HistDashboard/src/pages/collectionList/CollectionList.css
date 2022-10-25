@@ -1,0 +1,17 @@
+.collectionListWrapper{
+    display: flex;
+    margin-top: 20px;
+    
+}
+
+.collectionListHeader{
+    padding:20px 0;
+}
+
+.collectionListHeaderMain{
+    display: flex;
+}
+
+.addCollection{
+    margin:20px auto;
+}

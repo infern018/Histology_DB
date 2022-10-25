@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css">
+    <title>View</title>
+</head>
+<body>
+    <div class="container">
+    <h1>Collection List:</h1>
+    <!-- <% collectionList %>
+    <% collectionList.forEach(collection => { %>
+        <p><%= collection.archivalIdentification.archivalSpeciesName %></p>
+    <%}) %> -->
+
+    <table>
+        <tr>
+          <th>Name</th>
+          <th>Staining Method</th>
+          <th>Plane of Sec</th>
+          <th>Brain Weight</th>
+          <th>Individual Code</th>
+          <th>Mongo ID</th>
+        </tr>
+        <% collectionList %>
+        <% collectionList.slice().reverse().forEach(collection => { %>
+            <tr>
+            <td><%= collection.archivalIdentification.archivalSpeciesName %></td>
+            <td><%= collection.histologicalInformation.stainingMethod %></td>
+            <td><%= collection.histologicalInformation.planeOfSectioning %></td>
+            <td><%= collection.physiologicalInformation.brainWeight %></td>
+            <td><%= collection.identification.individualCode %></td>
+            <td><%= collection._id %></td>
+            </tr>
+        <%}) %>
+      </table>
+    </div>
+
+</body>
+</html>

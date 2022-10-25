@@ -1,0 +1,16 @@
+.entryListContainer{
+    margin-top: 20px;
+}
+
+.entryListFilters{
+    padding:20px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.entriesPagination{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}

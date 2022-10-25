@@ -1,0 +1,12 @@
+.collectionContainer{
+    margin-top: 40px !;
+}
+
+.cardHeader{
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.cardDesc{
+    padding-top:10px;
+}
