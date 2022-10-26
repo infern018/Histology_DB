@@ -5,6 +5,13 @@ const visibilities = {
     PRIVATE:'private'
 }
 
+const status = {
+    PENDING:'pending',
+    PUBLIC:'approved',
+    DECLINED:'declined',
+    UNSENT:'unsent'
+}
+
 const CollectionSchema = mongoose.Schema({
     name:{
         type:String,
@@ -26,7 +33,7 @@ const CollectionSchema = mongoose.Schema({
     visibility:{
         type:String,
         enum: Object.values(visibilities).concat([null]),
-        default:'public'
+        default:'private'
     },
 
     provenanceDB_ID:{
@@ -37,6 +44,12 @@ const CollectionSchema = mongoose.Schema({
     backupCollection:{
         type:Boolean,
         default:false
+    },
+
+    publicStatus:{
+        type:String,
+        enum:Object.values(status).concat([null]),
+        default:'unsent',
     }
 },{timestamps:true})
 
