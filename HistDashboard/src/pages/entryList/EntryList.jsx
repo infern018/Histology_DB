@@ -25,15 +25,10 @@ const EntryList = () => {
     const [query, setQuery] = useState('')
     const [name, setName] = useState('');
     const [pages, setPages] = useState(1)
-    const [currPage, setCurrPage] = useState(1);
     const [skip, setSkip] = useState(0);
     const [limit, setLimit] = useState(10)
-    const [savedEntries, setSavedEntries] = useState([])
-    const [finalSavedEntries, setFinalSavedEntries] = useState([])
-    const [entries, setEntries] = useState([])
 
     useEffect(() => {
-        const tmpUser = getCurrentUser();
         
         // setUser(tmpUser);
         const getNumEntries = async () =>{

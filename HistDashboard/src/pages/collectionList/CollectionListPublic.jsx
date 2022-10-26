@@ -22,9 +22,6 @@ const CollectionList = () => {
     const user = useSelector(state=>state.user.currentUser)
 
     const location = useLocation()
-    // const collectionCode = location.pathname.split("/")[3];
-    // console.log("LCOATON",location.pathname.split("/")[2])
-    const visibility = location.pathname.split("/")[2]
 
     useEffect(() => {
 

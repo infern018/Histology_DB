@@ -45,7 +45,6 @@ const EntryForm = ({onFormSubmit,collectionID}) => {
         collectionID:collectionID
     };
     
-    const [collectionNames,setCollectionNames] = useState([]);
     const [entryData, setEntryData] = useState(templateObject);
     const [open, setOpen] = useState(false);
 
@@ -62,14 +61,11 @@ const EntryForm = ({onFormSubmit,collectionID}) => {
             }
         };
 
-        console.log("ENTRY",entryData)
         onFormSubmit(entryData)
-        const data = entryData;
     }
 
     const handleAgeChange2 = (e) => {
         const path  = e.target.name;
-        // console.log("NAME",path.target.name);
 
         const {
             target: { value },
@@ -95,7 +91,6 @@ const EntryForm = ({onFormSubmit,collectionID}) => {
 
     const handleAgeChange = (e) => {
         const path = e.target.id;
-        console.log(path);
 
         const newEntryData = {...entryData};
         
@@ -130,8 +125,6 @@ const EntryForm = ({onFormSubmit,collectionID}) => {
         } else {
             upper[secondField] = value;
         }
-
-        // console.log(newEntryData);
 
         newEntryData[firstField] = upper;
         setEntryData(newEntryData)
@@ -197,7 +190,6 @@ const EntryForm = ({onFormSubmit,collectionID}) => {
         <Backdrop
             sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={open}
-            // onClick={handleClose}
         >
             <CircularProgress />
         </Backdrop>

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import CollectionForm from '../../components/Form/CollectionForm'
 import Navbar from '../../components/Navbar/Navbar'
-import { getCurrentUser } from '../../requestMethods'
 import axios from 'axios'
 import { useDispatch,useSelector } from 'react-redux'
-import { createPrivateCollection, updatePrivateCollection } from '../../redux/apiCalls'
+import {  updatePrivateCollection } from '../../redux/apiCalls'
 import { useLocation } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 

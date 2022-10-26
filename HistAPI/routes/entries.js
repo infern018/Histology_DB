@@ -6,7 +6,6 @@ const { findByIdAndUpdate } = require("../models/Entry");
 
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
-
 function generateRandomAlphaNumeric(name){
     result = Math.random().toString(16).slice(2,6)
     return  result
@@ -19,10 +18,8 @@ router.post("/:collectionID/:ownerID", verifyTokenAndAuthCollection, async (req,
        //logic for generating alphaNumeric fields
        let binomialName = "";
 
-       console.log("DEBUG1")
 
        if(newEntry.identification.NCBITaxonomyCode){
-           console.log(newEntry.identification.NCBITaxonomyCode);
            const id = newEntry.identification.NCBITaxonomyCode;
 
         // const proxyAgent = new HttpProxyAgent(process.env.PROXY_UNI);
@@ -45,7 +42,6 @@ router.post("/:collectionID/:ownerID", verifyTokenAndAuthCollection, async (req,
         binomialName = nameTmp;
        } 
 
-    //    console.log("DEBUG2")
        
        const name = newEntry.archivalIdentification.archivalSpeciesName;
        newEntry.identification.itemCode = name+"_"+newEntry.histologicalInformation.brainPart+"_"+newEntry.histologicalInformation.stainingMethod+"_"+generateRandomAlphaNumeric(name);
@@ -58,7 +54,6 @@ router.post("/:collectionID/:ownerID", verifyTokenAndAuthCollection, async (req,
            newEntry.identification.wikipediaSpeciesName = `https://en.wikipedia.org/wiki/${binomialName}`;
        }
 
-       console.log("FINAL",newEntry);
        const savedEntry = await newEntry.save();
        res.status(200).json(savedEntry) 
     } catch (err) {
@@ -75,15 +70,12 @@ router.put("/:id", verifyTokenAndAdmin , async (req,res)=> {
     const { _id,createdAt,updatedAt,__v,...others} = req.body;
     const newEntry = others;
 
-    // console.log("ENTRY", newEntry)
 
     try{ 
         let binomialName = "";
 
-        // console.log("DEBUG1")
     
         if(newEntry.identification.NCBITaxonomyCode){
-            console.log(newEntry.identification.NCBITaxonomyCode);
             const id = newEntry.identification.NCBITaxonomyCode;
     
             const proxyAgent = new HttpProxyAgent(process.env.PROXY_UNI);
@@ -102,7 +94,6 @@ router.put("/:id", verifyTokenAndAdmin , async (req,res)=> {
     
             const data = await resp.json();
             const nameTmp = data[0].children[0].scientific_name;
-            // console.log("DATA",data[0].children[0].scientific_name);
             binomialName = nameTmp;
         }
     
@@ -162,7 +153,6 @@ router.get("/", async(req,res) => {
 
     if(req.query.sortBy){
         sort[req.query.sortBy]   = req.query.orderBy === 'desc' ? -1 : 1
-        console.log("SORT",sort);
     }
 
     if(qName){
@@ -190,7 +180,6 @@ router.get("/numPages",async (req,res)=>{
 
     if(req.query.sortBy){
         sort[req.query.sortBy]   = req.query.orderBy === 'desc' ? -1 : 1
-        console.log("SORT",sort);
     }
 
     if(qName){

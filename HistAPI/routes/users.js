@@ -1,11 +1,10 @@
 const router = require("express").Router()
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
-const {verifyToken, verifyTokenAndAuth, verifyTokenAndAdmin} = require('./verifyToken');
+const {verifyTokenAndAuth, verifyTokenAndAdmin} = require('./verifyToken');
 
 //UPDATE
 router.put("/:id", verifyTokenAndAuth , async (req,res)=> {
-    console.log("HERE");
     if(req.body.password){
         const salt = await bcrypt.genSalt(10);
         req.body.password = await bcrypt.hash(req.body.password,salt);

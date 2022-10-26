@@ -1,8 +1,6 @@
 import React from 'react'
 import CollectionForm from '../../components/Form/CollectionForm'
 import Navbar from '../../components/Navbar/Navbar'
-import { getCurrentUser } from '../../requestMethods'
-import axios from 'axios'
 import { useDispatch,useSelector } from 'react-redux'
 import { createPrivateCollection } from '../../redux/apiCalls'
 import { useNavigate } from 'react-router-dom';

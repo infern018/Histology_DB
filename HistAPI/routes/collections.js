@@ -1,7 +1,6 @@
 const router = require("express").Router()
 const Entry = require("../models/Entry");
 const {verifyToken, verifyTokenAndAuth, verifyTokenAndAdmin, verifyTokenAndAuthCollection} = require('./verifyToken');
-// const fetch = require('node-fetch');
 const HttpProxyAgent = require("http-proxy-agent");
 const { findByIdAndUpdate } = require("../models/Entry");
 const Collection = require("../models/Collection");
@@ -57,7 +56,6 @@ router.put("/:id/:ownerID", verifyTokenAndAuthCollection, async(req,res) => {
 // DELETE COLLECTION
 // mark backupCollection as false
 router.delete("/:id/:ownerID", verifyTokenAndAuthCollection, async (req,res)=> {
-    console.log("REQ",req);
     try{
         const updatedCollection = await Collection.findByIdAndUpdate(
             req.params.id,

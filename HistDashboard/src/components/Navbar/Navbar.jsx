@@ -1,15 +1,10 @@
-import { AppBar, Badge, Box, Button, Container, Grid, IconButton, Toolbar, Typography } from '@material-ui/core'
-import { FolderShared, Search } from '@material-ui/icons'
-import React, { useEffect } from 'react'
+import { AppBar, Badge, Box, Button, Container, Grid, Toolbar, Typography } from '@material-ui/core'
+import React from 'react'
 import { useSelector } from 'react-redux'
-import styled from 'styled-components'
 import {Link} from 'react-router-dom'
-import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import HandymanIcon from '@mui/icons-material/Handyman';
-import { getCurrentUser } from '../../requestMethods'
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { logoutSuccess } from '../../redux/userRedux'
 

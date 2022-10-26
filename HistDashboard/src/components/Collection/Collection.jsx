@@ -3,7 +3,6 @@ import React from 'react'
 import { useDispatch,useSelector } from 'react-redux'
 import {Link} from 'react-router-dom'
 import './Collections.css'
-import axios from 'axios'
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { deletePrivateCollection, getRequests, updatePrivateCollection } from '../../redux/apiCalls'
@@ -25,7 +24,6 @@ const Collection = ({collection,view}) => {
     }
 
     const handleDelete = async ()=>{
-        console.log("FIRED");
         deletePrivateCollection(dispatch,collection._id,user);
     }
 

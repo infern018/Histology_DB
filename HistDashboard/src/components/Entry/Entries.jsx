@@ -9,12 +9,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import axios from 'axios'
-import { getCurrentUser } from '../../requestMethods';
-import { Button, Checkbox } from '@material-ui/core';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useSelector } from 'react-redux';
 
-const Entries = ({collectionID,name,skip,limit,onEntrySaveAll,savedPrevEntries}) => {
+const Entries = ({collectionID,name,skip,limit}) => {
 
     const user = useSelector(state=>state.user.currentUser);
     const [entries, setEntries] = useState([])
@@ -49,10 +46,9 @@ const Entries = ({collectionID,name,skip,limit,onEntrySaveAll,savedPrevEntries})
 
                         {entries.map((entry)=>{
                             return(
-                                <Entry key={entry._id} entry={entry}  />
-                            )
-                        }
-                            
+                                    <Entry key={entry._id} entry={entry}  />
+                                )
+                            } 
                         )}
 
                     </TableBody>

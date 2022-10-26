@@ -16,7 +16,6 @@ import { getPrivateCollections } from '../../redux/apiCalls';
 
 const CollectionListPrivate = () => {
 
-    // const [collections , setCollections] = useState([]) 
     const user = useSelector(state=>state.user.currentUser)
 
     const collections = useSelector(state=>state.collection.privateCollections)
@@ -24,7 +23,6 @@ const CollectionListPrivate = () => {
     const dispatch = useDispatch();
 
     const location = useLocation()
-    const ownerID = location.pathname.split("/")[3];
 
     useEffect(() => {
 

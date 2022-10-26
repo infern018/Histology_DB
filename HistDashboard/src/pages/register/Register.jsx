@@ -22,10 +22,8 @@ const Register = () => {
 
     const handleSignup = async (e) => {
         e.preventDefault();
-        console.log({username,password,email})
 
         const resp = await axios.post(`http://localhost:5000/api/auth/register`,{username,password,email});
-        console.log("RESP",resp.data);
         navigate("/login");
     }
 

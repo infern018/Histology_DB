@@ -19,7 +19,6 @@ const verifyToken = (req,res,next) => {
 
 const verifyTokenAndAuth = (req,res,next) => {
     verifyToken(req,res,()=>{
-        // console.log("req user",req.user)
         if(req.user.id === req.params.id || req.user.isAdmin){
             next();
         } else {
@@ -29,9 +28,7 @@ const verifyTokenAndAuth = (req,res,next) => {
 }
 
 const verifyTokenAndAuthCollection = (req,res,next) => {
-    console.log("THIS")
     verifyToken(req,res,()=>{
-        console.log("req user",req)
         if(req.user.id === req.params.ownerID || req.user.isAdmin){
             next();
         } else {

@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import {Link} from 'react-router-dom';
-import { Button, Checkbox } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { getCurrentUser } from '../../requestMethods';
 
-const Entry = ({entry, onEntrySave,allChecked,found}) => {
-
-    const user = getCurrentUser();
+const Entry = ({entry}) => {
 
     let brainWeight = 'NA'
 

@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 
 //REGISTER
 router.post("/register", async(req,res) => {
-    console.log("REGISTRING",req.body);
     try{
         const salt = await bcrypt.genSalt(10);
         const hashedPass = await bcrypt.hash(req.body.password,salt);
@@ -46,7 +45,6 @@ router.post("/login", async(req,res) => {
         );
 
         const {password, ...others} = user._doc
-            console.log({...others,accessToken})
         res.status(200).json({...others,accessToken});
 
     } catch (err) {

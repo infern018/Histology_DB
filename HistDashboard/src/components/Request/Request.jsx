@@ -1,7 +1,6 @@
 import { Button, Card, CardActions, CardContent, Grid } from '@material-ui/core'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {Link} from 'react-router-dom'
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { deleteRequest, getPrivateCollections, updateRequests } from '../../redux/apiCalls';
@@ -12,7 +11,6 @@ const Request = ({requestCollection}) => {
     const dispatch = useDispatch();
 
     const handleRequestApprove = () => {
-        console.log("HERE")
         updateRequests(dispatch,requestCollection,user);
         getPrivateCollections(dispatch,user);
     }

@@ -12,7 +12,6 @@ const EntryCreate = () => {
     const user = useSelector(state=>state.user.currentUser)
 
     const handleEntryCreate = async (entry) => {
-        console.log("HERE",entry)
         try {
             const res = await axios.post(`http://localhost:5000/api/entries/${collectionID}/${user._id}`,entry,
             {

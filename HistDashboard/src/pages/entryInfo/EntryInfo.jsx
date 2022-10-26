@@ -4,8 +4,6 @@ import Navbar from '../../components/Navbar/Navbar'
 import { useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { publicRequest } from '../../requestMethods'
-import { addEntry } from '../../redux/workspaceRedux'
-import { useDispatch } from 'react-redux'
 
 const EntryInfo = () => {
 
@@ -19,7 +17,6 @@ const EntryInfo = () => {
       const getEntry = async () =>{
         try {
             const resp  = await publicRequest.get(`/entries/${entryId}`); 
-            console.log("R",resp.data);
             setEntry(resp.data);
         } catch (error) {}
       }

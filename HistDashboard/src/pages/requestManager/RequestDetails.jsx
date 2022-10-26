@@ -25,8 +25,6 @@ const RequestDetails = () => {
     const dispatch = useDispatch();
 
     const location = useLocation()
-    const ownerID = location.pathname.split("/")[3];
-
 
     useEffect(() => {
         getRequests(dispatch);
