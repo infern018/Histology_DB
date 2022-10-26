@@ -26,12 +26,6 @@ const EntryInfo = () => {
       getEntry(); 
     }, [entryId])
 
-    const handleClick = () => {
-        //update workspace
-        // dispatch(addEntry({entry}))
-    }
-    
-
   return (
     
     <div>

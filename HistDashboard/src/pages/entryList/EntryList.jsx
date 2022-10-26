@@ -30,7 +30,6 @@ const EntryList = () => {
     const [limit, setLimit] = useState(10)
     const [savedEntries, setSavedEntries] = useState([])
     const [finalSavedEntries, setFinalSavedEntries] = useState([])
-    const [workspaceID, setWorkspaceID] = useState()
     const [entries, setEntries] = useState([])
 
     useEffect(() => {

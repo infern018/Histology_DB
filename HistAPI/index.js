@@ -7,7 +7,6 @@ const mongoose = require('mongoose')
 const authRoute = require('./routes/auth');
 const userRoute = require('./routes/users');    
 const entryRoute = require('./routes/entries');
-const workspaceRoute = require('./routes/workspace');
 const collectionRoute = require('./routes/collections');
 
 const cors = require('cors')
@@ -37,7 +36,6 @@ mongoose
 app.use("/api/auth", authRoute)
 app.use("/api/users", userRoute)
 app.use("/api/entries",entryRoute)
-app.use("/api/workspaces", workspaceRoute)
 app.use("/api/collections",collectionRoute)
 
 app.listen(PORT, () => {
