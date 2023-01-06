@@ -67,7 +67,7 @@ const addDataZillesAnimal = (fetchedData, zillesAnimalComplete, order) => {
 
 
         let singleFormattedEntry = {
-            collectionID:'63465770277dbfd9ccc52cd3',
+            collectionID:'63b41ee5afee9f8ee0768f6a',
             identification:{
                 collectionCode:"Collection_ZillesAnimal1",
                 itemCode:itemCodeValue,

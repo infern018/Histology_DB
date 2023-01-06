@@ -16,9 +16,12 @@ const CollectionCreate = () => {
         description:'',
         visibility:'private',
         ownerID:user._id,
+        editors:[],
+        viewers:[]
     }
 
     const handleCollectionAdd = (collection) => { 
+        console.log("Collection, " ,collection);
         createPrivateCollection(dispatch,collection,user);
         navigate(`/collections/private/${user._id}`);
     }

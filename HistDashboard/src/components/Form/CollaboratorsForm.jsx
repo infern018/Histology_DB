@@ -17,7 +17,7 @@ import axios from 'axios'
 
 
 
-const CollectionForm = ({onFormSubmit,collectionProp}) => {
+const CollaboratorsForm = ({onFormSubmit,collectionProp}) => {
 
     const user = useSelector(state=>state.user.currentUser)
 
@@ -85,7 +85,7 @@ const CollectionForm = ({onFormSubmit,collectionProp}) => {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Add collection details
+            Collaborators details
           </Typography>
           <Box component="form" noValidate sx={{ mt: 3 }}>
             <Grid container spacing={2}>
@@ -138,4 +138,4 @@ const CollectionForm = ({onFormSubmit,collectionProp}) => {
   )
 }
 
-export default CollectionForm
+export default CollaboratorsForm

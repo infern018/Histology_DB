@@ -38,6 +38,6 @@ app.use("/api/users", userRoute)
 app.use("/api/entries",entryRoute)
 app.use("/api/collections",collectionRoute)
 
-app.listen(PORT, () => {
+app.listen(process.env.PORT, () => {
     console.log("Server running on PORT ", PORT);
 })

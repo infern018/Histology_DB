@@ -22,6 +22,7 @@ export const login = async (dispatch,user) =>{
     }
 }
 
+//COLLECTIONS
 export const getPrivateCollections = async (dispatch,user) =>{
     dispatch(getCollectionStart());
 
@@ -73,6 +74,7 @@ export const createPrivateCollection = async (dispatch,collection,user) =>{
     }
 }
 
+//ADD EDITOR/VIEWER?
 export const updatePrivateCollection = async (dispatch,collection,user) =>{
     //CHECK USER METHOD FOR THIS (request methods me)
 
@@ -85,6 +87,17 @@ export const updatePrivateCollection = async (dispatch,collection,user) =>{
         })
         console.log("RES",res.data)
         dispatch(updatePrivateCollectionSuccess({id:collection._id,collection:res.data}));
+    } catch (error) {
+        console.log("ERROR",error);
+    }
+}
+
+//GET ALL USERS
+export const getAllUsers = async (user) =>{
+
+    try {
+        const res = await axios.get(`http://localhost:5000/api/users`)
+        return res.data;
     } catch (error) {
         console.log("ERROR",error);
     }

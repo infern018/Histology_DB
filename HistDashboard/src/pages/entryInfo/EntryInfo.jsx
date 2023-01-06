@@ -31,7 +31,7 @@ const EntryInfo = () => {
             {entry.identification &&
                 <Container maxWidth="md">
                     <h1>{entry.identification.bionomialSpeciesName}</h1>
-                    <Button  onClick = {handleClick} variant="outlined" >Save</Button>
+                    <Button variant="outlined" >Save</Button>
 
                 </Container>
             }

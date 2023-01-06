@@ -46,6 +46,11 @@ const CollectionSchema = mongoose.Schema({
         default:false
     },
 
+    //collaborators for this collection
+    editors:[mongoose.Schema.Types.ObjectId],
+
+    viewers:[mongoose.Schema.Types.ObjectId],
+
     publicStatus:{
         type:String,
         enum:Object.values(status).concat([null]),

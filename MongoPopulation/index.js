@@ -110,7 +110,6 @@ app.get("/", async (req,res)=>{
 // connecting to DB
 const connectToMongoDB = async () => {
     await mongo().then(async mongoose => {
-       
         console.log("connected to mongoDB");
         EntrySchema.insertMany(collectionComplete)
     })

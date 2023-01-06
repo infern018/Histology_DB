@@ -74,7 +74,7 @@ const addDataZillesHuman = (fetchedData, zillesHumanComplete) => {
         const wikipediaSpeciesNameValue = `https://en.wikipedia.org/wiki/${name}`
 
         let singleFormattedEntry = {
-            collectionID: '63465766277dbfd9ccc52cd1',
+            collectionID: '63b41edcafee9f8ee0768f68',
             identification:{
                 collectionCode:"Collection_ZillesHuman1",
                 itemCode:itemCodeValue,

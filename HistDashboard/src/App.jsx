@@ -11,6 +11,7 @@ import CollectionListPrivate from "./pages/collectionList/CollectionListPrivate"
 import RequestDetails from "./pages/requestManager/RequestDetails";
 import CollectionEdit from "./pages/collections/CollectionEdit";
 import EntryCreate from "./pages/entries/EntryCreate";
+import CollectionEditColab from "./pages/collections/CollectionEditColab";
 
 const App = () => {
 
@@ -42,6 +43,7 @@ const App = () => {
           <Route path = "/createCollection" element={<CollectionCreate/>} />
           <Route path = "/collection/:collectionID/createEntry" element={<EntryCreate/>} />
           <Route path = "/editCollection/:collectionID" element={<CollectionEdit/>}/>
+          <Route path = "/editCollection/:collectionID/editCollaborator" element={<CollectionEditColab/>}/>
           </>
         }
 
