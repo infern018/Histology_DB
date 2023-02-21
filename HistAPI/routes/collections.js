@@ -17,13 +17,13 @@ const generateCollectionCode = (collectionName) => {
 //ID HERE REFERS TO USER ID (OWNER OF COLLECTION)
 router.post("/:ownerID", verifyTokenAndAuthCollection, async (req,res) => {
     const newCollection = new Collection(req.body);
-    
-    const collectionName = req.body.name;
-    newCollection.collectionCode = generateCollectionCode(collectionName);
+
 
     try {
+        console.log("NEW COLL",newCollection)
         const savedCollection  = await newCollection.save();
-        res.status(200).json(newCollection)
+        console.log("WORKS",savedCollection)
+        res.status(200).json(savedCollection)
     } catch (err) {
         res.status(500).json(err);
     }

@@ -73,7 +73,7 @@ const Register = () => {
             >
               Sign Up
             </Button>
-            <Grid container justifyContent="flex-end">
+            <Grid container style={{justifyContent:"flex-end"}}>
               <Grid item sx={{ mt: 2}}>
                 <Link to={`/login`} style={{color:"#1976D2"}}>
                   Already have an account? Sign in

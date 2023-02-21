@@ -74,7 +74,7 @@ const Login = () => {
 
             {/* {error && <Alert severity="error">Something went wrong!</Alert>} */}
 
-            <Grid container justifyContent="flex-end">
+            <Grid container style={{justifyContent:"flex-end"}}>
               <Grid item sx={{ mt: 2}}>
                 <Link to={`/register`} style={{color:"#1976D2"}}>
                   Don't have an account? Sign up

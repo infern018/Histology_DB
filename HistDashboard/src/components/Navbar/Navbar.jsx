@@ -27,7 +27,7 @@ const Navbar = () => {
         <Container maxWidth="lg">
         <Toolbar>
             <Grid
-            justify="space-between" // Add it here :)
+            style={{justifyContent:'space-between'}} // Add it here :)
             container 
             >
                 <Grid item>

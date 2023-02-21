@@ -2,6 +2,7 @@ import { configureStore,combineReducers } from "@reduxjs/toolkit";
 import userReducer from './userRedux'
 import collectionReducer from './collectionRedux'
 import requestReducer from './requestRedux'
+import roleReducer from './roleRedux'
 
 import {
     persistStore,
@@ -21,7 +22,7 @@ import {
     storage,
   }
   
-  const rootReducer = combineReducers({user:userReducer, collection:collectionReducer, request:requestReducer})
+  const rootReducer = combineReducers({user:userReducer, collection:collectionReducer, request:requestReducer, role:roleReducer})
 
   const persistedReducer = persistReducer(persistConfig, rootReducer)
 

@@ -5,7 +5,9 @@ import {Link} from 'react-router-dom'
 import './Collections.css'
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { deletePrivateCollection, getRequests, updatePrivateCollection } from '../../redux/apiCalls'
+
 
 const Collection = ({collection,view}) => {
 
@@ -55,6 +57,11 @@ const Collection = ({collection,view}) => {
                     <Link to={`/editCollection/${collection._id}`}  style={{ textDecoration: 'none' }}>
                         <Button className='cardBtn' color="primary" size="small">
                             <EditIcon/>
+                        </Button>
+                    </Link>
+                    <Link to={`/collection/${collection._id}/settings`}  style={{ textDecoration: 'none' }}>
+                        <Button className='cardBtn' color="primary" size="small">
+                            <SettingsIcon/>
                         </Button>
                     </Link>
                 </div>

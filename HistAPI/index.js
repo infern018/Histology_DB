@@ -8,6 +8,7 @@ const authRoute = require('./routes/auth');
 const userRoute = require('./routes/users');    
 const entryRoute = require('./routes/entries');
 const collectionRoute = require('./routes/collections');
+const roleRoute = require('./routes/roles');
 
 const cors = require('cors')
 
@@ -37,6 +38,7 @@ app.use("/api/auth", authRoute)
 app.use("/api/users", userRoute)
 app.use("/api/entries",entryRoute)
 app.use("/api/collections",collectionRoute)
+app.use("/api/roles",roleRoute)
 
 app.listen(process.env.PORT, () => {
     console.log("Server running on PORT ", PORT);

@@ -6,19 +6,36 @@ import {    getCollectionFaliure, getCollectionStart, getPrivateCollectionSucces
             updatePrivateCollectionSuccess
         } from "./collectionRedux";
 
-import { loginFaliure, loginStart, loginSuccess } from "./userRedux"
+import { loginFaliure, loginStart, loginSuccess, getAllUsersSuccess } from "./userRedux"
 import { getRequestSuccess, getRequestFaliure, updateRequestCollectionSuccess, deleteRequestCollectionSuccess } from './requestRedux'
+
+import {    getRoleStart, getRoleSuccess,getRoleFaliure, 
+            deleteRoleStart, deleteRoleSuccess, deleteRoleFaliure,
+            createRoleStart, createRoleSuccess, createRoleFaliure,
+            updateRoleSuccess,
+    } from './roleRedux'
+
 import axios from 'axios'
+
 
 export const login = async (dispatch,user) =>{
     dispatch(loginStart());
-
     try {
         const res = await publicRequest.post("/auth/login",user)
         console.log("LOGGED IN", res.data);
         dispatch(loginSuccess(res.data));
     } catch (error) {
         dispatch(loginFaliure());
+    }
+}
+
+//TODO change it to auth methods not everyone can get all users data
+export const getAllUsers = async(dispatch) => {
+    try {
+        const res = await publicRequest.get(`/users/`)
+        dispatch(getAllUsersSuccess(res.data));
+    } catch (error) {
+        console.log("ERROR",error)
     }
 }
 
@@ -92,16 +109,6 @@ export const updatePrivateCollection = async (dispatch,collection,user) =>{
     }
 }
 
-//GET ALL USERS
-export const getAllUsers = async (user) =>{
-
-    try {
-        const res = await axios.get(`http://localhost:5000/api/users`)
-        return res.data;
-    } catch (error) {
-        console.log("ERROR",error);
-    }
-}
 
 //REQUESTS
 export const getRequests = async (dispatch) =>{
@@ -143,6 +150,75 @@ export const deleteRequest = async (dispatch,id,user) =>{
         dispatch(deleteRequestCollectionSuccess(id));
     } catch (error) {
         console.log("ERR",error)
+    }
+}
+
+
+
+//-------------------------------------------------------
+
+//ROLES:
+export const getRole = async (dispatch) =>{
+    dispatch(getRoleStart());
+    try {
+        const res = await userRequest.get(`/roles`)
+        console.log("RES ROLES",res.data);
+        dispatch(getRoleSuccess(res.data));
+    } catch (error) {
+        dispatch(getRoleFaliure());
+    }
+}
+
+//TEMP FUNCTION FOR GETTING ROLE OF A PARTICULAR PROJECT
+export const getRolesOfCollection = async(dispatch,collectionID) => {
+    try {
+        const res = await userRequest.get(`/roles?project=${collectionID}`)
+        var roles = res.data;
+        console.log("ROLES OF A COLLECTION",roles);
+        return res.data;
+    } catch (error) {
+        console.log("ERROR",error);
+    }
+}
+
+export const deleteRole = async (dispatch,id) =>{
+    console.log("ID",id); //roleID to delete
+    dispatch(deleteRoleStart());
+
+    //CHECK USER METHOD FOR THIS (request methods me)
+
+    try {
+        const res = await userRequest.delete(`/roles/${id}`)
+        dispatch(deleteRoleSuccess(id));
+    } catch (error) {
+        dispatch(deleteRoleFaliure());
+    }
+}
+
+export const createRole = async (dispatch,role) =>{
+    dispatch(createRoleStart());
+
+    //CHECK USER METHOD FOR THIS (request methods me)
+
+    try {
+        const res = await userRequest.post(`/roles`,role)
+       
+        console.log("RES",res.data)
+        dispatch(createRoleSuccess(res.data));
+    } catch (error) {
+        dispatch(createRoleFaliure());
+    }
+}
+
+export const updateRole = async (dispatch,role) =>{
+    //CHECK USER METHOD FOR THIS (request methods me)
+
+    try {
+        const res = await userRequest.put(`/roles/${role._id}`,role)
+        console.log("RES",res.data)
+        dispatch(updateRoleSuccess({id:role._id,role:res.data}));
+    } catch (error) {
+        console.log("ERROR",error);
     }
 }
 

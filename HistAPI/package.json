@@ -19,6 +19,7 @@
     "http-proxy-agent": "^5.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.4",
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^2.6.7",
+    "nodemon": "^2.0.20"
   }
 }
