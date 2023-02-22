@@ -6,6 +6,7 @@ const collectionSlice = createSlice({
     name:"collection",
     initialState:{
         privateCollections:[],
+        sharedCollections:[],
         isFetching:false,
         error:false
     },
@@ -57,14 +58,21 @@ const collectionSlice = createSlice({
         deleteCollectionFaliure:(state)=>{
             state.isFetching = false
             state.error = true
-        }
+        },
+
+        //TODO:
+        //get shared collections
+        getSharedCollectionSuccess:(state,action)=>{
+            state.sharedCollections = action.payload
+        },        
+    
     }
 })
 
 export const {  getCollectionStart, getPrivateCollectionSuccess,getCollectionFaliure, 
                 deleteCollectionStart, deletePrivateCollectionSuccess, deleteCollectionFaliure,
                 createCollectionStart, createPrivateCollectionSuccess, createCollectionFaliure,
-                updatePrivateCollectionSuccess
+                updatePrivateCollectionSuccess, getSharedCollectionSuccess
 
             }  = collectionSlice.actions;
 export default collectionSlice.reducer;

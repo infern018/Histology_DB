@@ -60,7 +60,7 @@ router.get("/:id",verifyToken,async(req,res)=>{
 })
 
 
-//GET ALL ROLES(COLLABORATORS) FOR A COLLECTION, USED ? project as route
+//GET ALL ROLES(COLLABORATORS) FOR A COLLECTION, USED '?project=' as query
 router.get("/",verifyToken,async(req,res)=>{
     try {
         const roles = await Role.find(req.query)
@@ -69,7 +69,5 @@ router.get("/",verifyToken,async(req,res)=>{
         res.status(500).json(err);
     }
 })
-
-
 
 module.exports = router

@@ -3,7 +3,7 @@ import { publicRequest, userRequest } from "../requestMethods";
 import {    getCollectionFaliure, getCollectionStart, getPrivateCollectionSuccess, 
             deleteCollectionStart, deletePrivateCollectionSuccess, deleteCollectionFaliure,
             createCollectionStart, createPrivateCollectionSuccess, createCollectionFaliure,
-            updatePrivateCollectionSuccess
+            updatePrivateCollectionSuccess, getSharedCollectionSuccess
         } from "./collectionRedux";
 
 import { loginFaliure, loginStart, loginSuccess, getAllUsersSuccess } from "./userRedux"
@@ -29,7 +29,7 @@ export const login = async (dispatch,user) =>{
     }
 }
 
-//TODO change it to auth methods not everyone can get all users data
+//TODO: change it to auth methods not everyone can get all users data
 export const getAllUsers = async(dispatch) => {
     try {
         const res = await publicRequest.get(`/users/`)
@@ -48,6 +48,16 @@ export const getPrivateCollections = async (dispatch,user) =>{
         dispatch(getPrivateCollectionSuccess(res.data));
     } catch (error) {
         dispatch(getCollectionFaliure());
+    }
+}
+
+export const getSharedCollections = async(dispatch,user) => {
+    try {
+        const res = await userRequest.get(`/collections/shared/${user.username}`);
+        console.log("FETCHED",res.data)
+        dispatch(getSharedCollectionSuccess(res.data));
+    } catch (error) {
+        console.log("ERROR",error);
     }
 }
 

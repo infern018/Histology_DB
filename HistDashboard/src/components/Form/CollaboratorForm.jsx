@@ -100,7 +100,7 @@ const AddCollaboratorForm = ({onFormSubmit,editMode,collectionID,roleProp}) => {
           
 
             </Grid>
-            {/* TODO create role? */}
+            {/* TODO: create role? */}
             <Button
               type="submit"
               fullWidth

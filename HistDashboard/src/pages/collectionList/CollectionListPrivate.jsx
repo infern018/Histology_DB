@@ -12,13 +12,14 @@ import { AddCircleOutline } from '@material-ui/icons';
 import { getCurrentUser } from '../../requestMethods';
 import { useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
-import { getPrivateCollections } from '../../redux/apiCalls';
+import { getPrivateCollections, getSharedCollections } from '../../redux/apiCalls';
 
 const CollectionListPrivate = () => {
 
     const user = useSelector(state=>state.user.currentUser)
 
     const collections = useSelector(state=>state.collection.privateCollections)
+    const sharedCollections = useSelector(state=>state.collection.sharedCollections);
 
     const dispatch = useDispatch();
 
@@ -27,8 +28,9 @@ const CollectionListPrivate = () => {
     useEffect(() => {
 
             getPrivateCollections(dispatch,user);
+            getSharedCollections(dispatch,user);
 
-    }, [location,collections])
+    }, [location])
     
 
   return (
@@ -55,6 +57,17 @@ const CollectionListPrivate = () => {
             <div className="collectionListWrapper">
                 
                 <Collections view={'private'} collections={collections} />                
+            </div>
+        </Container>
+
+        <Container className='collectionListContainer' maxWidth="md">            
+            <div className="collectionListHeaderMain">
+            <div><h1 className='collectionListHeader'>Your Shared Collections</h1></div>
+
+            </div>
+            <div className="collectionListWrapper">
+                
+                <Collections view={'shared'} collections={sharedCollections} />                
             </div>
         </Container>
     </div>

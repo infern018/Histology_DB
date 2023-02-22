@@ -4,6 +4,7 @@ const {verifyToken, verifyTokenAndAuth, verifyTokenAndAdmin, verifyTokenAndAuthC
 const HttpProxyAgent = require("http-proxy-agent");
 const { findByIdAndUpdate } = require("../models/Entry");
 const Collection = require("../models/Collection");
+const Role = require("../models/Role");
 
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
@@ -18,11 +19,8 @@ const generateCollectionCode = (collectionName) => {
 router.post("/:ownerID", verifyTokenAndAuthCollection, async (req,res) => {
     const newCollection = new Collection(req.body);
 
-
     try {
-        console.log("NEW COLL",newCollection)
         const savedCollection  = await newCollection.save();
-        console.log("WORKS",savedCollection)
         res.status(200).json(savedCollection)
     } catch (err) {
         res.status(500).json(err);
@@ -86,10 +84,37 @@ router.get("/:id", async (req,res)=> {
 
 router.get("/", async (req,res)=> {
     try {
+        
         const collections = await Collection.find(req.query);
         res.status(200).json(collections);
     } catch (err) {
         res.status(500).json(err);
+    }
+})
+
+// GET SHARED COLLECTIONS OF A USER
+router.get("/shared/:username", verifyToken,async(req,res)=> {
+    try {
+        //all roles with this username
+        const roles = await Role.find({user:req.params.username});
+        var sharedCollectionIDs = [];
+
+        for(var i=0;i<roles.length;i++){
+            const role = roles[i];
+            
+            sharedCollectionIDs.push(role.project);
+        }
+        var sharedCollections = [];
+
+        for(var i=0;i<sharedCollectionIDs.length;i++){
+            const coll = await Collection.findById(sharedCollectionIDs[i]);
+            sharedCollections.push(coll);
+        }
+
+        res.status(200).json(sharedCollections)
+
+    } catch (error) {
+        res.status(500).json(error);
     }
 })
 

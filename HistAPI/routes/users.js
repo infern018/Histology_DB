@@ -47,7 +47,7 @@ router.get("/find/:id", verifyTokenAndAdmin, async (req,res)=> {
     }
 })
 
-//GET ALL USERS TODO (REMOVING AUTH_AND_ADMIN for getting all users while editors/viewers criteria)
+//GET ALL USERS TODO: (REMOVING AUTH_AND_ADMIN for getting all users while editors/viewers criteria)
 router.get("/", async (req,res)=> {
     const query = req.query.new;
 

@@ -13,10 +13,10 @@ const Collaborator = ({role}) => {
 
   const dispatch = useDispatch();
 
-    //TODO
-    //do so and so
+
     const handleRoleDelete = () => {
-      deleteRole(dispatch,role);
+      console.log("ROLE",role);
+      deleteRole(dispatch,role._id);
     }
 
   return (
