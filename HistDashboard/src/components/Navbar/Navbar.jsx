@@ -23,7 +23,7 @@ const Navbar = () => {
     
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" style={{ background: '#2E3B55' }}>
         <Container maxWidth="lg">
         <Toolbar>
             <Grid
