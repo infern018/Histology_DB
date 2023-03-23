@@ -37,6 +37,7 @@ const Collection = ({collection,view}) => {
         deletePrivateCollection(dispatch,collection._id,user);
     }
 
+    //GET ROLE OF THE USER FOR CURRENT PROJECT
     useEffect(() => {
       const getUserRoleDetails = async() => {
         try {
