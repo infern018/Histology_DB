@@ -1,4 +1,4 @@
-import { Button, Container, Grid } from '@material-ui/core';
+import { Button, Container, Grid, InputAdornment } from '@material-ui/core';
 import { Autocomplete, TextField, MenuItem, Select, InputLabel, FormControl, CircularProgress,Backdrop } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
@@ -222,7 +222,7 @@ const EntryForm = ({onFormSubmit,collectionID}) => {
                     <Grid item xs={6}>
                         
                         <TextField
-                            
+                            fullWidth
                             name="archivalIdentification.archivalIndividualCode"
                             onChange={(e) => handleChange2(e)}
                             label="Archival Individual Code"
@@ -233,6 +233,7 @@ const EntryForm = ({onFormSubmit,collectionID}) => {
 
                     <Grid item xs={6}>
                         <TextField
+                            fullWidth
                             name="archivalIdentification.archivalSpeciesCode"
                             onChange={(e) => handleChange2(e)}
                             label="Archival Species Code"
@@ -244,7 +245,7 @@ const EntryForm = ({onFormSubmit,collectionID}) => {
         
                     <Grid item xs={6}>                        
                         <TextField
-                            
+                            fullWidth
                             name="archivalIdentification.archivalSpeciesOrder"
                             onChange={(e) => handleChange2(e)}
                             label="Archival Species Order"
@@ -256,6 +257,7 @@ const EntryForm = ({onFormSubmit,collectionID}) => {
                     <Grid item xs={6}> 
 
                         <TextField
+                            fullWidth
                             name="archivalIdentification.archivalSpeciesName"
                             onChange={(e) => handleChange2(e)}
                             label="Archival Species Name"
@@ -357,23 +359,29 @@ const EntryForm = ({onFormSubmit,collectionID}) => {
                         </FormControl>
                     </Grid>
 
-                    <Grid item xs={2}>
+                    <Grid item xs={3}>
                         <TextField
                             name="physiologicalInformation.bodyWeight"
                             onChange={(e) => handleChange2(e)}
                             label="Body Weight"
                             type="number"
                             value={entryData.physiologicalInformation.bodyWeight}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="start">(g)</InputAdornment>,
+                            }}
                         />
                     </Grid>
 
-                    <Grid item xs={2}>
+                    <Grid item xs={3}>
                         <TextField
                             name="physiologicalInformation.brainWeight"
                             onChange={(e) => handleChange2(e)}
                             label="Brain Weight"
                             type="number"
                             value={entryData.physiologicalInformation.brainWeight}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="start">(g)</InputAdornment>,
+                            }}
                         />
                     </Grid>
 
@@ -399,6 +407,9 @@ const EntryForm = ({onFormSubmit,collectionID}) => {
                             onChange={(e) => handleChange2(e)}
                             label="Section Thickness"
                             value={entryData.histologicalInformation.sectionThickness}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="start">(μm)</InputAdornment>,
+                            }}
                         />
                     </Grid>
 
@@ -419,6 +430,9 @@ const EntryForm = ({onFormSubmit,collectionID}) => {
                             onChange={(e) => handleChange2(e)}
                             label="Intersection Distance"
                             value={entryData.histologicalInformation.interSectionDistance}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="start">(μm)</InputAdornment>,
+                            }}
                         />
                     </Grid>
 

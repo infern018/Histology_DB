@@ -64,8 +64,8 @@ const Collection = ({collection,view}) => {
     // -> else if user is viewer then show only view button and don't show add entry option 
 
   return (
-    <Grid item xs={4} sm={6}>
-        <Card sx={{ minWidth: 275 }}>
+    <Grid item xs={6} sm={6}>
+        <Card sx={{ minWidth: 285 }}>
             <CardContent>
                 <p className='cardHeader'>{collection.name}</p>
                 <p className="cardDesc">{collection.description}</p>
@@ -75,7 +75,7 @@ const Collection = ({collection,view}) => {
                 }
             </CardContent>
             <CardActions>
-                <Link to={`/collection/${collection._id}`}  style={{ textDecoration: 'none' }}>
+                <Link to={`/collection/${collection._id}?view=${userRole.role}`}  style={{ textDecoration: 'none' }}>
                     <Button className='cardBtn' color="primary" size="small">
                         View
                     </Button>
@@ -110,10 +110,13 @@ const Collection = ({collection,view}) => {
                 </div>
 
                 }
+                {view && !(collection.publicStatus=='approved') &&
+                <Button className='cardBtn' size='small' onClick={handleRequest}>Send for Review</Button>
+                }
             </CardActions>
-            {view && !(collection.publicStatus=='approved') &&
+            {/* {view && !(collection.publicStatus=='approved') &&
                 <Button style={{paddingLeft:'24px'}} onClick={handleRequest}>Send for Review</Button>
-            }
+            } */}
         </Card>
     </Grid>
   )

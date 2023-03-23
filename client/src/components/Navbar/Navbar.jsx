@@ -68,7 +68,7 @@ const Navbar = () => {
                         </>
                      }
 
-                    {user &&
+                    {/* {user &&
 
                         <Link to={`/collections/private/${user._id}`} style={{color:"white"}}>
                         <Button color="inherit">
@@ -76,7 +76,7 @@ const Navbar = () => {
                         </Button>
                         </Link>
 
-                    }
+                    } */}
 
                     { user && user.isAdmin && 
                         <>
