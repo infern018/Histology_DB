@@ -54,12 +54,7 @@ export const getPrivateCollections = async (dispatch,user) =>{
 export const getSharedCollections = async(dispatch,user) => {
     try {
         console.log("USER REQUESTED",user);
-        const res = await publicRequest.get(`/collections/shared/${user.username}`,
-        {
-            headers:{
-                'token':`Bearer ${user.accessToken}`
-            }
-        });
+        const res = await userRequest.get(`/collections/shared/${user.username}`)
         console.log("FETCHED",res.data)
         dispatch(getSharedCollectionSuccess(res.data));
     } catch (error) {
