@@ -7,7 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { deletePrivateCollection, getRequests, updatePrivateCollection } from '../../redux/apiCalls'
-import { userRequest } from '../../requestMethods'
+import { publicRequest, userRequest } from '../../requestMethods'
 
 
 const Collection = ({collection,view}) => {
@@ -41,7 +41,7 @@ const Collection = ({collection,view}) => {
       const getUserRoleDetails = async() => {
         try {
             console.log("SHARED COLLECTION REQUEST USER", user)
-            const res = await userRequest.get(`/roles?project=${collection._id}&user=${user.username}`,{
+            const res = await publicRequest.get(`/roles?project=${collection._id}&user=${user.username}`,{
                 headers:{
                     'token':`Bearer ${user.accessToken}`
                 }

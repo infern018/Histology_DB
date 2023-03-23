@@ -29,7 +29,7 @@ const CollectionListPrivate = () => {
 
     useEffect(() => {
 
-            console.log("TRIGGERED")
+            console.log("TRIGGERED FOR SHARED")
             getPrivateCollections(dispatch,user);
             getSharedCollections(dispatch,user);
 
