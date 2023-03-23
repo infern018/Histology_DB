@@ -17,6 +17,8 @@ import { useSelector } from 'react-redux'
 const EntryList = () => {
 
     const location = useLocation()
+    const access = location.search.split("=")[1]
+    console.log("ACESS",access)
     const collectionID = location.pathname.split("/")[2];
 
     const user = useSelector(state=>state.user.currentUser);
@@ -88,7 +90,8 @@ const EntryList = () => {
                             <Search/>
                     </IconButton>
                 </div>
-                {user &&
+
+                {(access=="editor"||access=='admin') &&
                 
                 <div className="saveFeature">
                     <Link to={`/collection/${collectionID}/createEntry`} style={{color:"white",textDecoration:"none"}}>

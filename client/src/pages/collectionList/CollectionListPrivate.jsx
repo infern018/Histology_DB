@@ -16,6 +16,8 @@ import { getPrivateCollections, getSharedCollections } from '../../redux/apiCall
 
 const CollectionListPrivate = () => {
 
+    console.log("TRIGGERED MAIN")
+
     const user = useSelector(state=>state.user.currentUser)
 
     const collections = useSelector(state=>state.collection.privateCollections)
@@ -27,6 +29,7 @@ const CollectionListPrivate = () => {
 
     useEffect(() => {
 
+            console.log("TRIGGERED")
             getPrivateCollections(dispatch,user);
             getSharedCollections(dispatch,user);
 
