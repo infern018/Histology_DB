@@ -12,28 +12,25 @@ import { AddCircleOutline } from '@material-ui/icons';
 import { getCurrentUser } from '../../requestMethods';
 import { useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
-import { getPrivateCollections, getSharedCollections } from '../../redux/apiCalls';
+import { getPrivateCollections, getSharedCollections } from '../../redux/collectionRedux';
 
 const CollectionListPrivate = () => {
 
     console.log("TRIGGERED MAIN")
 
     const user = useSelector(state=>state.user.currentUser)
-
     const collections = useSelector(state=>state.collection.privateCollections)
     const sharedCollections = useSelector(state=>state.collection.sharedCollections);
-
     const dispatch = useDispatch();
-
     const location = useLocation()
 
     useEffect(() => {
 
             console.log("TRIGGERED FOR SHARED")
-            getPrivateCollections(dispatch,user);
-            getSharedCollections(dispatch,user);
+            dispatch(getPrivateCollections(user));
+            dispatch(getSharedCollections(user));
 
-    }, [location])
+    }, [dispatch,user,location])
     
 
   return (

@@ -8,11 +8,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import {Link} from 'react-router-dom'
 import { useDispatch } from 'react-redux';
-import { login } from '../../redux/apiCalls';
 import { Alert } from '@mui/material';
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../../components/Navbar/Navbar';
+import { login } from '../../redux/userRedux';
 
 
 const Login = () => {
@@ -25,7 +24,7 @@ const Login = () => {
 
     const handleClick = async (e) => {
         e.preventDefault();
-        login(dispatch,{username,password});
+        dispatch(login({username,password}));
         navigate("/");
     }
 

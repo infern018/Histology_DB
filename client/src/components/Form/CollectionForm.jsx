@@ -44,19 +44,19 @@ const CollectionForm = ({onFormSubmit,collectionProp}) => {
       setCollection(collectionProp)
     }, [collectionProp])
 
-    useEffect(() => {
+    // useEffect(() => {
 
-            const getAllUsers = async () => {
-            try {
-                const res = await axios.get(`${process.env.REACT_APP_API_URL}/users`)
-                console.log("REs",res.data);
-                setAllUsers(res.data)
+    //         const getAllUsers = async () => {
+    //         try {
+    //             const res = await axios.get(`${process.env.REACT_APP_API_URL}/users`)
+    //             console.log("REs",res.data);
+    //             setAllUsers(res.data)
 
-            } catch (error) {}
-        };
-        getAllUsers();
+    //         } catch (error) {}
+    //     };
+    //     getAllUsers();
 
-    }, [])
+    // }, [])
     
     
 
@@ -66,6 +66,7 @@ const CollectionForm = ({onFormSubmit,collectionProp}) => {
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
+        console.log("CHANGED", collection)
         onFormSubmit(collection)
     }
 

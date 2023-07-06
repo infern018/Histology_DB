@@ -75,7 +75,7 @@ const addDataStephan = (fetchedData, stephanComplete, order) => {
         const wikipediaSpeciesNameValue = `https://en.wikipedia.org/wiki/${binomialName}`
 
         let singleFormattedEntry = {
-            collectionID: '63b41eefafee9f8ee0768f6c',
+            collectionID: '64a699f0c5f652c19dbbe575',
             
             identification:{
                 collectionCode:"Collection_Stephan1",

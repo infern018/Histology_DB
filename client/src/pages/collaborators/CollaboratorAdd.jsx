@@ -20,11 +20,11 @@ const CollaboratorAdd = () => {
       })
 
     useEffect(() => {
-      getAllUsers(dispatch)
+      // getAllUsers(dispatch)
     }, [])
 
     const handleRoleAdd = (role) => {
-        createRole(dispatch,role);
+        // createRole(dispatch,role);
         navigate(`/collection/${collectionID}/settings`)
     }
     

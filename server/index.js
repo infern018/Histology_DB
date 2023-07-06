@@ -1,7 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser')
-const dotenv  = require('dotenv')
 const mongoose = require('mongoose')
+const session = require('express-session');
+const passport = require('./passport');
+const config = require('./config')
 
 //ROUTER
 const authRoute = require('./routes/auth');
@@ -10,28 +12,47 @@ const entryRoute = require('./routes/entries');
 const collectionRoute = require('./routes/collections');
 const roleRoute = require('./routes/roles');
 
-const cors = require('cors')
 
 const app = express();
-const PORT = 5000;
+const PORT = config.port;
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/views'));
-app.use(cors())
 
+//cors
+const cors = require('cors');
+const corsOptions ={
+    origin:'http://localhost:3000',
+    methods:"GET,POST,PUT,DELETE",
+    credentials:true
+}
+app.use(cors());
 
 // parse application/json
 app.use(bodyParser.json())
 
-dotenv.config(
-    {
-        path: "PROD" === process.env.NODE_ENV?.toUpperCase() ? '../.env.prod' : '../.env.dev'
-    }
-)
+// Configure session middleware
+app.use(
+    session({
+      secret: 'your-secret-key',
+      resave: false,
+      saveUninitialized: false,
+      cookie:{
+        httpOnly:true,
+        secure:false,
+        maxAge:24*560*60*1000,
+      }
+    })  
+  );
+
+// passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 mongoose
-    .connect(process.env.MONGO_URL,{
+    .connect(config.dbURL,{
         useNewUrlParser:true,
         useUnifiedTopology:true,
     })

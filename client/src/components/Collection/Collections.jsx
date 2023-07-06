@@ -8,7 +8,9 @@ const Collections = ({collections,view}) => {
     return (
       <Container className='collectionContainer' maxWidth="md">
         <Grid container spacing={2} >
-            {collections.map((item)=>(
+            {collections &&
+            
+              collections.map((item)=>(
                 <Collection view={view} collection={item} key={item.id} />
             ))}
         </Grid>

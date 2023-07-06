@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import AddCollaboratorForm from '../../components/Form/CollaboratorForm'
 import Navbar from '../../components/Navbar/Navbar';
-import { createRole, getAllUsers, updateRole } from '../../redux/apiCalls';
+// import { createRole, getAllUsers, updateRole } from '../../redux/apiCalls';
 import axios from 'axios'
 import { useSelect } from '@mui/base';
 
@@ -39,15 +39,15 @@ const CollaboratorEdit = () => {
     
             } catch (error) {}
         };
-        getRoleDetails();
+        // getRoleDetails();
     },[location])
 
     useEffect(() => {
-      getAllUsers(dispatch)
+      // getAllUsers(dispatch)
     }, [])
 
     const handleRoleEdit = (role) => {
-        updateRole(dispatch,role);
+        // updateRole(dispatch,role);
         navigate(`/collection/${collectionID}/settings`)
     }
 

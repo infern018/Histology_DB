@@ -46,10 +46,21 @@ const CollectionSchema = mongoose.Schema({
         default:false
     },
 
-    //collaborators for this collection
-    editors:[mongoose.Schema.Types.ObjectId],
+    collaborators:[mongoose.Schema.Types.ObjectId],
 
-    viewers:[mongoose.Schema.Types.ObjectId],
+    collaborators: [
+        {
+          user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+          },
+          mode: {
+            type: String,
+            enum: ["view", "edit"],
+            default: "view",
+          },
+        },
+    ],
 
     publicStatus:{
         type:String,

@@ -2,6 +2,7 @@ const router = require("express").Router()
 const User = require('../models/User');
 const bcrypt = require('bcrypt'); 
 const jwt = require('jsonwebtoken');
+const passport = require('passport')
 
 //REGISTER
 router.post("/register", async(req,res) => {
@@ -19,7 +20,7 @@ router.post("/register", async(req,res) => {
     }
 })
 
-//LOGIN
+
 router.post("/login", async(req,res) => {
     try{
         const user = await User.findOne({username : req.body.username})
@@ -51,5 +52,15 @@ router.post("/login", async(req,res) => {
         res.status(500).json(err);
     }
 })
+
+
+router.post("/logout", async (req, res) => {
+    try {
+      res.status(200).json("Logout successful");
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  });
+  
 
 module.exports = router;

@@ -3,9 +3,9 @@ import CollectionForm from '../../components/Form/CollectionForm'
 import Navbar from '../../components/Navbar/Navbar'
 import axios from 'axios'
 import { useDispatch,useSelector } from 'react-redux'
-import {  updatePrivateCollection } from '../../redux/apiCalls'
 import { useLocation } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
+import { getCollectionDetails, updatePrivateCollection } from '../../redux/collectionRedux'
 
 const CollectionEdit = () => {
 
@@ -14,7 +14,6 @@ const CollectionEdit = () => {
 
     const user = useSelector(state=>state.user.currentUser)
     const dispatch = useDispatch();
-
     const navigate = useNavigate();
 
     const templateCollection = 
@@ -28,21 +27,20 @@ const CollectionEdit = () => {
     const [currCollection, setCurrCollection] = useState(templateCollection);
 
     useEffect(() => {
-        const getCollectionDetails = async () => {
-            try {
-                const res = await axios.get(`${process.env.REACT_APP_API_URL}/collections/${collectionID}`)
-                setCurrCollection(res.data)
-    
-            } catch (error) {}
-        };
-        getCollectionDetails();
-    }, [location])
+        dispatch(getCollectionDetails(collectionID))
+          .then((response) => {
+            setCurrCollection(response.payload);
+          })
+          .catch((error) => {
+            console.error('Failed to fetch collection details:', error);
+          });
+      }, [dispatch, collectionID]);
     
 
-    const handleCollectionAdd = (collection) => { 
-        updatePrivateCollection(dispatch,collection,user);
+    const handleCollectionAdd = (collection) => {
+        dispatch(updatePrivateCollection(collection));
         navigate(`/collections/private/${user._id}`);
-    }
+      };
   return (
     <div>
         <Navbar/>

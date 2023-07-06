@@ -6,8 +6,9 @@ import './Collections.css'
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { deletePrivateCollection, getRequests, updatePrivateCollection } from '../../redux/apiCalls'
+import {  getRequests } from '../../redux/apiCalls'
 import { publicRequest, userRequest } from '../../requestMethods'
+import { updatePrivateCollection, deletePrivateCollection } from '../../redux/collectionRedux'
 
 
 const Collection = ({collection,view}) => {
@@ -30,34 +31,34 @@ const Collection = ({collection,view}) => {
         }
 
         updatePrivateCollection(dispatch,tmpCollection,user);
-        getRequests(dispatch);
+        // getRequests(dispatch);
     }
 
     const handleDelete = async ()=>{
-        deletePrivateCollection(dispatch,collection._id,user);
+        dispatch(deletePrivateCollection(collection._id));
     }
 
     //GET ROLE OF THE USER FOR CURRENT PROJECT
-    useEffect(() => {
-      const getUserRoleDetails = async() => {
-        try {
-            console.log("SHARED COLLECTION REQUEST USER", user)
-            const res = await publicRequest.get(`/roles?project=${collection._id}&user=${user.username}`,{
-                headers:{
-                    'token':`Bearer ${user.accessToken}`
-                }
-            });
-            console.log("RESPONSE",res.data);
-            if(res.data[0]){
-                setUserRole(res.data[0])
-            };
-        } catch (error) {
-            console.log("ERROR",error)
-        }
-      }
+    // useEffect(() => {
+    //   const getUserRoleDetails = async() => {
+    //     try {
+    //         console.log("SHARED COLLECTION REQUEST USER", user)
+    //         const res = await publicRequest.get(`/roles?project=${collection._id}&user=${user.username}`,{
+    //             headers:{
+    //                 'token':`Bearer ${user.accessToken}`
+    //             }
+    //         });
+    //         console.log("RESPONSE",res.data);
+    //         if(res.data[0]){
+    //             setUserRole(res.data[0])
+    //         };
+    //     } catch (error) {
+    //         console.log("ERROR",error)
+    //     }
+    //   }
       
-      getUserRoleDetails();
-    }, [])
+    //   getUserRoleDetails();
+    // }, [])
     
 
     //TODO: FOR SHARED COLLECTIONS: 
@@ -111,9 +112,9 @@ const Collection = ({collection,view}) => {
                 </div>
 
                 }
-                {view && !(collection.publicStatus=='approved') &&
+                {/* {view && !(collection.publicStatus=='approved') &&
                 <Button className='cardBtn' size='small' onClick={handleRequest}>Send for Review</Button>
-                }
+                } */}
             </CardActions>
             {/* {view && !(collection.publicStatus=='approved') &&
                 <Button style={{paddingLeft:'24px'}} onClick={handleRequest}>Send for Review</Button>

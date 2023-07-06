@@ -16,7 +16,7 @@ const Collaborator = ({role}) => {
 
     const handleRoleDelete = () => {
       console.log("ROLE",role);
-      deleteRole(dispatch,role._id);
+      // deleteRole(dispatch,role._id);
     }
 
   return (

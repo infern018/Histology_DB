@@ -12,7 +12,7 @@ import { getCurrentUser } from '../../requestMethods';
 import { useLocation } from 'react-router-dom'
 import { useDispatch,useSelector } from 'react-redux';
 import Requests from '../../components/Request/Requests'
-import { getRequests } from '../../redux/apiCalls';
+// import { getRequests } from '../../redux/apiCalls';
 
 const RequestDetails = () => {
 
@@ -27,7 +27,7 @@ const RequestDetails = () => {
     const location = useLocation()
 
     useEffect(() => {
-        getRequests(dispatch);
+        // getRequests(dispatch);
 
     }, [location,requestCollections])
 

@@ -3,7 +3,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import { deleteRequest, getPrivateCollections, updateRequests } from '../../redux/apiCalls';
+import { deleteRequest, getPrivateCollections, updateRequests } from '../../redux/collectionRedux';
 
 const Request = ({requestCollection}) => {
 
@@ -11,12 +11,12 @@ const Request = ({requestCollection}) => {
     const dispatch = useDispatch();
 
     const handleRequestApprove = () => {
-        updateRequests(dispatch,requestCollection,user);
+        // updateRequests(dispatch,requestCollection,user);
         getPrivateCollections(dispatch,user);
     }
 
     const handleRequestDecline = () => {
-        deleteRequest(dispatch,requestCollection._id,user);
+        // deleteRequest(dispatch,requestCollection._id,user);
     }
 
   return (

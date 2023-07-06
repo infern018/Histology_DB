@@ -2,7 +2,7 @@ import React from 'react'
 import CollectionForm from '../../components/Form/CollectionForm'
 import Navbar from '../../components/Navbar/Navbar'
 import { useDispatch,useSelector } from 'react-redux'
-import { createPrivateCollection } from '../../redux/apiCalls'
+import { createPrivateCollection } from '../../redux/collectionRedux'
 import { useNavigate } from 'react-router-dom';
 
 const CollectionCreate = () => {
@@ -22,7 +22,7 @@ const CollectionCreate = () => {
 
     const handleCollectionAdd = (collection) => { 
         console.log("Collection, " ,collection);
-        createPrivateCollection(dispatch,collection,user);
+        dispatch(createPrivateCollection(collection));
         navigate(`/collections/private/${user._id}`);
     }
 

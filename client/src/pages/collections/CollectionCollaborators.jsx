@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import axios from 'axios'
 import { useDispatch,useSelector } from 'react-redux'
-import {  getRole, getRolesOfCollection, updatePrivateCollection } from '../../redux/apiCalls'
+import {  getRolesOfCollection, updatePrivateCollection } from '../../redux/apiCalls'
 import { useLocation } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 import Collaborators from '../../components/Collaborator/Collaborators'
@@ -24,7 +24,7 @@ const CollectionEditColab = () => {
 
     //get all collaborators for this project, role URL
     useEffect(() => {
-        getRole(dispatch,user)
+        // getRole(dispatch,user)
     }, [location])
 
     useEffect(()=> {

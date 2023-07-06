@@ -1,8 +1,6 @@
 const router = require("express").Router()
 const Entry = require("../models/Entry");
 const {verifyToken, verifyTokenAndAuth, verifyTokenAndAdmin, verifyTokenAndAuthCollection} = require('./verifyToken');
-const HttpProxyAgent = require("http-proxy-agent");
-const { findByIdAndUpdate } = require("../models/Entry");
 const Collection = require("../models/Collection");
 const Role = require("../models/Role");
 
@@ -15,9 +13,9 @@ const generateCollectionCode = (collectionName) => {
 }
 
 //CREATE A COLLECTION
-//ID HERE REFERS TO USER ID (OWNER OF COLLECTION)
-router.post("/:ownerID", verifyTokenAndAuthCollection, async (req,res) => {
+router.post("/", verifyToken, async (req,res) => {
     const newCollection = new Collection(req.body);
+    newCollection.ownerID = req.user.id
 
     try {
         const savedCollection  = await newCollection.save();
@@ -28,9 +26,8 @@ router.post("/:ownerID", verifyTokenAndAuthCollection, async (req,res) => {
 })
 
 //UPDATE A COLLECTION
-router.put("/:id/:ownerID", verifyTokenAndAuthCollection, async(req,res) => {
+router.put("/:id", verifyTokenAndAuthCollection, async(req,res) => {
     const newCollection = req.body;
-
 
     if(req.body.name){
         newCollection.collectionCode = generateCollectionCode(req.body.name);
@@ -53,7 +50,7 @@ router.put("/:id/:ownerID", verifyTokenAndAuthCollection, async(req,res) => {
 
 // DELETE COLLECTION
 // mark backupCollection as false
-router.delete("/:id/:ownerID", verifyTokenAndAuthCollection, async (req,res)=> {
+router.delete("/:id", verifyTokenAndAuthCollection, async (req,res)=> {
     try{
         const updatedCollection = await Collection.findByIdAndUpdate(
             req.params.id,
@@ -71,9 +68,13 @@ router.delete("/:id/:ownerID", verifyTokenAndAuthCollection, async (req,res)=> {
 })
 
 //GET SINGLE COLLECTION
-router.get("/:id", async (req,res)=> {
+router.get("/:id", verifyTokenAndAuthCollection ,async (req,res)=> {
     try {
         const collection = await Collection.findById(req.params.id);
+        if (!collection) {
+            return res.status(404).json({ error: "Collection not found" });
+        }
+
         res.status(200).json(collection);
     } catch (err) {
         res.status(500).json(err);
@@ -81,7 +82,6 @@ router.get("/:id", async (req,res)=> {
 })
 
 //GET ALL COLLECTIONS
-
 router.get("/", async (req,res)=> {
     try {
         
@@ -92,30 +92,61 @@ router.get("/", async (req,res)=> {
     }
 })
 
-// GET SHARED COLLECTIONS OF A USER
-router.get("/shared/:username", verifyToken,async(req,res)=> {
+//Get collections owned by the user
+router.get("/owned/:ownerID", verifyToken, async (req, res) => {
     try {
-        //all roles with this username
-        const roles = await Role.find({user:req.params.username});
-        var sharedCollectionIDs = [];
-
-        for(var i=0;i<roles.length;i++){
-            const role = roles[i];
-            
-            sharedCollectionIDs.push(role.project);
-        }
-        var sharedCollections = [];
-
-        for(var i=0;i<sharedCollectionIDs.length;i++){
-            const coll = await Collection.findById(sharedCollectionIDs[i]);
-            sharedCollections.push(coll);
-        }
-
-        res.status(200).json(sharedCollections)
-
-    } catch (error) {
-        res.status(500).json(error);
+      const ownerID = req.params.ownerID;
+      const collections = await Collection.find({ ownerID: ownerID ,backupCollection: false});
+      res.status(200).json(collections);
+    } catch (err) {
+      res.status(500).json({ error: "Failed to retrieve owned collections" });
     }
-})
+});
+
+// Get collections the user is collaborating on
+router.get("/collaborating/:id", verifyTokenAndAuth, async (req, res) => {
+    try {
+      const userID = req.params.id;
+      const collections = await Collection.find({
+        "collaborators.user": userID,
+      });
+      res.status(200).json(collections);
+    } catch (err) {
+      res
+        .status(500)
+        .json({ error: "Failed to retrieve collaborating collections" });
+    }
+  });
+
+//add a collaborator
+router.post("/:id/collaborators", verifyTokenAndAuthCollection, async (req, res) => {
+    const { collaboratorID, mode } = req.body;
+    const { id } = req.params;
+  
+    try {
+      const collection = await Collection.findById(id);
+  
+      if (!collection) {
+        return res.status(404).json({ error: "Collection not found" });
+      }
+  
+      // Check if the collaborator is already added
+      const existingCollaborator = collection.collaborators.find(
+        (collaborator) => collaborator.user.toString() === collaboratorID
+      );
+  
+      if (existingCollaborator) {
+        return res.status(409).json({ error: "Collaborator already exists" });
+      }
+  
+      collection.collaborators.push({ user: collaboratorID, mode });
+  
+      const updatedCollection = await collection.save();
+  
+      res.status(200).json(updatedCollection);
+    } catch (err) {
+      res.status(500).json({ error: "Failed to add collaborator" });
+    }
+  });
 
 module.exports = router;

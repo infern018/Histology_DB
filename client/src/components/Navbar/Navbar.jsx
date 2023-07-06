@@ -6,24 +6,25 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import HandymanIcon from '@mui/icons-material/Handyman';
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux';
-import { logoutSuccess } from '../../redux/userRedux'
+import { logout } from '../../redux/userRedux'
 
 const Navbar = () => {
 
     const navigate = useNavigate();
 
     const user = useSelector(state=>state.user.currentUser);
+    console.log("USER NAVBAR = ", user);
     const dispatch = useDispatch();
     
     const handleLogout = () =>{
-        dispatch(logoutSuccess());
+        dispatch(logout());
         navigate("/");
     }
 
     
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" style={{ background: '#2E3B55' }}>
+      <AppBar position="static" style={{ background: '#323232' }}>
         <Container maxWidth="lg">
         <Toolbar>
             <Grid
