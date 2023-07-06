@@ -46,9 +46,9 @@ app.use(
     })  
   );
 
-// passport
-app.use(passport.initialize());
-app.use(passport.session());
+// // passport
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 
 mongoose
