@@ -14,9 +14,9 @@ const Landing = () => {
             <p className='landingDesc'>An online database for storing, curating and sharing metadata from diverse collections of histological data.</p>
             <Grid container>
                 <Grid item xs={12}>
-                  <Link to={`/collections/public`}   style={{ textDecoration: 'none' }}>
+                  {/* <Link to={`/collections/public`}   style={{ textDecoration: 'none' }}>
                       <Button variant="outlined">Public Collections </Button>
-                  </Link>
+                  </Link> */}
                 </Grid>
 
               {user &&
