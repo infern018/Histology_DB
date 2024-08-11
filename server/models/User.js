@@ -28,7 +28,20 @@ const UserSchema = new mongoose.Schema({
     role:{
         type:String,
         enum: Object.values(roles).concat([null]),
-    }
+    },
+    collaboratingCollections: [
+        {
+          collection_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Collection",
+          },
+          mode: {
+            type: String,
+            enum: ["view", "edit"],
+            default: "view",
+          },
+        },
+    ],
 },{timestamps:true});
 
 module.exports = mongoose.model("User",UserSchema);

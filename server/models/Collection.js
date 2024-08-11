@@ -50,7 +50,7 @@ const CollectionSchema = mongoose.Schema({
 
     collaborators: [
         {
-          user: {
+          user_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
           },
