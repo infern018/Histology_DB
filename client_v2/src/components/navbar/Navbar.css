@@ -1,0 +1,34 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    background-color: #000;
+    color: #fff;
+    height: 50px;
+}
+
+.navbar-left,
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-item {
+    margin-right: 15px;
+    cursor: pointer;
+    color: #fff;
+    text-decoration: none;
+}
+
+.navbar-item:last-child {
+    margin-right: 0;
+}
+
+.navbar-item:hover {
+    color: #ccc;
+}
+
+.navbar-link{
+    padding: 0 5px;
+}
