@@ -44,7 +44,7 @@ export const getCollectionDetailsAPI = async (collectionId,accessToken) => {
   try {
     const response = await publicAxios.get(`/collections/${collectionId}`,{
       headers: {
-        token: `Bearer ${accessToken}`,
+        token: `${accessToken}`,
       },
     });
     return response;
@@ -57,7 +57,7 @@ export const getPrivateCollectionsAPI = async (userId,accessToken) => {
   try {
     const response = await userAxios.get(`/collections/owned/${userId}`,{
       headers: {
-        token: `Bearer ${accessToken}`,
+        token: `${accessToken}`,
       },
     });
     return response;
@@ -70,7 +70,7 @@ export const getSharedCollectionsAPI = async (userId, accessToken) => {
   try {
     const response = await userAxios.get(`/collections/collaborating/${userId}`,{
       headers: {
-        token: `Bearer ${accessToken}`,
+        token: `${accessToken}`,
       },
     });
     return response;
@@ -83,7 +83,7 @@ export const deletePrivateCollectionAPI = async (collectionId, userId, accessTok
   try {
     const response = await userAxios.delete(`/collections/${collectionId}`, {
       headers: {
-        token: `Bearer ${accessToken}`,
+        token: `${accessToken}`,
       },
     });
     return response;
@@ -96,7 +96,7 @@ export const createPrivateCollectionAPI = async (userId, collection, accessToken
   try {
     const response = await userAxios.post(`/collections`, collection, {
       headers: {
-        token: `Bearer ${accessToken}`,
+        token: `${accessToken}`,
       },
     });
     return response;
@@ -109,7 +109,7 @@ export const updatePrivateCollectionAPI = async (collectionId, userId, collectio
   try {
     const response = await userAxios.put(`/collections/${collectionId}`, collection, {
       headers: {
-        token: `Bearer ${accessToken}`,
+        token: `${accessToken}`,
       },
     });
     return response;
