@@ -25,6 +25,22 @@ const login = async (req, res) => {
             return;
         }
 
+        // if user is logged in with github don't validate the password
+        if (user.githubId) {
+            const accessToken = jwt.sign(
+                {
+                    id: user._id,
+                    isAdmin: user.isAdmin,
+                },
+                process.env.JWT_SEC,
+                { expiresIn: "3d" }
+            );
+
+            const { password, ...others } = user._doc;
+            res.status(200).json({ ...others, accessToken });
+            return;
+        }
+
         const validated = await bcrypt.compare(req.body.password, user.password);
         if (!validated) {
             res.status(401).json("Wrong password!");

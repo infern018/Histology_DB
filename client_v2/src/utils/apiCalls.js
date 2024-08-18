@@ -33,6 +33,15 @@ export const logoutAPI = async () => {
     }
 };
 
+export const githubLoginAPI = async () => {
+    try {
+        window.open(`${process.env.REACT_APP_API_URL}/auth/github`, "_self");
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
+
 export const getAllUserMetas = async (accessToken) => {
     try {
         const response = await axiosReq.get("/users/meta/all",

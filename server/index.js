@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const session = require('express-session');
-const passport = require('./passport');
 const config = require('./config')
+const passport = require('./utils/passport');
 
 //ROUTER
 const authRoute = require('./routes/auth');
@@ -24,6 +24,7 @@ app.use(express.static(__dirname + '/views'));
 const cors = require('cors');
 app.use(cors());
 
+
 // parse application/json
 app.use(bodyParser.json())
 
@@ -41,6 +42,11 @@ app.use(
     })
 );
 
+// Passport config
+app.use(passport.initialize());
+app.use(passport.session());
+
+// database connection
 mongoose
     .connect(config.dbURL, {
         useNewUrlParser: true,
