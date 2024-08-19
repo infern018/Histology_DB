@@ -18,7 +18,6 @@ const Profile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch user information
         const userResponse = await fetchUserDetails([user._id]);
         const { username, email, createdAt } = userResponse[0];
 
@@ -31,10 +30,7 @@ const Profile = () => {
           createdAt: formattedDate,
         });
 
-        // Fetch collections the user is collaborating on or is the owner
         const collectionsData = await fetchUserCollections(user._id);
-
-        // Fetch stats for each collection asynchronously
         const collectionsWithStats = await Promise.all(
           collectionsData.map(async (collection) => {
             const stats = await fetchCollectionStats(collection.collection_id);
@@ -61,11 +57,13 @@ const Profile = () => {
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row",  // Layout children in a row
-          justifyContent: "space-between",  // Add space between the sections
-          gap: 3,  // Add some space between the boxes
-          width: "100%",  // Full width of the layout
-          alignItems: "flex-start", // Align items at the top
+          flexDirection: "row",
+          gap: 3,
+          width: "100%",
+          alignItems: "flex-start",
+          justifyContent: "center",
+          padding: 2, // Adjust padding to ensure no extra margins
+          margin: "0 auto", // Prevent horizontal scroll
         }}
       >
         {/* User Meta Info Section */}
@@ -74,9 +72,11 @@ const Profile = () => {
             flex: 1,
             maxWidth: 400,
             padding: 3,
-            backgroundColor: "rgba(255,2555,255,0.7)", // Solid background color
+            backgroundColor: "rgba(255,255,255,0.9)",
             borderRadius: 2,
             textAlign: "left",
+            boxShadow: 3,
+            boxSizing: "border-box",
           }}
         >
           {loading ? (
@@ -90,7 +90,7 @@ const Profile = () => {
                 <strong>Email:</strong> {userInfo.email}
               </Typography>
               <Typography variant="body1">
-                Joined {userInfo.createdAt}
+                <strong>Joined:</strong> {userInfo.createdAt}
               </Typography>
             </Box>
           )}
@@ -102,12 +102,17 @@ const Profile = () => {
             flex: 2,
             maxWidth: 800,
             padding: 3,
-            backgroundColor: "#ffffff", // Solid background color
+            backgroundColor: "#ffffff",
             borderRadius: 2,
             textAlign: "center",
+            boxShadow: 3,
           }}
         >
-          <Typography variant="h5" sx={{ fontWeight: 500, mb: 2 }}>
+          <Typography
+            variant="h5"
+            sx={{ fontWeight: 500, mb: 2 }}
+            textAlign={"left"}
+          >
             My Collections
           </Typography>
           {loading ? (

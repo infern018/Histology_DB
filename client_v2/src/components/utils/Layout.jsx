@@ -12,7 +12,7 @@ const Layout = ({ children }) => {
         alignItems: "center",
         justifyContent: "center",
         minHeight: "100vh",
-        margin: 0,
+        margin: -1,
         padding: 0,
         background: "linear-gradient(to bottom, #b2d5fb, #f0f2f5)",
       }}
