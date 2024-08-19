@@ -22,7 +22,7 @@ const CollectionCreateForm = ({ onSubmit }) => {
         maxWidth: 400,
         width: "100%",
         padding: 4,
-        backgroundColor: "rgba(255, 255, 255, 0.7)",
+        backgroundColor: "rgba(255, 255, 255, 0.9)",
         borderRadius: 2,
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
         margin: "0 auto",
@@ -71,7 +71,7 @@ const CollectionCreateForm = ({ onSubmit }) => {
           borderRadius: "10px",
         }}
       >
-        Add Collection
+        Add
       </Button>
     </Box>
   );
