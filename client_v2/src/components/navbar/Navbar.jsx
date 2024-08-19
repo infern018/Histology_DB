@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
@@ -19,6 +19,7 @@ import { logout } from "../../redux/reducers/authSlice";
 
 const Navbar = () => {
   const user = useSelector((state) => state.auth.currentUser);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -26,6 +27,7 @@ const Navbar = () => {
   const handleLogout = () => {
     dispatch(logout());
     setOpen(false);
+    navigate("/");
   };
 
   const toggleDrawer = (newOpen) => () => {
