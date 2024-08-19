@@ -5,9 +5,10 @@ import {
   fetchUserDetails,
 } from "../../utils/apiCalls";
 import CollectionTable from "../../components/user/CollectionsTable";
-import { Box, Typography, CircularProgress } from "@mui/material";
+import { Box, Typography, CircularProgress, Button } from "@mui/material";
 import { useSelector } from "react-redux";
 import Layout from "../../components/utils/Layout";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const user = useSelector((state) => state.auth.currentUser);
@@ -62,8 +63,8 @@ const Profile = () => {
           width: "100%",
           alignItems: "flex-start",
           justifyContent: "center",
-          padding: 2, // Adjust padding to ensure no extra margins
-          margin: "0 auto", // Prevent horizontal scroll
+          padding: 2,
+          margin: "0 auto",
         }}
       >
         {/* User Meta Info Section */}
@@ -106,6 +107,9 @@ const Profile = () => {
             borderRadius: 2,
             textAlign: "center",
             boxShadow: 3,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
           }}
         >
           <Typography
@@ -120,6 +124,17 @@ const Profile = () => {
           ) : (
             <CollectionTable collections={collections} />
           )}
+          {/* Button placed at the bottom */}
+          <Box sx={{ marginTop: "auto", textAlign: "right" }}>
+            <Button
+              component={Link}
+              to={`/collection/create`}
+              variant="contained"
+              color="primary"
+            >
+              + Add Collection
+            </Button>
+          </Box>
         </Box>
       </Box>
     </Layout>

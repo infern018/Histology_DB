@@ -2,18 +2,19 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import CollectionCreateForm from '../../components/collection/CollectionCreateForm';
 import { createCollectionAPI } from '../../utils/apiCalls';
-import Navbar from '../../components/navbar/Navbar';
+import Layout from '../../components/utils/Layout';
+import { useNavigate } from 'react-router-dom';
 
 const CollectionCreate = () => {
     const user = useSelector((state) => state.auth.currentUser);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     const handleCollectionAdd = async (collection) => {
-        console.log("Adding collection", collection);
         try {
             const response = await createCollectionAPI(collection, user.accessToken);
             if (response.status === 200) {
-              console.log("Collection created successfully");
+              navigate(`/user/${user.username}`);
             } else {
               setError(response.data.message || "Collection create failed");
             }
@@ -24,13 +25,12 @@ const CollectionCreate = () => {
 
 
     return (
-        <div>    
-        <Navbar />
+        <Layout>
         {error && <p>{error}</p>}
         <CollectionCreateForm
             onSubmit={handleCollectionAdd}
         />
-        </div>
+        </Layout>
     );
 }
 

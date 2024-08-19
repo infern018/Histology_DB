@@ -90,13 +90,6 @@ const Navbar = () => {
                 <>
                   <Button
                     component={Link}
-                    to={`/collection/create`}
-                    variant="text"
-                  >
-                    +
-                  </Button>
-                  <Button
-                    component={Link}
                     to={`/user/${user.username}`}
                     state={{ user: user }}
                     variant="text"
