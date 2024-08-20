@@ -1,11 +1,11 @@
 import React, { useState } from "react";
+import { Button } from "@mui/material";
 import Select from "react-select";
 
 const SearchUserSelectComponent = ({ users, onUserSelect }) => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const handleChange = (selectedOption) => {
-    // create a dict of user_id and username from label and value
     setSelectedUser(selectedOption);
   };
 
@@ -32,8 +32,23 @@ const SearchUserSelectComponent = ({ users, onUserSelect }) => {
         onChange={handleChange}
         options={options}
         placeholder="Search for a user..."
+        styles={{
+          control: (base) => ({
+            ...base,
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+            boxShadow: "none",
+            "&:hover": { borderColor: "#aaa" },
+          }),
+        }}
       />
-      <button onClick={handleUserAdd}>Add</button>
+      <Button
+        variant="contained"
+        onClick={handleUserAdd}
+        sx={{ marginTop: 2 }}
+      >
+        Add User
+      </Button>
     </div>
   );
 };
