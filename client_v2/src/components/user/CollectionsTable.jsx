@@ -18,8 +18,6 @@ const CollectionTable = ({ collections }) => {
       <Table>
         <TableHead>
           <TableRow sx={{ backgroundColor: "#f0f0f0" }}>
-            {" "}
-            {/* Greyed background for header */}
             <TableCell>
               <Typography variant="subtitle1" fontWeight="bold">
                 Name
@@ -42,7 +40,21 @@ const CollectionTable = ({ collections }) => {
           {collections.map((collection, index) => (
             <TableRow key={index} hover>
               <TableCell>
-                <Typography variant="body1">{collection.name}</Typography>
+                <Typography
+                  variant="body1"
+                  component={Link}
+                  to={`/collection/${collection.collection_id}/entries`}
+                  sx={{
+                    textDecoration: "none",
+                    color: "black",
+                    "&:hover": {
+                      color: "primary.main", // Standout color on hover
+                      textDecoration: "underline", // Underline on hover
+                    },
+                  }}
+                >
+                  {collection.name}
+                </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="body1">

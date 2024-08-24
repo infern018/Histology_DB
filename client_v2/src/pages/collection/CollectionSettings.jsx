@@ -25,8 +25,15 @@ import {
   TableRow,
   Select,
   MenuItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
+import AddIcon from "@mui/icons-material/Add";
 import SearchUserSelectComponent from "../../components/user/SearchUserSelect";
 
 const CollectionSettings = () => {
@@ -34,7 +41,9 @@ const CollectionSettings = () => {
   const [collaborators, setCollaborators] = useState([]);
   const [loading, setLoading] = useState(true);
   const [allUsers, setAllUsers] = useState([]);
-  const [dialogOpen, setAddDialogOpen] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [selectedCollaborator, setSelectedCollaborator] = useState(null);
   const accessToken = useSelector(
     (state) => state.auth.currentUser.accessToken
   );
@@ -117,21 +126,29 @@ const CollectionSettings = () => {
     }
   };
 
-  const handleRemoveCollaborator = async (collaboratorID) => {
+  const handleRemoveCollaborator = async () => {
+    if (!selectedCollaborator) return;
     try {
-      await deleteCollaboratorAPI(collectionID, collaboratorID, accessToken);
+      await deleteCollaboratorAPI(
+        collectionID,
+        selectedCollaborator.user_id,
+        accessToken
+      );
       const removedUser = collaborators.find(
-        (collaborator) => collaborator.user_id === collaboratorID
+        (collaborator) => collaborator.user_id === selectedCollaborator.user_id
       );
       setCollaborators((prevCollaborators) =>
         prevCollaborators.filter(
-          (collaborator) => collaborator.user_id !== collaboratorID
+          (collaborator) =>
+            collaborator.user_id !== selectedCollaborator.user_id
         )
       );
       setAllUsers((prevUsers) => [
         ...prevUsers,
         { _id: removedUser.user_id, username: removedUser.username },
       ]);
+      setOpenDeleteDialog(false);
+      setSelectedCollaborator(null);
     } catch (error) {
       console.error("Failed to remove collaborator", error);
     }
@@ -154,7 +171,11 @@ const CollectionSettings = () => {
           const user = userDetails.find(
             (user) => user._id === collaborator.user_id
           );
-          return { ...collaborator, username: user.username, email: user.email };
+          return {
+            ...collaborator,
+            username: user.username,
+            email: user.email,
+          };
         }
       );
       const filteredUsers = await getAllUserMetas(accessToken).then(
@@ -169,6 +190,7 @@ const CollectionSettings = () => {
       );
       setCollaborators(collaboratorsWithDetails);
       setAllUsers(filteredUsers);
+      setOpenAddDialog(false);
     } catch (error) {
       console.error("Failed to add collaborator", error);
     }
@@ -180,38 +202,66 @@ const CollectionSettings = () => {
     }
   };
 
+  const handleDeleteClick = (collaborator) => {
+    setSelectedCollaborator(collaborator);
+    setOpenDeleteDialog(true);
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
 
   return (
     <Layout>
-      <Box sx={{ padding: 3 }}>
-        <Typography variant="h4" gutterBottom>
-          Collection Settings
-        </Typography>
-        <Paper sx={{ padding: 3, marginBottom: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Collaborators
-          </Typography>
-          <TableContainer component={Paper}>
-            <Table>
+      <Box sx={{ padding: 0 }}>
+        <Paper sx={{ padding: 4, marginBottom: 3 }}>
+          <Grid container spacing={0} alignItems="center">
+            <Grid item xs={6}>
+              <Typography variant="h6" gutterBottom>
+                Collaborators
+              </Typography>
+            </Grid>
+            <Grid item xs={6} sx={{ textAlign: "right" }}>
+              <Button
+                variant="contained"
+                sx={{ marginBottom: 2 }}
+                onClick={() => setOpenAddDialog(true)}
+              >
+                <AddIcon /> Add Collaborator
+              </Button>
+            </Grid>
+          </Grid>
+          <TableContainer
+            component={Paper}
+            sx={{
+              paddingLeft: 0.8,
+              paddingRight: 1,
+              boxShadow: "none",
+            }}
+          >
+            <Table
+              sx={{
+                border: "none",
+              }}
+            >
               <TableHead>
                 <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Mode</TableCell>
-                  <TableCell align="right">Actions</TableCell>
+                  <TableCell sx={{ padding: "8px" }}>Name</TableCell>
+                  <TableCell sx={{ padding: "8px" }}>Email</TableCell>
+                  <TableCell sx={{ padding: "8px" }}>Mode</TableCell>
+                  <TableCell sx={{ padding: "8px" }} align="right"></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {collaborators.map((collaborator) => (
                   <TableRow key={collaborator.user_id}>
-                    <TableCell>{collaborator.username}</TableCell>
-                    <TableCell sx={{ color: "gray" }}>
+                    <TableCell sx={{ padding: "8px" }}>
+                      {collaborator.username}
+                    </TableCell>
+                    <TableCell sx={{ color: "gray", padding: "8px" }}>
                       {collaborator.email}
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ padding: "8px" }}>
                       <Select
                         value={collaborator.mode}
                         onChange={(e) =>
@@ -219,22 +269,40 @@ const CollectionSettings = () => {
                         }
                         variant="outlined"
                         sx={{
-                          width: "100px",
+                          width: "95px",
                           height: "40px",
+                          borderRadius: "50px",
+                          borderColor: "gray",
+                          backgroundColor: "#d9d9d9",
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "none", // Remove the border
+                          },
+                          "&:hover .MuiOutlinedInput-notchedOutline": {
+                            border: "none", // Remove the border on hover
+                          },
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            border: "none", // Remove the border when focused
+                          },
                         }}
                       >
                         <MenuItem value="view">View</MenuItem>
                         <MenuItem value="edit">Edit</MenuItem>
                       </Select>
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell sx={{ padding: "8px" }} align="right">
                       <IconButton
-                        onClick={() =>
-                          handleRemoveCollaborator(collaborator.user_id)
-                        }
-                        sx={{ color: "#f44336" }}
+                        onClick={() => handleDeleteClick(collaborator)}
+                        sx={{
+                          color: "gray",
+                          "&:hover": {
+                            backgroundColor: "#f8d7da",
+                            "& .MuiSvgIcon-root": {
+                              color: "#cf4553", // Change the color of the icon on hover
+                            },
+                          },
+                        }}
                       >
-                        <DeleteIcon />
+                        <PersonRemoveIcon />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -243,20 +311,51 @@ const CollectionSettings = () => {
             </Table>
           </TableContainer>
         </Paper>
-        <Button
-          variant="outlined"
-          onClick={() => setAddDialogOpen(true)}
-          sx={{ marginBottom: 2 }}
+        {/* wrap search user select in a dialog */}
+        <Dialog
+          open={openAddDialog}
+          onClose={() => setOpenAddDialog(false)}
+          fullWidth
         >
-          Add Collaborator
-        </Button>
-        <Paper sx={{ padding: 3 }}>
-          <SearchUserSelectComponent
-            users={allUsers}
-            onUserSelect={handleUserAdd}
-          />
-        </Paper>
+          <DialogTitle>Add Collaborator</DialogTitle>
+          <DialogContent
+            sx={{
+              minHeight: "100px", // Set a minimum height to prevent squishing
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <SearchUserSelectComponent
+              users={allUsers}
+              onUserSelect={handleUserAdd}
+            />
+          </DialogContent>
+        </Dialog>
       </Box>
+
+      {/* Confirmation Dialog */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+      >
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to remove{" "}
+            <strong>{selectedCollaborator?.username} </strong>as collaborator
+            from this collection?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDeleteDialog(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleRemoveCollaborator} color="secondary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Layout>
   );
 };
