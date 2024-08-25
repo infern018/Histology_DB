@@ -61,6 +61,11 @@ app.use("/api/entries", entryRoute)
 app.use("/api/collections", collectionRoute)
 app.use("/api/roles", roleRoute)
 
+// send sample response in the root URL
+app.get('/', (req, res) => {
+    res.send("Hello MiMe World")
+})
+
 app.listen(process.env.PORT, () => {
     console.log("Server running on PORT ", PORT);
 })
