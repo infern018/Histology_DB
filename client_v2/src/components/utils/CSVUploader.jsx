@@ -22,7 +22,7 @@ function CSVUploader({ onUpload }) {
           console.log("CSV parsing complete. Results:", results.data); // Log the parsed data
 
           const requiredFields = [
-            "binomialSpeciesName",
+            "bionomialSpeciesName",
             "stainingMethod",
             "bodyWeight",
             "brainWeight",

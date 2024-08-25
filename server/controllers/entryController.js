@@ -120,6 +120,23 @@ const deleteEntry = async (req, res) => {
     }
 }
 
+const deleteMultipleEntries = async (req, res) => {
+
+    try {
+        const updatedEntries = await Entry.updateMany(
+            { _id: { $in: req.body } },
+            {
+                $set: {
+                    "backupEntry": true
+                }
+            }, { new: true }
+        )
+        res.status(200).json(updatedEntries);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+}
+
 const getEntry = async (req, res) => {
     try {
         const entry = await Entry.findById(req.params.id);
@@ -133,7 +150,11 @@ const getEntry = async (req, res) => {
 const getEntriesByCollectionId = async (req, res) => {
     try {
         const entries = await Entry.find({ collectionID: req.params.id });
-        res.status(200).json(entries);
+        // return only those entries that are not backup
+
+        const filteredEntries = entries.filter(entry => entry.backupEntry !== true);
+
+        res.status(200).json(filteredEntries);
     } catch (err) {
         res.status(500).json(err);
     }
@@ -149,50 +170,74 @@ const processCSVEntries = async (req, res) => {
     }
 
     const results = [];
-    fs.createReadStream(req.file.path)
-        .pipe(csvParser())
-        .on('data', (data) => {
-            console.log("Got data:", data); // Log the data received from each row
 
-            // Validate each row and prepare it for database insertion
+    fs.createReadStream(req.file.path)
+        .pipe(csvParser())  // Ensure headers are read correctly
+        .on('data', async (data) => {
+
+            // Extract and validate each field
             const {
-                binomialSpeciesName,
+                bionomialSpeciesName,
                 stainingMethod,
                 bodyWeight,
                 brainWeight,
                 developmentalStage,
                 sex,
+                ageNumber,
+                ageUnit,
+                origin,
+                sectionThickness,
+                planeOfSectioning,
+                interSectionDistance,
+                brainPart,
+                comments,
+                NCBITaxonomyCode
             } = data;
 
-            if (binomialSpeciesName && stainingMethod && bodyWeight && brainWeight && developmentalStage && sex) {
-                const itemCode = `${binomialSpeciesName}_${stainingMethod}_${generateRandomAlphaNumeric(binomialSpeciesName)}`;
-                const individualCode = `${binomialSpeciesName}_${generateRandomAlphaNumeric(binomialSpeciesName)}`;
+            if (bionomialSpeciesName && stainingMethod && bodyWeight && brainWeight && developmentalStage && sex) {
+                let scientificName = bionomialSpeciesName;
+
+                const itemCode = `${scientificName}_${stainingMethod}_${generateRandomAlphaNumeric(scientificName)}`;
+                const individualCode = `${scientificName}_${generateRandomAlphaNumeric(scientificName)}`;
 
                 results.push({
                     collectionID,
                     identification: {
-                        binomialSpeciesName,
+                        bionomialSpeciesName: scientificName,
                         itemCode,
                         individualCode,
+                        NCBITaxonomyCode: NCBITaxonomyCode || null,
+                        wikipediaSpeciesName: `https://en.wikipedia.org/wiki/${scientificName}`,
                     },
                     physiologicalInformation: {
                         age: {
                             developmentalStage,
+                            number: ageNumber ? parseFloat(ageNumber) : null,
+                            unitOfNumber: ageUnit || null,
+                            origin: origin || 'postNatal'
                         },
-                        bodyWeight,
-                        brainWeight,
+                        bodyWeight: bodyWeight ? parseFloat(bodyWeight) : 0,
+                        brainWeight: brainWeight ? parseFloat(brainWeight) : 0,
                         sex,
                     },
+                    histologicalInformation: {
+                        stainingMethod,
+                        sectionThickness: sectionThickness || null,
+                        planeOfSectioning: planeOfSectioning || null,
+                        interSectionDistance: interSectionDistance || null,
+                        brainPart: brainPart || null,
+                        comments: comments || null,
+                    }
                 });
             } else {
                 console.log("Skipping invalid row:", data); // Log any invalid rows
             }
         })
         .on('end', async () => {
-            console.log("Parsing complete. Results:", results); // Log the final results array
 
             try {
                 if (results.length > 0) {
+                    // Insert entries into the database
                     await Entry.insertMany(results);
                     res.status(200).json({ message: 'CSV entries processed successfully' });
                 } else {
@@ -214,6 +259,7 @@ const processCSVEntries = async (req, res) => {
 
 
 
+
 module.exports = {
     createEntry,
     updateEntry,
@@ -221,4 +267,5 @@ module.exports = {
     getEntry,
     getEntriesByCollectionId,
     processCSVEntries,
+    deleteMultipleEntries
 }

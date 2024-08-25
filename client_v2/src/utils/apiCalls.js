@@ -178,7 +178,7 @@ export const createEntryAPI = async (newEntry, accessToken) => {
 
 export const uploadCSVEntries = async (collectionID, csvData, accessToken) => {
     const headers = [
-        "binomialSpeciesName",
+        "bionomialSpeciesName",
         "stainingMethod",
         "bodyWeight",
         "brainWeight",
@@ -192,13 +192,13 @@ export const uploadCSVEntries = async (collectionID, csvData, accessToken) => {
         "interSectionDistance",
         "brainPart",
         "comments",
-        "NCBITaxnomoyCode"
+        "NCBITaxonomyCode"
     ];
 
     const csvContent = [
         headers.join(","), // Add headers
         ...csvData.map(row => [
-            row.binomialSpeciesName,
+            row.bionomialSpeciesName,
             row.stainingMethod,
             row.bodyWeight,
             row.brainWeight,
@@ -212,9 +212,11 @@ export const uploadCSVEntries = async (collectionID, csvData, accessToken) => {
             row.interSectionDistance,
             row.brainPart,
             row.comments,
-            row.NCBITaxnomoyCode
+            row.NCBITaxonomyCode
         ].join(","))
     ].join("\n");
+
+    console.log("csvContent", csvContent);
 
     const formData = new FormData();
     const blob = new Blob([csvContent], { type: "text/csv" });
@@ -229,6 +231,32 @@ export const uploadCSVEntries = async (collectionID, csvData, accessToken) => {
     });
 };
 
+export const deleteEntriesAPI = async (collectionID, entryIDs, accessToken) => {
+    try {
+        const response = await axiosReq.delete(
+            `/collections/${collectionID}/entries`,
+            {
+                headers: { 'token': `${accessToken}` },
+                data: entryIDs
+            }
+        );
+        return response.data;
+    }
+    catch (error) {
+        throw new Error(error.message);
+    }
+}
 
+export const getEntryAPI = async (entryID, accessToken) => {
+    try {
+        const response = await axiosReq.get(`/entries/${entryID}`,
+            { headers: { 'token': `${accessToken}` } }
+        );
+        return response.data;
+    }
+    catch (error) {
+        throw new Error(error.message);
+    }
+}
 
 

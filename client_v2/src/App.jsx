@@ -10,6 +10,7 @@ import GithubLogin from "./pages/auth/Github";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CollectionEntriesPage from "./pages/collection/CollectionEntries";
 import CreateEntryStepper from "./pages/entries/CreateEntryStepper";
+import EntryDetailsPage from "./pages/entries/EntryDetails";
 
 function App() {
   const theme = createTheme({
@@ -42,6 +43,7 @@ function App() {
             path="/collection/:collectionID/entry/create"
             element={<CreateEntryStepper />}
           />
+          <Route path="/entry/:entryID" element={<EntryDetailsPage />} />
         </Routes>
       </Router>
     </ThemeProvider>

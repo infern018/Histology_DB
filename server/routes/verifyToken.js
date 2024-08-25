@@ -157,6 +157,34 @@ const verifyCollectionReadAccess = async (req, res, next) => {
     })
 }
 
+const verifyCollectionEditAccess = async (req, res, next) => {
+    verifyToken(req, res, async () => {
+        const collection = await Collection.findById(req.params.id);
+
+        if (!collection) {
+            return res.status(404).json({ error: "Collection not found" });
+        }
+
+        var hasEditAccess = false;
+
+        if (req.user.id === collection.ownerID.toString()) {
+            hasEditAccess = true;
+        } else {
+            collection.collaborators.forEach(collaborator => {
+                if (collaborator.user_id.toString() === req.user.id && collaborator.mode === 'edit') {
+                    hasEditAccess = true;
+                }
+            });
+        }
+
+        if (hasEditAccess) {
+            next();
+        } else {
+            res.status(403).json("You are not allowed to do that");
+        }
+    });
+}
+
 module.exports = {
     verifyToken,
     verifyTokenAndAuth,

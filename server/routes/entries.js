@@ -15,6 +15,7 @@ router.delete("/:id", verifyEntryEditAccess, entryController.deleteEntry);
 router.get("/:id", verifyEntryReadAccess, entryController.getEntry);
 
 
+
 //GET ALL ENTRIES
 //name - regex
 router.get("/", async (req, res) => {

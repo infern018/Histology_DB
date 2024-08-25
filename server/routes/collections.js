@@ -27,6 +27,7 @@ const upload = multer({ dest: 'uploads/' });
 
 router.post('/:id/entries/upload-csv', upload.single('file'), entryController.processCSVEntries);
 
-
+// delete multiple entries
+router.delete("/:id/entries", verifyTokenAndAuthCollection, entryController.deleteMultipleEntries);
 
 module.exports = router;
