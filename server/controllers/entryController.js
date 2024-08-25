@@ -149,12 +149,22 @@ const getEntry = async (req, res) => {
 // get entry by collection id
 const getEntriesByCollectionId = async (req, res) => {
     try {
-        const entries = await Entry.find({ collectionID: req.params.id });
-        // return only those entries that are not backup
+        const { page = 1, limit = 8 } = req.query; // Default to page 1 and limit 10
+        const skip = (page - 1) * limit;
+        const entries = await Entry.find({ collectionID: req.params.id, backupEntry: { $ne: true } })
+            .skip(skip)
+            .limit(parseInt(limit))
+            .exec();
 
-        const filteredEntries = entries.filter(entry => entry.backupEntry !== true);
+        // Count total entries for pagination purposes
+        const totalEntries = await Entry.countDocuments({ collectionID: req.params.id, backupEntry: { $ne: true } });
 
-        res.status(200).json(filteredEntries);
+        res.status(200).json({
+            entries,
+            totalEntries,
+            totalPages: Math.ceil(totalEntries / limit),
+            currentPage: parseInt(page)
+        });
     } catch (err) {
         res.status(500).json(err);
     }

@@ -11,6 +11,7 @@ import {
   DialogContent,
   DialogTitle,
   Box,
+  Pagination, // Import Pagination component
 } from "@mui/material";
 import {
   Delete as DeleteIcon,
@@ -39,14 +40,24 @@ const CollectionEntriesPage = () => {
   const [openUploadDialog, setOpenUploadDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [totalEntries, setTotalEntries] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [limit] = useState(9); // Entries per page
+
   useEffect(() => {
     const fetchEntries = async () => {
       try {
         const data = await fetchEntriesByCollectionID(
           collectionID,
-          accessToken
+          accessToken,
+          page,
+          limit
         );
-        setEntries(data);
+        setEntries(data.entries);
+        setTotalEntries(data.totalEntries);
+        setTotalPages(data.totalPages);
       } catch (error) {
         console.error("Error fetching entries:", error);
       } finally {
@@ -55,16 +66,20 @@ const CollectionEntriesPage = () => {
     };
 
     fetchEntries();
-  }, [collectionID, accessToken]);
+  }, [collectionID, accessToken, page, limit]);
 
   const handleCSVUpload = async (csvData) => {
     try {
       await uploadCSVEntries(collectionID, csvData, accessToken);
       const updatedEntries = await fetchEntriesByCollectionID(
         collectionID,
-        accessToken
+        accessToken,
+        page,
+        limit
       );
-      setEntries(updatedEntries);
+      setEntries(updatedEntries.entries);
+      setTotalEntries(updatedEntries.totalEntries);
+      setTotalPages(updatedEntries.totalPages);
     } catch (error) {
       console.error("Error uploading CSV:", error);
     } finally {
@@ -91,15 +106,23 @@ const CollectionEntriesPage = () => {
       await deleteEntriesAPI(collectionID, selectedEntries, accessToken);
       const updatedEntries = await fetchEntriesByCollectionID(
         collectionID,
-        accessToken
+        accessToken,
+        page,
+        limit
       );
-      setEntries(updatedEntries);
+      setEntries(updatedEntries.entries);
+      setTotalEntries(updatedEntries.totalEntries);
+      setTotalPages(updatedEntries.totalPages);
       setSelectedEntries([]);
     } catch (error) {
       console.error("Error deleting entries:", error);
     } finally {
       setOpenDeleteDialog(false);
     }
+  };
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
   };
 
   if (loading) {
@@ -152,6 +175,15 @@ const CollectionEntriesPage = () => {
         onSelectAll={handleSelectAll}
       />
 
+      <Box mt={2} display="flex" justifyContent="center">
+        <Pagination
+          count={totalPages}
+          page={page}
+          onChange={handlePageChange}
+          color="primary"
+        />
+      </Box>
+
       {/* Upload CSV Dialog */}
       <Dialog
         open={openUploadDialog}
@@ -193,4 +225,3 @@ const CollectionEntriesPage = () => {
 };
 
 export default CollectionEntriesPage;
-    

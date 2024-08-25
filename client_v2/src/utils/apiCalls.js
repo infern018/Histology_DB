@@ -151,9 +151,9 @@ export const deleteCollaboratorAPI = async (collectionID, collaboratorID, access
     }
 }
 
-export const fetchEntriesByCollectionID = async (collectionID, accessToken) => {
+export const fetchEntriesByCollectionID = async (collectionID, accessToken, page = 1, limit = 8) => {
     try {
-        const response = await axiosReq.get(`/collections/${collectionID}/entries`,
+        const response = await axiosReq.get(`/collections/${collectionID}/entries?page=${page}&limit=${limit}`,
             { headers: { 'token': `${accessToken}` } }
         );
         return response.data;
