@@ -2,6 +2,9 @@ const router = require("express").Router()
 const { verifyToken, verifyTokenAndAuthCollection } = require('./verifyToken');
 const collectionController = require("../controllers/collectionController");
 const collaboratorController = require("../controllers/collaboratorController");
+const entryController = require("../controllers/entryController");
+const { verifyCollectionReadAccess } = require('./verifyToken');
+
 
 router.post("/", verifyToken, collectionController.createCollection)
 router.put("/:id", verifyTokenAndAuthCollection, collectionController.updateCollection)
@@ -13,5 +16,8 @@ router.post("/:id/collaborators", verifyTokenAndAuthCollection, collaboratorCont
 router.put("/:id/collaborators", verifyTokenAndAuthCollection, collaboratorController.updateCollaborator)
 router.delete("/:id/collaborators", verifyTokenAndAuthCollection, collaboratorController.deleteCollaborator)
 router.delete("/:id/collaborators/flush", verifyTokenAndAuthCollection, collaboratorController.flushCollaborators)
+
+// get entries of a collection
+router.get("/:id/entries", verifyCollectionReadAccess, entryController.getEntriesByCollectionId);
 
 module.exports = router;

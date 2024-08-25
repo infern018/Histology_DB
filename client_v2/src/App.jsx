@@ -8,6 +8,8 @@ import CollectionCreate from "./pages/collection/CollectionCreate";
 import CollectionSettings from "./pages/collection/CollectionSettings";
 import GithubLogin from "./pages/auth/Github";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import CollectionEntriesPage from "./pages/collection/CollectionEntries";
+import CreateEntryStepper from "./pages/entries/CreateEntryStepper";
 
 function App() {
   const theme = createTheme({
@@ -29,8 +31,16 @@ function App() {
           <Route path="/user/:username" element={<Profile />} />
           <Route path="/collection/create" element={<CollectionCreate />} />
           <Route
+            path="/collection/:collectionID/entries"
+            element={<CollectionEntriesPage />}
+          />
+          <Route
             path="/collection/:collectionID/settings"
             element={<CollectionSettings />}
+          />
+          <Route
+            path="/collection/:collectionID/entry/create"
+            element={<CreateEntryStepper />}
           />
         </Routes>
       </Router>

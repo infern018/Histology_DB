@@ -122,6 +122,7 @@ export const addCollaboratorAPI = async (collectionID, newCollaborator, accessTo
     }
 }
 
+
 export const updateCollaboratorAPI = async (collectionID, updateCollaborator, accessToken) => {
     try {
         const response = await axiosReq.put(`/collections/${collectionID}/collaborators`, { updateCollaborator },
@@ -144,6 +145,31 @@ export const deleteCollaboratorAPI = async (collectionID, collaboratorID, access
             }
         );
         return response.data;
+    }
+    catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export const fetchEntriesByCollectionID = async (collectionID, accessToken) => {
+    try {
+        const response = await axiosReq.get(`/collections/${collectionID}/entries`,
+            { headers: { 'token': `${accessToken}` } }
+        );
+        return response.data;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
+
+export const createEntryAPI = async (newEntry, accessToken) => {
+    try {
+        const response = await axiosReq.post(`/entries/`, newEntry,
+            { headers: { 'token': `${accessToken}` } }
+        );
+        console.log("response", response);
+        return response;
     }
     catch (error) {
         throw new Error(error.message);

@@ -126,11 +126,43 @@ const verifyEntryReadAccess = async (req, res, next) => {
     })
 }
 
+// make a function where a user requesting to view the entries of a collection has to be either the owner or a collaborator with view access
+
+const verifyCollectionReadAccess = async (req, res, next) => {
+    verifyToken(req, res, async () => {
+        const collection = await Collection.findById(req.params.id);
+
+        if (!collection) {
+            return res.status(404).json({ error: "Collection not found" });
+        }
+
+        var hasViewAccess = false;
+
+        if (req.user.id === collection.ownerID.toString()) {
+            hasViewAccess = true;
+        } else {
+            collection.collaborators.forEach(collaborator => {
+                if (collaborator.user_id.toString() === req.user.id) {
+                    hasViewAccess = true;
+                }
+            });
+        }
+
+        if (hasViewAccess) {
+            next();
+        } else {
+            res.status(403).json("You are not allowed to do that");
+        }
+
+    })
+}
+
 module.exports = {
     verifyToken,
     verifyTokenAndAuth,
     verifyTokenAndAdmin,
     verifyTokenAndAuthCollection,
     verifyEntryEditAccess,
-    verifyEntryReadAccess
+    verifyEntryReadAccess,
+    verifyCollectionReadAccess
 };
