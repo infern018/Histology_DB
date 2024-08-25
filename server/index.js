@@ -62,7 +62,7 @@ app.use("/api/collections", collectionRoute)
 app.use("/api/roles", roleRoute)
 
 // send sample response in the root URL
-app.get('/', (req, res) => {
+app.get('api/', (req, res) => {
     res.send("Hello MiMe World")
 })
 
