@@ -29,12 +29,12 @@ const EntriesTable = ({
 
   return (
     <TableContainer>
-      <Table>
+      <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell>
               <Checkbox
-                checked={selectedEntries.length === entries.length}
+                checked={selectedEntries.length === entries.length && entries.length !== 0}
                 onChange={handleSelectAll}
               />
             </TableCell>

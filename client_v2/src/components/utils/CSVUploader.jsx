@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Input, Typography } from "@mui/material";
+import { Button, Input, Typography, Box } from "@mui/material";
 import Papa from "papaparse";
 
 function CSVUploader({ onUpload }) {
@@ -57,13 +57,35 @@ function CSVUploader({ onUpload }) {
   };
 
   return (
-    <div>
-      <Input type="file" accept=".csv" onChange={handleFileChange} />
-      <Button onClick={handleUpload} variant="contained" color="primary">
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 2,
+        mt: 3, // margin top
+      }}
+    >
+      <Input
+        type="file"
+        accept=".csv"
+        onChange={handleFileChange}
+        sx={{ mb: 2 }} // margin bottom for spacing
+      />
+      <Button
+        onClick={handleUpload}
+        variant="contained"
+        color="primary"
+        disabled={!file} // Disable if no file is selected
+      >
         Upload CSV
       </Button>
-      {error && <Typography color="error">{error}</Typography>}
-    </div>
+      {error && (
+        <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+          {error}
+        </Typography>
+      )}
+    </Box>
   );
 }
 

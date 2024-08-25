@@ -149,7 +149,7 @@ const getEntry = async (req, res) => {
 // get entry by collection id
 const getEntriesByCollectionId = async (req, res) => {
     try {
-        const { page = 1, limit = 8 } = req.query; // Default to page 1 and limit 10
+        const { page = 1, limit = 10 } = req.query; // Default to page 1 and limit 10
         const skip = (page - 1) * limit;
         const entries = await Entry.find({ collectionID: req.params.id, backupEntry: { $ne: true } })
             .skip(skip)
@@ -172,8 +172,6 @@ const getEntriesByCollectionId = async (req, res) => {
 
 const processCSVEntries = async (req, res) => {
     const { id: collectionID } = req.params;
-
-    console.log("Route hit", req.file);
 
     if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
