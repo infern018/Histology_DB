@@ -1,6 +1,6 @@
 const Entry = require('../models/Entry');
-const Collection = require('../models/Collection');
-const HttpProxyAgent = require("http-proxy-agent");
+const fs = require('fs');
+const csvParser = require('csv-parser');
 
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
@@ -139,10 +139,86 @@ const getEntriesByCollectionId = async (req, res) => {
     }
 }
 
+const processCSVEntries = async (req, res) => {
+    const { id: collectionID } = req.params;
+
+    console.log("Route hit", req.file);
+
+    if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const results = [];
+    fs.createReadStream(req.file.path)
+        .pipe(csvParser())
+        .on('data', (data) => {
+            console.log("Got data:", data); // Log the data received from each row
+
+            // Validate each row and prepare it for database insertion
+            const {
+                binomialSpeciesName,
+                stainingMethod,
+                bodyWeight,
+                brainWeight,
+                developmentalStage,
+                sex,
+            } = data;
+
+            if (binomialSpeciesName && stainingMethod && bodyWeight && brainWeight && developmentalStage && sex) {
+                const itemCode = `${binomialSpeciesName}_${stainingMethod}_${generateRandomAlphaNumeric(binomialSpeciesName)}`;
+                const individualCode = `${binomialSpeciesName}_${generateRandomAlphaNumeric(binomialSpeciesName)}`;
+
+                results.push({
+                    collectionID,
+                    identification: {
+                        binomialSpeciesName,
+                        itemCode,
+                        individualCode,
+                    },
+                    physiologicalInformation: {
+                        age: {
+                            developmentalStage,
+                        },
+                        bodyWeight,
+                        brainWeight,
+                        sex,
+                    },
+                });
+            } else {
+                console.log("Skipping invalid row:", data); // Log any invalid rows
+            }
+        })
+        .on('end', async () => {
+            console.log("Parsing complete. Results:", results); // Log the final results array
+
+            try {
+                if (results.length > 0) {
+                    await Entry.insertMany(results);
+                    res.status(200).json({ message: 'CSV entries processed successfully' });
+                } else {
+                    res.status(400).json({ error: 'No valid entries found in CSV' });
+                }
+            } catch (error) {
+                console.error('Error inserting CSV data:', error);
+                res.status(500).json({ error: 'Error processing CSV data' });
+            } finally {
+                // Clean up the uploaded file
+                fs.unlinkSync(req.file.path);
+            }
+        })
+        .on('error', (error) => {
+            console.error('Error reading CSV file:', error);
+            res.status(500).json({ error: 'Error reading CSV file' });
+        });
+};
+
+
+
 module.exports = {
     createEntry,
     updateEntry,
     deleteEntry,
     getEntry,
-    getEntriesByCollectionId
+    getEntriesByCollectionId,
+    processCSVEntries,
 }

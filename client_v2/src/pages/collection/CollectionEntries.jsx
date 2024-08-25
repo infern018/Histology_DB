@@ -11,11 +11,14 @@ import {
   CircularProgress,
   Button,
 } from "@mui/material";
-import { fetchEntriesByCollectionID } from "../../utils/apiCalls";
-
+import {
+  fetchEntriesByCollectionID,
+  uploadCSVEntries,
+} from "../../utils/apiCalls";
 import { useSelector } from "react-redux";
 import Layout from "../../components/utils/Layout";
 import { Link } from "react-router-dom";
+import CSVUploader from "../../components/utils/CSVUploader";
 
 const CollectionEntriesPage = () => {
   const { collectionID } = useParams();
@@ -45,6 +48,19 @@ const CollectionEntriesPage = () => {
     fetchEntries();
   }, [collectionID, accessToken]);
 
+  const handleCSVUpload = async (csvData) => {
+    try {
+      await uploadCSVEntries(collectionID, csvData, accessToken);
+      const updatedEntries = await fetchEntriesByCollectionID(
+        collectionID,
+        accessToken
+      );
+      setEntries(updatedEntries);
+    } catch (error) {
+      console.error("Error uploading CSV:", error);
+    }
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -60,6 +76,9 @@ const CollectionEntriesPage = () => {
         >
           + Add Entry
         </Button>
+
+        <CSVUploader onUpload={handleCSVUpload} />
+
         <Table>
           <TableHead>
             <TableRow>

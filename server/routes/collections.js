@@ -5,6 +5,8 @@ const collaboratorController = require("../controllers/collaboratorController");
 const entryController = require("../controllers/entryController");
 const { verifyCollectionReadAccess } = require('./verifyToken');
 
+const multer = require('multer');
+
 
 router.post("/", verifyToken, collectionController.createCollection)
 router.put("/:id", verifyTokenAndAuthCollection, collectionController.updateCollection)
@@ -19,5 +21,12 @@ router.delete("/:id/collaborators/flush", verifyTokenAndAuthCollection, collabor
 
 // get entries of a collection
 router.get("/:id/entries", verifyCollectionReadAccess, entryController.getEntriesByCollectionId);
+
+// upload csv entries
+const upload = multer({ dest: 'uploads/' });
+
+router.post('/:id/entries/upload-csv', upload.single('file'), entryController.processCSVEntries);
+
+
 
 module.exports = router;

@@ -176,4 +176,59 @@ export const createEntryAPI = async (newEntry, accessToken) => {
     }
 }
 
+export const uploadCSVEntries = async (collectionID, csvData, accessToken) => {
+    const headers = [
+        "binomialSpeciesName",
+        "stainingMethod",
+        "bodyWeight",
+        "brainWeight",
+        "developmentalStage",
+        "sex",
+        "ageNumber",
+        "ageUnit",
+        "origin",
+        "sectionThickness",
+        "planeOfSectioning",
+        "interSectionDistance",
+        "brainPart",
+        "comments",
+        "NCBITaxnomoyCode"
+    ];
+
+    const csvContent = [
+        headers.join(","), // Add headers
+        ...csvData.map(row => [
+            row.binomialSpeciesName,
+            row.stainingMethod,
+            row.bodyWeight,
+            row.brainWeight,
+            row.developmentalStage,
+            row.sex,
+            row.ageNumber,
+            row.ageUnit,
+            row.origin,
+            row.sectionThickness,
+            row.planeOfSectioning,
+            row.interSectionDistance,
+            row.brainPart,
+            row.comments,
+            row.NCBITaxnomoyCode
+        ].join(","))
+    ].join("\n");
+
+    const formData = new FormData();
+    const blob = new Blob([csvContent], { type: "text/csv" });
+
+    formData.append('file', blob, 'entries.csv');
+
+    await axiosReq.post(`/collections/${collectionID}/entries/upload-csv`, formData, {
+        headers: {
+            'token': `${accessToken}`,
+            "Content-Type": "multipart/form-data",
+        },
+    });
+};
+
+
+
 

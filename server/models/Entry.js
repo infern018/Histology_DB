@@ -68,9 +68,6 @@ const EntrySchema = mongoose.Schema({
         age: {
             developmentalStage: {
                 type: String,
-                // enum :  ['embryo', 'fetus', 'neonat', 'infant', 'juvenile', 'adult',`---`],
-                // enum : Object.values( ['embryo', 'fetus', 'neonat', 'infant', 'juvenile', 'adult',`---`]).concat([null]),
-                // default:null
                 enum: Object.values(developmentalStages).concat([null]),
             },
             number: {
