@@ -27,7 +27,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/logout" element={<Logout />} />
-          <Route path="/login/github" element={<GithubLogin />} />
+          <Route path="/github_login" element={<GithubLogin />} />
 
           <Route path="/user/:username" element={<Profile />} />
           <Route path="/collection/create" element={<CollectionCreate />} />

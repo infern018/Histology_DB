@@ -21,7 +21,7 @@ router.get("/github/callback",
         }
 
         // Redirect to your frontend application with user data in session or through a URL parameter
-        res.redirect(`${config.react_url}/login/github?user=${encodeURIComponent(JSON.stringify(userData))}`); // Use encodeURIComponent to safely encode the user data
+        res.redirect(`${config.react_url}/github_login?user=${encodeURIComponent(JSON.stringify(userData))}`); // Use encodeURIComponent to safely encode the user data
     }
 );
 
