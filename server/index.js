@@ -2,8 +2,13 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const session = require('express-session');
-const config = require('./config')
 const passport = require('./utils/passport');
+
+// enable to read env variables
+require('dotenv').config();
+
+
+
 
 //ROUTER
 const authRoute = require('./routes/auth');
@@ -14,7 +19,7 @@ const roleRoute = require('./routes/roles');
 
 
 const app = express();
-const PORT = config.port;
+const PORT = process.env.PORT;
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.set('view engine', 'ejs');
@@ -48,7 +53,7 @@ app.use(passport.session());
 
 // database connection
 mongoose
-    .connect(config.dbURL, {
+    .connect(process.env.MONGO_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })

@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const authController = require("../controllers/authController");
 const passport = require("passport");
-const config = require("../config");
 
 router.post("/register", authController.register);
 
@@ -21,7 +20,7 @@ router.get("/github/callback",
         }
 
         // Redirect to your frontend application with user data in session or through a URL parameter
-        res.redirect(`${config.react_url}/github_login?user=${encodeURIComponent(JSON.stringify(userData))}`); // Use encodeURIComponent to safely encode the user data
+        res.redirect(`${process.env.REACT_URL}/github_login?user=${encodeURIComponent(JSON.stringify(userData))}`); // Use encodeURIComponent to safely encode the user data
     }
 );
 
