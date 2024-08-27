@@ -8,7 +8,7 @@ const config = require('../config');
 passport.use(new GitHubStrategy({
     clientID: config.github_client_id,
     clientSecret: config.github_client_secret,
-    callbackURL: 'http://localhost:5000/api/auth/github/callback',
+    callbackURL: `${process.env.API_URL}/auth/github/callback`,
 }, async (accessToken, refreshToken, profile, done) => {
 
     try {
