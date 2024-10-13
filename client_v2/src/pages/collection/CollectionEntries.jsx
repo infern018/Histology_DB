@@ -278,13 +278,19 @@ const CollectionEntriesPage = () => {
               variant="contained"
               color="primary"
               startIcon={<CloudDownload />} // Add the download icon at the start
-              onClick={() =>
-                (window.location.href = `${process.env.PUBLIC_URL}/entries_upload_sample.csv`)
-              } // Redirect on click
+              onClick={() => {
+                const link = document.createElement("a");
+                link.href = `${process.env.PUBLIC_URL}/entries_upload_sample.csv`;
+                link.download = "entries_upload_sample.csv"; // Specify the download attribute
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }} // Trigger download on click
             >
               Sample CSV
             </Button>
           </div>
+
           <CSVUploader onUpload={handleCSVUpload} />
         </DialogContent>
         <DialogActions>
