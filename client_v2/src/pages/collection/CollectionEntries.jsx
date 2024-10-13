@@ -16,6 +16,7 @@ import {
 import {
   Delete as DeleteIcon,
   Upload as UploadIcon,
+  CloudDownload,
 } from "@mui/icons-material";
 
 import VerticalAlignBottomIcon from "@mui/icons-material/VerticalAlignBottom";
@@ -253,9 +254,37 @@ const CollectionEntriesPage = () => {
       <Dialog
         open={openUploadDialog}
         onClose={() => setOpenUploadDialog(false)}
+        // make the dialog bigger
+        maxWidth="xl"
       >
-        <DialogTitle>Upload CSV File</DialogTitle>
+        <DialogTitle>Bulk Upload Your Data 🚀</DialogTitle>
         <DialogContent>
+          <Typography variant="body1" gutterBottom>
+            Easily import your data by uploading a CSV file. Follow the sample
+            format shown below to ensure a smooth upload experience :
+          </Typography>
+          <br />
+
+          {/* Reference Image */}
+          <Box display="flex" justifyContent="center" mb={2}>
+            <img
+              src={`${process.env.PUBLIC_URL}/entries_upload.png`} // Update with your image path
+              alt="Reference for CSV Upload"
+              style={{ maxWidth: "100%", height: "auto" }} // Responsive styling
+            />
+          </Box>
+          <div style={{ marginBottom: 16, marginTop: 10 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<CloudDownload />} // Add the download icon at the start
+              onClick={() =>
+                (window.location.href = `${process.env.PUBLIC_URL}/entries_upload_sample.csv`)
+              } // Redirect on click
+            >
+              Sample CSV
+            </Button>
+          </div>
           <CSVUploader onUpload={handleCSVUpload} />
         </DialogContent>
         <DialogActions>

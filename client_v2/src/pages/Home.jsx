@@ -8,7 +8,12 @@ const Home = () => {
 
   return (
     <Layout>
-      <Typography variant="h1" sx={{ fontWeight: 500, color: "#0c2f57" }}>
+      {user && (
+        <Typography variant="h3" color="primary" sx={{ mt: 3, mb:4 }}>
+          Hey, {user.username}!
+        </Typography>
+      )}
+      <Typography variant="h4" sx={{ fontWeight: 500, color: "#0c2f57" }}>
         Welcome to MiMe,
       </Typography>
       <Typography paragraph sx={{ fontSize: 20, mt: 2 }}>
@@ -16,11 +21,6 @@ const Home = () => {
         the sharing and collaboration of histology data. Discover, contribute,
         and manage your data seamlessly.
       </Typography>
-      {user && (
-        <Typography variant="h5" color="primary" sx={{ mt: 3 }}>
-          Hey, {user.username}!
-        </Typography>
-      )}
     </Layout>
   );
 };
