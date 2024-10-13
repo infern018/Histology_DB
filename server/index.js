@@ -1,14 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const session = require('express-session');
 const passport = require('./utils/passport');
-
-// enable to read env variables
-require('dotenv').config();
-
-
-
 
 //ROUTER
 const authRoute = require('./routes/auth');
@@ -16,7 +11,6 @@ const userRoute = require('./routes/users');
 const entryRoute = require('./routes/entries');
 const collectionRoute = require('./routes/collections');
 const roleRoute = require('./routes/roles');
-
 
 const app = express();
 const PORT = process.env.PORT;

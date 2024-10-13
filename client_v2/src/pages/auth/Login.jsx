@@ -129,14 +129,14 @@ const Login = () => {
         <Root sx={{ mb: 2 }}>
           <Divider>or sign in with</Divider>
         </Root>
-        <Button
+        {/* <Button
           variant="outlined"
           onClick={handleGitHubLogin}
           sx={{ width: "100%", borderColor: "#000000", color: "#000000" }}
         >
           <GitHubIcon sx={{ mr: 1, color: "#000000" }} />
           GitHub
-        </Button>
+        </Button> */}
       </Box>
     </Layout>
   );
