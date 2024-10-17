@@ -10,7 +10,7 @@ const Home = () => {
 
 	return (
 		<Layout>
-			{(user && user.username !== "anyone")(
+			{user && user.username !== "anyone" && (
 				<Typography variant="h3" color="primary" sx={{ mt: 3, mb: 4 }}>
 					Hey, {user.username}!
 				</Typography>
@@ -24,13 +24,11 @@ const Home = () => {
 			</Typography>
 
 			{/* show the option to explore public collections if the user is not logged in */}
-			{
-				!(user && user.username !== "anyone")(
-					<Button component={Link} to={`/collection/public`} variant="contained">
-						Explore Public Collections
-					</Button>
-				)
-			}
+			{(!user || user.username === "anyone") && (
+				<Button component={Link} to={`/collection/public`} variant="contained">
+					Explore Public Collections
+				</Button>
+			)}
 		</Layout>
 	);
 };
