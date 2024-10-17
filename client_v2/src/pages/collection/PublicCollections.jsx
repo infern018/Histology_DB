@@ -27,8 +27,6 @@ const PublicCollections = () => {
 					};
 				});
 
-				console.log(collectionsWithStats);
-
 				setCollections(collectionsWithStats);
 				setLoading(false);
 			} catch (error) {

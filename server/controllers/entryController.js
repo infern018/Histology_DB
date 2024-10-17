@@ -29,7 +29,6 @@ const createEntry = async (req, res) => {
 
 			const data = await resp.json();
 			const nameTmp = data[0].children[0].scientific_name;
-			console.log("DATA", data[0].children[0].scientific_name);
 			binomialName = nameTmp;
 		}
 
@@ -60,7 +59,6 @@ const createEntry = async (req, res) => {
 
 const updateEntry = async (req, res) => {
 	const newEntry = req.body;
-	console.log("NEW ENTRY", newEntry.identification.NCBITaxonomyCode);
 
 	try {
 		let binomialName = "";
@@ -89,7 +87,6 @@ const updateEntry = async (req, res) => {
 			newEntry.identification.wikipediaSpeciesName = `https://en.wikipedia.org/wiki/${binomialName}`;
 		}
 
-		console.log("UDPATED NEW ENTRY", newEntry);
 
 		const updatedEntry = await Entry.findByIdAndUpdate(
 			req.params.id,
@@ -150,14 +147,26 @@ const getEntry = async (req, res) => {
 // get entry by collection id
 const getEntriesByCollectionId = async (req, res) => {
 	try {
-		const { page = 1, limit = 10 } = req.query; // Default to page 1 and limit 10
-		const skip = (page - 1) * limit;
-		const entries = await Entry.find({ collectionID: req.params.id, backupEntry: { $ne: true } })
-			.skip(skip)
-			.limit(parseInt(limit))
-			.exec();
+		const { page = 1, limit = 10, searchQuery = "" } = req.query; // Default to page 1 and limit 10
 
-		// Count total entries for pagination purposes
+		const skip = (page - 1) * limit;
+
+		// Build the search filter
+		const searchFilter = searchQuery
+			? {
+					"identification.bionomialSpeciesName": { $regex: searchQuery, $options: "i" }, // Case-insensitive search
+			  }
+			: {};
+
+		const filter = {
+			collectionID: req.params.id,
+			backupEntry: { $ne: true },
+			...searchFilter,
+		};
+
+		const entries = await Entry.find(filter).skip(skip).limit(parseInt(limit)).exec();
+
+		// total entries = total entries with that collectionID
 		const totalEntries = await Entry.countDocuments({ collectionID: req.params.id, backupEntry: { $ne: true } });
 
 		res.status(200).json({

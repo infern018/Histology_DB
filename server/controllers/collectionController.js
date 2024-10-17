@@ -83,7 +83,6 @@ const getCollectionNameAndNumCollaborators = async (req, res) => {
 const getPublicCollections = async (req, res) => {
 	try {
 		const collections = await Collection.find({ publicStatus: "approved" });
-		console.log(collections);
 
 		const collections_data = collections.map((collection) => ({
 			collection_id: collection._id,

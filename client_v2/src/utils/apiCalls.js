@@ -61,7 +61,6 @@ export const fetchUserCollections = async (userID) => {
 };
 
 export const fetchPublicCollections = async () => {
-	console.log("fetchPublicCollections react api call");
 	try {
 		const response = await axiosReq.get("/collections/public");
 		return response.data;
@@ -115,9 +114,6 @@ export const fetchCollaboratorsAPI = async (collectionID, accessToken) => {
 
 // the collaborators API endpoint expect {user_id, mode} in the request body
 export const addCollaboratorAPI = async (collectionID, newCollaborator, accessToken) => {
-	console.log("newCollaborator", newCollaborator);
-	console.log("accessToken", accessToken);
-	console.log("collectionID", collectionID);
 	try {
 		const response = await axiosReq.post(
 			`/collections/${collectionID}/collaborators`,
@@ -155,11 +151,15 @@ export const deleteCollaboratorAPI = async (collectionID, collaboratorID, access
 	}
 };
 
-export const fetchEntriesByCollectionID = async (collectionID, accessToken, page = 1, limit = 10) => {
+export const fetchEntriesByCollectionID = async (collectionID, accessToken, page = 1, limit = 10, searchQuery = "") => {
 	try {
-		const response = await axiosReq.get(`/collections/${collectionID}/entries?page=${page}&limit=${limit}`, {
-			headers: { token: `${accessToken}` },
-		});
+		const response = await axiosReq.get(
+			`/collections/${collectionID}/entries?page=${page}&limit=${limit}&searchQuery=${searchQuery}`,
+			{
+				headers: { token: `${accessToken}` },
+			}
+		);
+
 		return response.data;
 	} catch (error) {
 		throw new Error(error.message);
@@ -171,7 +171,7 @@ export const createEntryAPI = async (newEntry, accessToken) => {
 		const response = await axiosReq.post(`/entries/`, newEntry, {
 			headers: { token: `${accessToken}` },
 		});
-		console.log("response", response);
+
 		return response;
 	} catch (error) {
 		throw new Error(error.message);
@@ -219,8 +219,6 @@ export const uploadCSVEntries = async (collectionID, csvData, accessToken) => {
 			].join(",")
 		),
 	].join("\n");
-
-	console.log("csvContent", csvContent);
 
 	const formData = new FormData();
 	const blob = new Blob([csvContent], { type: "text/csv" });

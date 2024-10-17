@@ -13,7 +13,7 @@ import {
 	Pagination,
 	TextField, // Import TextField for search bar
 } from "@mui/material";
-import { Delete as DeleteIcon, Upload as UploadIcon, CloudDownload } from "@mui/icons-material";
+import { Delete as DeleteIcon, CloudDownload } from "@mui/icons-material";
 
 import VerticalAlignBottomIcon from "@mui/icons-material/VerticalAlignBottom";
 import { fetchEntriesByCollectionID, uploadCSVEntries, deleteEntriesAPI } from "../../utils/apiCalls";
@@ -48,7 +48,7 @@ const CollectionEntriesPage = () => {
 	useEffect(() => {
 		const fetchEntries = async () => {
 			try {
-				const data = await fetchEntriesByCollectionID(collectionID, accessToken, page, limit);
+				const data = await fetchEntriesByCollectionID(collectionID, accessToken, page, limit, searchQuery);
 				setEntries(data.entries);
 				setTotalEntries(data.totalEntries);
 				setTotalPages(data.totalPages);
@@ -60,23 +60,23 @@ const CollectionEntriesPage = () => {
 		};
 
 		fetchEntries();
-	}, [collectionID, accessToken, page, limit]);
+	}, [collectionID, accessToken, page, limit, searchQuery]);
 
-	useEffect(() => {
-		filterEntries(searchQuery);
-	}, [entries, searchQuery]);
+	// useEffect(() => {
+	// 	filterEntries(searchQuery);
+	// }, [entries, searchQuery]);
 
-	const filterEntries = (query) => {
-		if (!query) {
-			setFilteredEntries(entries);
-		} else {
-			const lowercasedQuery = query.toLowerCase();
-			const filtered = entries.filter((entry) =>
-				entry.identification.bionomialSpeciesName.toLowerCase().includes(lowercasedQuery)
-			);
-			setFilteredEntries(filtered);
-		}
-	};
+	// const filterEntries = (query) => {
+	// 	if (!query) {
+	// 		setFilteredEntries(entries);
+	// 	} else {
+	// 		const lowercasedQuery = query.toLowerCase();
+	// 		const filtered = entries.filter((entry) =>
+	// 			entry.identification.bionomialSpeciesName.toLowerCase().includes(lowercasedQuery)
+	// 		);
+	// 		setFilteredEntries(filtered);
+	// 	}
+	// };
 
 	const handleCSVUpload = async (csvData) => {
 		try {
@@ -93,7 +93,7 @@ const CollectionEntriesPage = () => {
 	};
 
 	const handleSelectAll = (event) => {
-		setSelectedEntries(event.target.checked ? filteredEntries.map((entry) => entry._id) : []);
+		setSelectedEntries(event.target.checked ? entries.map((entry) => entry._id) : []);
 	};
 
 	const handleSelectEntry = (entryId) => {
@@ -132,7 +132,7 @@ const CollectionEntriesPage = () => {
 	const handleSearchChange = (event) => {
 		const query = event.target.value;
 		setSearchQuery(query);
-		filterEntries(query);
+		setPage(1);
 	};
 
 	if (loading) {
@@ -175,7 +175,7 @@ const CollectionEntriesPage = () => {
 					)}
 					<Grid item xs={12} md={3}>
 						<TextField
-							label={`Search in ${entries.length} entries`}
+							label={`Search in ${totalEntries} entries`}
 							variant="outlined"
 							fullWidth
 							size="small"
@@ -187,7 +187,7 @@ const CollectionEntriesPage = () => {
 			</Box>
 
 			<EntriesTable
-				entries={filteredEntries}
+				entries={entries}
 				selectedEntries={selectedEntries}
 				onSelectEntry={handleSelectEntry}
 				onSelectAll={handleSelectAll}
