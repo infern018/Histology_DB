@@ -2,6 +2,9 @@ const router = require("express").Router();
 const authController = require("../controllers/authController");
 const passport = require("passport");
 
+console.log("ENVIROMENT VARIABLES AUTH ROUTE PAGE");
+console.log(process.env.API_URL);
+
 router.post("/register", authController.register);
 
 router.post("/login", authController.login);

@@ -28,16 +28,16 @@ app.use(bodyParser.json());
 
 // Configure session middleware
 app.use(
-  session({
-    secret: "your-secret-key",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: false,
-      maxAge: 24 * 560 * 60 * 1000,
-    },
-  })
+	session({
+		secret: "your-secret-key",
+		resave: false,
+		saveUninitialized: false,
+		cookie: {
+			httpOnly: true,
+			secure: false,
+			maxAge: 24 * 560 * 60 * 1000,
+		},
+	})
 );
 
 // Passport config
@@ -46,12 +46,12 @@ app.use(passport.session());
 
 // database connection
 mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(console.log("Connected to MongoDB"))
-  .catch((err) => console.log(err));
+	.connect(process.env.MONGO_URL, {
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+	})
+	.then(console.log("Connected to MongoDB"))
+	.catch((err) => console.log(err));
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
@@ -61,9 +61,9 @@ app.use("/api/roles", roleRoute);
 
 // send sample response in the root URL
 app.get("/api", (req, res) => {
-  res.send("Hello MiMe World");
+	res.send("Hello MiMe World");
 });
 
 app.listen(process.env.PORT, () => {
-  console.log("Server running on PORT ", PORT);
+	console.log("Server running on PORT ", PORT);
 });
