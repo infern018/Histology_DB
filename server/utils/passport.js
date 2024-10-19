@@ -2,8 +2,8 @@ const GitHubStrategy = require("passport-github2").Strategy;
 const User = require("../models/User");
 const passport = require("passport");
 
-console.log("ENVIROMENT VARIABLES");
-console.log(process.env.API_URL);
+console.log("CALLBACK URL")
+console.log(`${process.env.API_URL}/auth/github/callback`)
 
 passport.use(
 	new GitHubStrategy(
