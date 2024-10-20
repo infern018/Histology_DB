@@ -49,6 +49,7 @@ const EntrySchema = mongoose.Schema(
 			},
 			bionomialSpeciesName: {
 				type: String,
+				required: true,
 			},
 		},
 		archivalIdentification: {
@@ -69,24 +70,24 @@ const EntrySchema = mongoose.Schema(
 			age: {
 				developmentalStage: {
 					type: String,
-					enum: Object.values(developmentalStages),
+					enum: Object.values(developmentalStages).concat([null]),
 				},
 				number: {
 					type: Number,
 				},
 				unitOfNumber: {
 					type: String,
-					enum: Object.values(unitsOfNumber),
+					enum: Object.values(unitsOfNumber).concat([null]),
 				},
 				origin: {
 					type: String,
-					enum: Object.values(origins),
+					enum: Object.values(origins).concat([null]),
 					default: "postNatal",
 				},
 			},
 			sex: {
 				type: String,
-				enum: Object.values(genders),
+				enum: Object.values(genders).concat([null]),
 				default: "u",
 			},
 			bodyWeight: {

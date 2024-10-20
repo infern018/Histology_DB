@@ -22,18 +22,28 @@ import Layout from "../../components/utils/Layout";
 import { Link } from "react-router-dom";
 import EntriesTable from "../../components/entries/EntriesTable";
 import CSVUploader from "../../components/utils/CSVUploader";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import { ErrorOutline } from "@mui/icons-material"; // Error icon
+
+import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 
 const CollectionEntriesPage = () => {
 	const { collectionID } = useParams();
 	const accessToken = useSelector((state) => state.auth.currentUser.accessToken);
 
 	const currUser = useSelector((state) => state.auth.currentUser);
+	const [openSnackbar, setOpenSnackbar] = useState(false);
+	const [snackbarMessage, setSnackbarMessage] = useState("");
+	const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
 	const [entries, setEntries] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [selectedEntries, setSelectedEntries] = useState([]);
 	const [openUploadDialog, setOpenUploadDialog] = useState(false);
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+	const [failedRows, setFailedRows] = useState([]);
+	const [openFailedDialog, setOpenFailedDialog] = useState(false);
 
 	// Pagination state
 	const [page, setPage] = useState(1);
@@ -43,7 +53,6 @@ const CollectionEntriesPage = () => {
 
 	// Search state
 	const [searchQuery, setSearchQuery] = useState("");
-	const [filteredEntries, setFilteredEntries] = useState([]);
 
 	useEffect(() => {
 		const fetchEntries = async () => {
@@ -62,34 +71,39 @@ const CollectionEntriesPage = () => {
 		fetchEntries();
 	}, [collectionID, accessToken, page, limit, searchQuery]);
 
-	// useEffect(() => {
-	// 	filterEntries(searchQuery);
-	// }, [entries, searchQuery]);
-
-	// const filterEntries = (query) => {
-	// 	if (!query) {
-	// 		setFilteredEntries(entries);
-	// 	} else {
-	// 		const lowercasedQuery = query.toLowerCase();
-	// 		const filtered = entries.filter((entry) =>
-	// 			entry.identification.bionomialSpeciesName.toLowerCase().includes(lowercasedQuery)
-	// 		);
-	// 		setFilteredEntries(filtered);
-	// 	}
-	// };
-
 	const handleCSVUpload = async (csvData) => {
 		try {
-			await uploadCSVEntries(collectionID, csvData, accessToken);
+			const response = await uploadCSVEntries(collectionID, csvData, accessToken);
+
+			// Handle different response statuses
+			if (response.data.status === "success") {
+				setSnackbarMessage("CSV uploaded successfully!");
+				setSnackbarSeverity("success");
+				setOpenSnackbar(true); // Open Snackbar on success;
+			} else if (response.data.status === "partial_success") {
+				// Set failed rows and open the dialog
+				setFailedRows(response.data.failedRows.slice(0, 5)); // Limit to first 5 failed rows
+				setOpenFailedDialog(true);
+			}
+
 			const updatedEntries = await fetchEntriesByCollectionID(collectionID, accessToken, page, limit);
 			setEntries(updatedEntries.entries);
 			setTotalEntries(updatedEntries.totalEntries);
 			setTotalPages(updatedEntries.totalPages);
 		} catch (error) {
 			console.error("Error uploading CSV:", error);
+			alert("Error uploading CSV. Please try again.");
 		} finally {
 			setOpenUploadDialog(false);
 		}
+	};
+
+	// Function to close the snackbar
+	const handleCloseSnackbar = (event, reason) => {
+		if (reason === "clickaway") {
+			return;
+		}
+		setOpenSnackbar(false);
 	};
 
 	const handleSelectAll = (event) => {
@@ -275,6 +289,56 @@ const CollectionEntriesPage = () => {
 					</Button>
 				</DialogActions>
 			</Dialog>
+
+			{/* Failed Rows Dialog */}
+			<Dialog open={openFailedDialog} onClose={() => setOpenFailedDialog(false)} maxWidth="lg" fullWidth>
+				<DialogTitle sx={{ bgcolor: "#ffeef0", display: "flex", alignItems: "center" }}>
+					<ErrorOutline sx={{ marginRight: 1 }} />
+					Failed Rows Details
+				</DialogTitle>
+				<DialogContent sx={{ padding: 3, marginTop: 2 }}>
+					<Typography variant="body1" gutterBottom>
+						Partial Success: Some entries were processed with errors.
+					</Typography>
+					{/* Display the failed rows in a table or list */}
+					{failedRows.length > 0 ? (
+						<Table>
+							<TableHead>
+								<TableRow>
+									<TableCell>Error Details</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{failedRows.map((row, index) => (
+									<TableRow key={index}>
+										<TableCell>
+											<pre>{JSON.stringify(row, null, 2)}</pre>
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					) : (
+						<Typography>No failed rows to display.</Typography>
+					)}
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => setOpenFailedDialog(false)} color="primary">
+						Close
+					</Button>
+				</DialogActions>
+			</Dialog>
+
+			<Snackbar
+				open={openSnackbar}
+				autoHideDuration={3000}
+				onClose={handleCloseSnackbar}
+				anchorOrigin={{ vertical: "top", horizontal: "center" }} // Positioning at top center
+			>
+				<Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: "100%" }}>
+					{snackbarMessage}
+				</Alert>
+			</Snackbar>
 		</Layout>
 	);
 };

@@ -193,8 +193,7 @@ const processCSVEntries = async (req, res) => {
 	fs.createReadStream(req.file.path)
 		.pipe(csvParser()) // Ensure headers are read correctly
 		.on("data", async (data) => {
-			// Extract and validate each field
-			data.collectionID = collectionID;
+			let updatedCollection = {};
 
 			let scientificName = data.bionomialSpeciesName;
 
@@ -203,7 +202,8 @@ const processCSVEntries = async (req, res) => {
 			const wikipediaSpeciesName = `https://en.wikipedia.org/wiki/${scientificName}`;
 
 			// Add these modifications to the data object
-			data.identification = {
+			updatedCollection.collectionID = collectionID;
+			updatedCollection.identification = {
 				bionomialSpeciesName: scientificName,
 				itemCode,
 				individualCode,
@@ -211,21 +211,21 @@ const processCSVEntries = async (req, res) => {
 				wikipediaSpeciesName,
 			};
 
-			data.physiologicalInformation = {
+			updatedCollection.physiologicalInformation = {
 				age: {
 					developmentalStage: data.developmentalStage,
-					number: data.ageNumber ? parseFloat(data.ageNumber) : null,
+					number: data.ageNumber || null,
 					unitOfNumber: data.ageUnit || null,
 					origin: data.origin || "postNatal",
 				},
-				bodyWeight: data.bodyWeight ? parseFloat(data.bodyWeight) : null,
-				brainWeight: data.brainWeight ? parseFloat(data.brainWeight) : null,
+				bodyWeight: data.bodyWeight || null,
+				brainWeight: data.brainWeight || null,
 				sex: data.sex,
 			};
 
-			data.histologicalInformation = {
+			updatedCollection.histologicalInformation = {
 				stainingMethod: data.stainingMethod,
-				sectionThickness: data.sectionThickness || null,
+				sectionThickness: data.sectionThickness,
 				planeOfSectioning: data.planeOfSectioning || null,
 				interSectionDistance: data.interSectionDistance || null,
 				brainPart: data.brainPart || null,
@@ -233,19 +233,16 @@ const processCSVEntries = async (req, res) => {
 			};
 
 			// Validate the modified data
-			const rowErrors = validateRowAgainstSchema(data, Entry.schema);
+			const rowErrors = validateRowAgainstSchema(updatedCollection, Entry.schema);
 
 			if (rowErrors.length === 0) {
-				results.push(data); // Push the fully modified and validated data
+				results.push(updatedCollection); // Push the fully modified and validated data
 			} else {
-				failedRows.push({ rowNumber: failedRows.length + 1, data, errors: rowErrors });
+				failedRows.push({ rowNumber: failedRows.length + 1, updatedCollection, errors: rowErrors });
 			}
 		})
 		.on("end", async () => {
 			try {
-				// console log everything here
-				console.log("FAILED ROWS", failedRows);
-
 				if (results.length > 0) {
 					await Entry.insertMany(results);
 				}

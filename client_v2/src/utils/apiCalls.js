@@ -225,7 +225,7 @@ export const uploadCSVEntries = async (collectionID, csvData, accessToken) => {
 
 	formData.append("file", blob, "entries.csv");
 
-	await axiosReq.post(`/collections/${collectionID}/entries/upload-csv`, formData, {
+	return await axiosReq.post(`/collections/${collectionID}/entries/upload-csv`, formData, {
 		headers: {
 			token: `${accessToken}`,
 			"Content-Type": "multipart/form-data",

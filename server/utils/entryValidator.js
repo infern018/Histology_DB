@@ -1,5 +1,6 @@
 const validateRowAgainstSchema = (row, schema, parentKey = "") => {
 	const rowErrors = [];
+	const fieldsToIgnore = ["__v"];
 
 	const paths = schema.paths;
 
@@ -10,6 +11,11 @@ const validateRowAgainstSchema = (row, schema, parentKey = "") => {
 		// Check for required fields
 		if (options.required && (fieldValue === undefined || fieldValue === null || fieldValue === "")) {
 			rowErrors.push(`${key} is required.`);
+		}
+
+		// If the field is not required and is undefined/null, skip further checks
+		if (!options.required && (fieldValue === undefined || fieldValue === null)) {
+			return;
 		}
 
 		// Check for enum values
@@ -43,6 +49,11 @@ const validateRowAgainstSchema = (row, schema, parentKey = "") => {
 		// Build the full key for nested fields
 		const fullKey = parentKey ? `${parentKey}.${key}` : key;
 
+		// Skip fields that should not be validated
+		if (fieldsToIgnore.includes(fullKey)) {
+			continue;
+		}
+
 		// Get the field value from the row
 		let fieldValue = row;
 		const keyParts = fullKey.split(".");
@@ -59,12 +70,6 @@ const validateRowAgainstSchema = (row, schema, parentKey = "") => {
 			// Validate the current field
 			validateField(fieldValue, path, fullKey);
 		}
-	}
-
-	// If there are errors, log them out
-	if (rowErrors.length > 0) {
-		console.log("ROW ERRORS");
-		console.log(rowErrors);
 	}
 
 	return rowErrors;
