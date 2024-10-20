@@ -9,7 +9,7 @@ export const registerAPI = async (newUser) => {
 		const response = await axiosReq.post("/auth/register", newUser);
 		return response;
 	} catch (error) {
-		throw new Error(error.message);
+		throw error;
 	}
 };
 

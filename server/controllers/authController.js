@@ -5,6 +5,16 @@ const Collection = require("../models/Collection");
 
 const register = async (req, res) => {
 	try {
+		const existingUser = await User.findOne({
+			$or: [{ username: req.body.username }, { email: req.body.email }],
+		});
+
+		if (existingUser) {
+			return res.status(400).json({
+				message: "Username or email already exists.",
+			});
+		}
+
 		const salt = await bcrypt.genSalt(10);
 		const hashedPass = await bcrypt.hash(req.body.password, salt);
 
@@ -12,30 +22,6 @@ const register = async (req, res) => {
 		newUser.password = hashedPass;
 
 		const user = await newUser.save();
-
-		// TODO : FIX THIS
-		// A workaround for now : if a new user signs up, make them the collaborator for all public collections in view mode
-		// this is to show the user some collections when they login
-
-		// get all public collections where publicStatus == approved
-		const publicCollections = await Collection.find({ publicStatus: "approved" });
-
-		// for each collection in its collaborators array, add the new user as a collaborator in view mode if not already present
-		publicCollections.forEach(async (collection) => {
-			const existingCollaborator = collection.collaborators.find(
-				(collaborator) => collaborator.user_id.toString() === user._id.toString()
-			);
-
-			if (!existingCollaborator) {
-				collection.collaborators.push({ user_id: user._id, mode: "view" });
-				await collection.save();
-			}
-
-			user.collaboratingCollections.push({
-				collection_id: collection._id,
-				mode: "view",
-			});
-		});
 
 		res.status(200).json(user);
 	} catch (err) {
