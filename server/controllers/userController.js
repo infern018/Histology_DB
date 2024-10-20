@@ -24,6 +24,9 @@ const updateUser = async (req, res) => {
 const getUserCollections = async (req, res) => {
 	try {
 		const user = await User.findById(req.params.id);
+		if (!user) {
+			return res.status(404).json({ message: "User not found" });
+		}
 
 		const userOwnedCollections = await Collection.find({ ownerID: user._id });
 
@@ -49,11 +52,10 @@ const getUserCollections = async (req, res) => {
 
 		const userCollections = [...ownedCollections, ...collaboratedCollections];
 
-		// returns : collection_id, collection_name, mode
-
 		res.status(200).json(userCollections);
 	} catch (err) {
-		res.status(500).json(err);
+		console.error(err); // Log the error for server-side debugging
+		res.status(500).json({ message: "Internal Server Error", error: err.message });
 	}
 };
 
