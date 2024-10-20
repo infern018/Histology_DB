@@ -1,6 +1,7 @@
 const Entry = require("../models/Entry");
 const fs = require("fs");
 const csvParser = require("csv-parser");
+const validateRowAgainstSchema = require("../utils/entryValidator");
 
 const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
@@ -86,7 +87,6 @@ const updateEntry = async (req, res) => {
 			newEntry.identification.bionomialSpeciesName = binomialName;
 			newEntry.identification.wikipediaSpeciesName = `https://en.wikipedia.org/wiki/${binomialName}`;
 		}
-
 
 		const updatedEntry = await Entry.findByIdAndUpdate(
 			req.params.id,
@@ -188,88 +188,100 @@ const processCSVEntries = async (req, res) => {
 	}
 
 	const results = [];
+	const failedRows = [];
 
 	fs.createReadStream(req.file.path)
 		.pipe(csvParser()) // Ensure headers are read correctly
 		.on("data", async (data) => {
 			// Extract and validate each field
-			const {
-				bionomialSpeciesName,
-				stainingMethod,
-				bodyWeight,
-				brainWeight,
-				developmentalStage,
-				sex,
-				ageNumber,
-				ageUnit,
-				origin,
-				sectionThickness,
-				planeOfSectioning,
-				interSectionDistance,
-				brainPart,
-				comments,
-				NCBITaxonomyCode,
-			} = data;
+			data.collectionID = collectionID;
 
-			if (bionomialSpeciesName && stainingMethod && developmentalStage && sex) {
-				let scientificName = bionomialSpeciesName;
+			let scientificName = data.bionomialSpeciesName;
 
-				const itemCode = `${scientificName}_${stainingMethod}_${generateRandomAlphaNumeric(scientificName)}`;
-				const individualCode = `${scientificName}_${generateRandomAlphaNumeric(scientificName)}`;
+			const itemCode = `${scientificName}_${data.stainingMethod}_${generateRandomAlphaNumeric(scientificName)}`;
+			const individualCode = `${scientificName}_${generateRandomAlphaNumeric(scientificName)}`;
+			const wikipediaSpeciesName = `https://en.wikipedia.org/wiki/${scientificName}`;
 
-				results.push({
-					collectionID,
-					identification: {
-						bionomialSpeciesName: scientificName,
-						itemCode,
-						individualCode,
-						NCBITaxonomyCode: NCBITaxonomyCode || null,
-						wikipediaSpeciesName: `https://en.wikipedia.org/wiki/${scientificName}`,
-					},
-					physiologicalInformation: {
-						age: {
-							developmentalStage,
-							number: ageNumber ? parseFloat(ageNumber) : null,
-							unitOfNumber: ageUnit || null,
-							origin: origin || "postNatal",
-						},
-						bodyWeight: bodyWeight ? parseFloat(bodyWeight) : null,
-						brainWeight: brainWeight ? parseFloat(brainWeight) : null,
-						sex,
-					},
-					histologicalInformation: {
-						stainingMethod,
-						sectionThickness: sectionThickness || null,
-						planeOfSectioning: planeOfSectioning || null,
-						interSectionDistance: interSectionDistance || null,
-						brainPart: brainPart || null,
-						comments: comments || null,
-					},
-				});
+			// Add these modifications to the data object
+			data.identification = {
+				bionomialSpeciesName: scientificName,
+				itemCode,
+				individualCode,
+				NCBITaxonomyCode: data.NCBITaxonomyCode || null,
+				wikipediaSpeciesName,
+			};
+
+			data.physiologicalInformation = {
+				age: {
+					developmentalStage: data.developmentalStage,
+					number: data.ageNumber ? parseFloat(data.ageNumber) : null,
+					unitOfNumber: data.ageUnit || null,
+					origin: data.origin || "postNatal",
+				},
+				bodyWeight: data.bodyWeight ? parseFloat(data.bodyWeight) : null,
+				brainWeight: data.brainWeight ? parseFloat(data.brainWeight) : null,
+				sex: data.sex,
+			};
+
+			data.histologicalInformation = {
+				stainingMethod: data.stainingMethod,
+				sectionThickness: data.sectionThickness || null,
+				planeOfSectioning: data.planeOfSectioning || null,
+				interSectionDistance: data.interSectionDistance || null,
+				brainPart: data.brainPart || null,
+				comments: data.comments || null,
+			};
+
+			// Validate the modified data
+			const rowErrors = validateRowAgainstSchema(data, Entry.schema);
+
+			if (rowErrors.length === 0) {
+				results.push(data); // Push the fully modified and validated data
 			} else {
-				console.log("Skipping invalid row:", data); // Log any invalid rows
+				failedRows.push({ rowNumber: failedRows.length + 1, data, errors: rowErrors });
 			}
 		})
 		.on("end", async () => {
 			try {
+				// console log everything here
+				console.log("FAILED ROWS", failedRows);
+
 				if (results.length > 0) {
-					// Insert entries into the database
 					await Entry.insertMany(results);
-					res.status(200).json({ message: "CSV entries processed successfully" });
+				}
+
+				const response = {
+					status: failedRows.length > 0 ? "partial_success" : "success",
+					message:
+						failedRows.length > 0
+							? "Some entries processed successfully with errors."
+							: "CSV entries processed successfully.",
+					processedCount: results.length,
+					failedCount: failedRows.length,
+					failedRows: failedRows.slice(0, 5), // Limit to 5 rows for detailed feedback
+				};
+
+				if (failedRows.length > 0) {
+					res.status(207).json(response); // 207 status code indicates multi-status
 				} else {
-					res.status(400).json({ error: "No valid entries found in CSV" });
+					res.status(200).json(response);
 				}
 			} catch (error) {
-				console.error("Error inserting CSV data:", error);
-				res.status(500).json({ error: "Error processing CSV data" });
+				res.status(500).json({
+					status: "error",
+					message: "Error processing CSV data",
+					details: error.message,
+				});
 			} finally {
-				// Clean up the uploaded file
 				fs.unlinkSync(req.file.path);
 			}
 		})
 		.on("error", (error) => {
-			console.error("Error reading CSV file:", error);
-			res.status(500).json({ error: "Error reading CSV file" });
+			res.status(500).json({
+				status: "error",
+				message: "Error reading CSV file",
+				details: error.message,
+			});
 		});
 };
 
