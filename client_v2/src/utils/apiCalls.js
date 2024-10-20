@@ -56,7 +56,7 @@ export const fetchUserCollections = async (userID) => {
 		const response = await axiosReq.get(`/users/${userID}/collections`);
 		return response.data;
 	} catch (error) {
-		throw new Error(error.message);
+		throw error;
 	}
 };
 
