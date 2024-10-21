@@ -34,24 +34,17 @@ import { ErrorOutline } from "@mui/icons-material"; // Error icon
 
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 
-// a function that take currentUser.collaboratingCollections (where we have collection_id field) and collectionID and return the mode user is in the collection
-const getMode = (collaboratingCollections, collectionID) => {
-	const collection = collaboratingCollections.find((collab) => collab.collection_id === collectionID);
-	return collection ? collection.mode : "view";
-};
-
 const CollectionEntriesPage = () => {
 	const { collectionID } = useParams();
 	const location = useLocation();
 
 	const queryParams = new URLSearchParams(location.search);
 	const isPublic = queryParams.get("isPublic") === "true";
+	const currUserMode = queryParams.get("mode");
 
 	const currUser = useSelector((state) => state.auth.currentUser);
 
 	const accessToken = currUser ? currUser.accessToken : null;
-
-	const currUserMode = currUser ? getMode(currUser.collaboratingCollections, collectionID) : "view";
 
 	const [openSnackbar, setOpenSnackbar] = useState(false);
 	const [snackbarMessage, setSnackbarMessage] = useState("");

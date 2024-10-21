@@ -47,7 +47,7 @@ const CollectionTable = ({ collections, isPublic }) => {
 								<Typography
 									variant="body1"
 									component={Link}
-									to={`/collection/${collection.collection_id}/entries?isPublic=${isPublic}`}
+									to={`/collection/${collection.collection_id}/entries?mode=${collection.mode}&isPublic=${isPublic}`}
 									sx={{
 										textDecoration: "none",
 										color: "black",
