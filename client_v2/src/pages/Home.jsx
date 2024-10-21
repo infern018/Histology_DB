@@ -24,11 +24,9 @@ const Home = () => {
 			</Typography>
 
 			{/* show the option to explore public collections if the user is not logged in */}
-			{(!user || user.username === "anyone") && (
-				<Button component={Link} to={`/collection/public`} variant="contained">
-					Explore Public Collections
-				</Button>
-			)}
+			<Button component={Link} to={`/collection/public`} variant="contained">
+				Explore Public Collections
+			</Button>
 		</Layout>
 	);
 };

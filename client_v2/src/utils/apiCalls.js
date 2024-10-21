@@ -166,6 +166,18 @@ export const fetchEntriesByCollectionID = async (collectionID, accessToken, page
 	}
 };
 
+export const fetchEntriesOfPublicCollection = async (collectionID, page = 1, limit = 10, searchQuery = "") => {
+	try {
+		const response = await axiosReq.get(
+			`/collections/${collectionID}/entries/public?page=${page}&limit=${limit}&searchQuery=${searchQuery}`
+		);
+
+		return response.data;
+	} catch (error) {
+		throw new Error(error.message);
+	}
+};
+
 export const createEntryAPI = async (newEntry, accessToken) => {
 	try {
 		const response = await axiosReq.post(`/entries/`, newEntry, {

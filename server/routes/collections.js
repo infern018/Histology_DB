@@ -23,6 +23,9 @@ router.delete("/:id/collaborators/flush", verifyTokenAndAuthCollection, collabor
 // get entries of a collection
 router.get("/:id/entries", verifyCollectionReadAccess, entryController.getEntriesByCollectionId);
 
+// get entries of public collection
+router.get("/:id/entries/public", entryController.getEntriesByCollectionId);
+
 // upload csv entries
 const upload = multer({ dest: "uploads/" });
 

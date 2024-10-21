@@ -12,7 +12,11 @@ import {
 } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 
-const CollectionTable = ({ collections }) => {
+const CollectionTable = ({ collections, isPublic }) => {
+	if (!isPublic) {
+		isPublic = false;
+	}
+
 	return (
 		<TableContainer>
 			<Table>
@@ -43,7 +47,7 @@ const CollectionTable = ({ collections }) => {
 								<Typography
 									variant="body1"
 									component={Link}
-									to={`/collection/${collection.collection_id}/entries`}
+									to={`/collection/${collection.collection_id}/entries?isPublic=${isPublic}`}
 									sx={{
 										textDecoration: "none",
 										color: "black",

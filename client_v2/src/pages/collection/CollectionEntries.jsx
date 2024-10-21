@@ -16,8 +16,14 @@ import {
 import { Delete as DeleteIcon, CloudDownload } from "@mui/icons-material";
 
 import VerticalAlignBottomIcon from "@mui/icons-material/VerticalAlignBottom";
-import { fetchEntriesByCollectionID, uploadCSVEntries, deleteEntriesAPI } from "../../utils/apiCalls";
+import {
+	fetchEntriesByCollectionID,
+	uploadCSVEntries,
+	deleteEntriesAPI,
+	fetchEntriesOfPublicCollection,
+} from "../../utils/apiCalls";
 import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import Layout from "../../components/utils/Layout";
 import { Link } from "react-router-dom";
 import EntriesTable from "../../components/entries/EntriesTable";
@@ -28,11 +34,25 @@ import { ErrorOutline } from "@mui/icons-material"; // Error icon
 
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 
+// a function that take currentUser.collaboratingCollections (where we have collection_id field) and collectionID and return the mode user is in the collection
+const getMode = (collaboratingCollections, collectionID) => {
+	const collection = collaboratingCollections.find((collab) => collab.collection_id === collectionID);
+	return collection ? collection.mode : "view";
+};
+
 const CollectionEntriesPage = () => {
 	const { collectionID } = useParams();
-	const accessToken = useSelector((state) => state.auth.currentUser.accessToken);
+	const location = useLocation();
+
+	const queryParams = new URLSearchParams(location.search);
+	const isPublic = queryParams.get("isPublic") === "true";
 
 	const currUser = useSelector((state) => state.auth.currentUser);
+
+	const accessToken = currUser ? currUser.accessToken : null;
+
+	const currUserMode = currUser ? getMode(currUser.collaboratingCollections, collectionID) : "view";
+
 	const [openSnackbar, setOpenSnackbar] = useState(false);
 	const [snackbarMessage, setSnackbarMessage] = useState("");
 	const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -57,7 +77,15 @@ const CollectionEntriesPage = () => {
 	useEffect(() => {
 		const fetchEntries = async () => {
 			try {
-				const data = await fetchEntriesByCollectionID(collectionID, accessToken, page, limit, searchQuery);
+				let data;
+				if (isPublic) {
+					// Fetch from the public endpoint without the accessToken
+					data = await fetchEntriesOfPublicCollection(collectionID, page, limit, searchQuery, true);
+				} else {
+					// Fetch from the private endpoint with the accessToken
+					data = await fetchEntriesByCollectionID(collectionID, accessToken, page, limit, searchQuery);
+				}
+
 				setEntries(data.entries);
 				setTotalEntries(data.totalEntries);
 				setTotalPages(data.totalPages);
@@ -69,7 +97,7 @@ const CollectionEntriesPage = () => {
 		};
 
 		fetchEntries();
-	}, [collectionID, accessToken, page, limit, searchQuery]);
+	}, [collectionID, accessToken, page, limit, searchQuery, isPublic]);
 
 	const handleCSVUpload = async (csvData) => {
 		try {
@@ -162,8 +190,9 @@ const CollectionEntriesPage = () => {
 							Collection Entries
 						</Typography>
 					</Grid>
+
 					{/* TODO : Propogate a mode check, curr user is what mode for the collection */}
-					{currUser && currUser.username !== "anyone" && (
+					{currUserMode !== "view" && (
 						<Grid item xs={12} md={9}>
 							<Grid container spacing={2} alignItems="center" justifyContent="flex-end">
 								<Grid item>
@@ -205,6 +234,7 @@ const CollectionEntriesPage = () => {
 				selectedEntries={selectedEntries}
 				onSelectEntry={handleSelectEntry}
 				onSelectAll={handleSelectAll}
+				currUserMode={currUserMode}
 			/>
 
 			<Grid container justifyContent="space-between" alignItems="center" mt={3}>

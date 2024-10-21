@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typog
 
 import { Link } from "react-router-dom";
 
-const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll }) => {
+const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, currUserMode }) => {
 	const handleSelectAll = (event) => {
 		onSelectAll(event);
 	};
@@ -13,17 +13,21 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll }) 
 		onSelectEntry(entryId);
 	};
 
+	const tableSize = currUserMode === "view" ? "medium" : "small";
+
 	return (
 		<TableContainer>
-			<Table size="small">
+			<Table size={tableSize}>
 				<TableHead>
 					<TableRow>
-						<TableCell>
-							<Checkbox
-								checked={selectedEntries.length === entries.length && entries.length !== 0}
-								onChange={handleSelectAll}
-							/>
-						</TableCell>
+						{currUserMode !== "view" && (
+							<TableCell>
+								<Checkbox
+									checked={selectedEntries.length === entries.length && entries.length !== 0}
+									onChange={handleSelectAll}
+								/>
+							</TableCell>
+						)}
 						<TableCell>
 							<Typography variant="subtitle1" fontWeight="bold">
 								Bionomial Species Name
@@ -59,12 +63,14 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll }) 
 				<TableBody>
 					{entries.map((entry) => (
 						<TableRow key={entry._id} hover>
-							<TableCell>
-								<Checkbox
-									checked={selectedEntries.includes(entry._id)}
-									onChange={() => handleSelectEntry(entry._id)}
-								/>
-							</TableCell>
+							{currUserMode !== "view" && (
+								<TableCell>
+									<Checkbox
+										checked={selectedEntries.includes(entry._id)}
+										onChange={() => handleSelectEntry(entry._id)}
+									/>
+								</TableCell>
+							)}
 							<TableCell>
 								<Typography
 									variant="body1"

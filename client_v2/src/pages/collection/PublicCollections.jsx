@@ -3,17 +3,10 @@ import { fetchPublicCollections } from "../../utils/apiCalls";
 import CollectionTable from "../../components/user/CollectionsTable";
 import { Box, Typography, CircularProgress } from "@mui/material";
 import Layout from "../../components/utils/Layout";
-import { useDispatch } from "react-redux";
-import { login } from "../../redux/reducers/authSlice";
 
 const PublicCollections = () => {
 	const [collections, setCollections] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const dispatch = useDispatch();
-
-	const username = "anyone";
-	const password = "123456";
-	dispatch(login({ username, password }));
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -68,7 +61,7 @@ const PublicCollections = () => {
 					<Typography variant="h5" sx={{ fontWeight: 500, mb: 2 }} textAlign={"left"}>
 						Public Collections
 					</Typography>
-					{loading ? <CircularProgress /> : <CollectionTable collections={collections} />}
+					{loading ? <CircularProgress /> : <CollectionTable collections={collections} isPublic={true} />}
 				</Box>
 			</Box>
 		</Layout>
