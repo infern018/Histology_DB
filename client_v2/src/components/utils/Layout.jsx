@@ -13,7 +13,7 @@ const Layout = ({ children }) => {
         minHeight: "100vh",
         margin: -1,
         padding: 0,
-        background: "linear-gradient(to bottom, #b2d5fb, #f0f2f5)",
+        background: "linear-gradient(to bottom, #b3d5fc, #f0f2f5)",
       }}
     >
       <Navbar />
