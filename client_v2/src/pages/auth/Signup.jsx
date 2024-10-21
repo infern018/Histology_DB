@@ -15,7 +15,6 @@ const Signup = () => {
 	const handleSignup = async (formData) => {
 		try {
 			const response = await registerAPI(formData);
-			console.log(response);
 			if (response.status === 200) {
 				const { username, password } = formData;
 				dispatch(login({ username, password }));
@@ -27,7 +26,6 @@ const Signup = () => {
 			// Check if the error has a response and handle it
 			const errorMessage = error.response?.data?.message || "An unexpected error occurred. Please try again.";
 			setError(errorMessage);
-			console.log(error); // For debugging purposes
 		}
 	};
 
