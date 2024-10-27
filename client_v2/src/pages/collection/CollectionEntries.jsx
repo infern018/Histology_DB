@@ -179,7 +179,7 @@ const CollectionEntriesPage = () => {
 			<Box mb={2}>
 				<Grid container spacing={2} alignItems="center">
 					<Grid item xs={12} md={3}>
-						<Typography variant="h5" sx={{ fontWeight: "bold" }}>
+						<Typography variant="h5" sx={{ fontWeight: "bold", color: "f0f0f0" }}>
 							Collection Entries
 						</Typography>
 					</Grid>
@@ -217,6 +217,29 @@ const CollectionEntriesPage = () => {
 							size="small"
 							value={searchQuery}
 							onChange={handleSearchChange}
+							sx={{
+								// Custom styles for the TextField
+								"& .MuiOutlinedInput-root": {
+									"& fieldset": {
+										borderColor: "white", // Border color of the input
+									},
+									"&:hover fieldset": {
+										borderColor: "white", // Border color on hover
+									},
+									"&.Mui-focused fieldset": {
+										borderColor: "white", // Border color when focused
+									},
+									"& input": {
+										color: "white", // Input text color
+									},
+								},
+								"& .MuiInputLabel-root": {
+									color: "white", // Label color
+								},
+								"& .MuiInputLabel-root.Mui-focused": {
+									color: "white", // Label color when focused
+								},
+							}}
 						/>
 					</Grid>
 				</Grid>
@@ -232,7 +255,23 @@ const CollectionEntriesPage = () => {
 
 			<Grid container justifyContent="space-between" alignItems="center" mt={3}>
 				<Grid item>
-					<Pagination count={totalPages} page={page} onChange={handlePageChange} color="primary" />
+					<Pagination
+						count={totalPages}
+						page={page}
+						onChange={handlePageChange}
+						color="primary"
+						sx={{
+							"& .MuiPaginationItem-root": {
+								color: "white", // Change the text color of pagination items to white
+							},
+							"& .MuiPaginationItem-root.Mui-selected": {
+								color: "white", // Ensure the selected item text is also white
+							},
+							"& .MuiPaginationItem-root:hover": {
+								backgroundColor: "rgba(255, 255, 255, 0.2)", // Optional: change background color on hover
+							},
+						}}
+					/>
 				</Grid>
 
 				{selectedEntries.length > 0 && (

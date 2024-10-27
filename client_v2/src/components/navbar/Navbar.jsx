@@ -9,7 +9,7 @@ import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
-import BiotechIcon from "@mui/icons-material/Biotech"; // Import the BiotechIcon
+import BiotechIcon from "@mui/icons-material/Biotech";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -53,13 +53,10 @@ const Navbar = () => {
 							justifyContent: "space-between",
 							flexShrink: 0,
 							borderRadius: "999px",
-							bgcolor: "rgba(255, 255, 255, 0.4)",
 							backdropFilter: "blur(24px)",
 							maxHeight: 40,
 							border: "1px solid",
 							borderColor: "divider",
-							boxShadow:
-								"0 0 1px rgba(85, 166, 246, 0.1), 1px 1.5px 2px -1px rgba(85, 166, 246, 0.15), 4px 4px 12px -2.5px rgba(85, 166, 246, 0.15)",
 						}}>
 						<Link
 							to="/"
@@ -69,12 +66,12 @@ const Navbar = () => {
 								alignItems: "center",
 								gap: "8px",
 							}}>
-							<BiotechIcon sx={{ fontSize: 40, color: "rgba(5, 146, 225, 0.8)" }} />
+							<BiotechIcon sx={{ fontSize: 40, color: "rgba(255, 255, 255, 0.8)" }} />
 							<span
 								style={{
 									fontSize: 24,
 									fontWeight: "bold",
-									color: "rgba(5, 146, 246, 0.8)",
+									color: "rgba(255, 255, 255, 0.9)", // Light text for logo
 								}}>
 								MiMe
 							</span>
@@ -86,26 +83,35 @@ const Navbar = () => {
 										component={Link}
 										to={`/user/${user.username}`}
 										state={{ user: user }}
-										variant="text">
+										variant="text"
+										color="primary">
 										{user.username}
 									</Button>
-									<Button variant="text" onClick={() => setOpen(true)}>
+									<Button variant="text" onClick={() => setOpen(true)} sx={{ color: "#ffffff" }}>
 										Logout
 									</Button>
 								</>
 							) : (
 								<>
-									<Button component={Link} to={`/login`} variant="text">
+									<Button component={Link} to={`/login`} variant="text" sx={{ color: "#ffffff" }}>
 										Log in
 									</Button>
-									<Button component={Link} to={`/signup`} variant="contained">
+									<Button
+										component={Link}
+										to={`/signup`}
+										variant="contained"
+										sx={{ bgcolor: "rgba(255, 255, 255, 0.8)", color: "#000" }}>
 										Sign up
 									</Button>
 								</>
 							)}
 						</Box>
 						<Box sx={{ display: { sm: "", md: "none" } }}>
-							<Button variant="text" aria-label="menu" onClick={toggleDrawer(true)}>
+							<Button
+								variant="text"
+								aria-label="menu"
+								onClick={toggleDrawer(true)}
+								sx={{ color: "#ffffff" }}>
 								<MenuIcon />
 							</Button>
 							<Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>

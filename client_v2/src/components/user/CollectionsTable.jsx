@@ -21,19 +21,19 @@ const CollectionTable = ({ collections, isPublic }) => {
 		<TableContainer>
 			<Table>
 				<TableHead>
-					<TableRow sx={{ backgroundColor: "#f0f0f0" }}>
+					<TableRow sx={{ backgroundColor: "#0f0f0f" }}>
 						<TableCell>
-							<Typography variant="subtitle1" fontWeight="bold">
+							<Typography variant="subtitle1" fontWeight="bold" sx={{ color: "#ffffff" }}>
 								Name
 							</Typography>
 						</TableCell>
 						<TableCell>
-							<Typography variant="subtitle1" fontWeight="bold">
+							<Typography variant="subtitle1" fontWeight="bold" sx={{ color: "#ffffff" }}>
 								Collaborators
 							</Typography>
 						</TableCell>
 						<TableCell>
-							<Typography variant="subtitle1" fontWeight="bold">
+							<Typography variant="subtitle1" fontWeight="bold" sx={{ color: "#ffffff" }}>
 								Mode
 							</Typography>
 						</TableCell>
@@ -50,7 +50,7 @@ const CollectionTable = ({ collections, isPublic }) => {
 									to={`/collection/${collection.collection_id}/entries?mode=${collection.mode}&isPublic=${isPublic}`}
 									sx={{
 										textDecoration: "none",
-										color: "black",
+										color: "#f0f0f0", // Set link color to light
 										"&:hover": {
 											color: "primary.main", // Standout color on hover
 											textDecoration: "underline", // Underline on hover
@@ -60,10 +60,14 @@ const CollectionTable = ({ collections, isPublic }) => {
 								</Typography>
 							</TableCell>
 							<TableCell>
-								<Typography variant="body1">{collection.numCollaborators}</Typography>
+								<Typography variant="body1" sx={{ color: "#f0f0f0" }}>
+									{collection.numCollaborators}
+								</Typography>
 							</TableCell>
 							<TableCell>
-								<Typography variant="body1">{collection.mode}</Typography>
+								<Typography variant="body1" sx={{ color: "#f0f0f0" }}>
+									{collection.mode}
+								</Typography>
 							</TableCell>
 							<TableCell align="right" sx={{ padding: "0px 16px" }}>
 								{(collection.mode === "edit" || collection.mode === "owner") && (

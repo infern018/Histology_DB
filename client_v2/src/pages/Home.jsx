@@ -1,32 +1,36 @@
+// Home.js
 import React from "react";
-import { useSelector } from "react-redux";
-import Typography from "@mui/material/Typography";
+import { Typography, Button, Box } from "@mui/material";
 import Layout from "../components/utils/Layout";
-import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
+import BiotechIcon from "@mui/icons-material/Biotech";
 
 const Home = () => {
-	const user = useSelector((state) => state.auth.currentUser);
-
 	return (
 		<Layout>
-			{user && user.username !== "anyone" && (
-				<Typography variant="h3" color="primary" sx={{ mt: 3, mb: 4 }}>
-					Hey, {user.username}!
+			<Box
+				sx={{
+					marginTop: -25,
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+					justifyContent: "center",
+					height: "100vh",
+					textAlign: "center",
+				}}>
+				<BiotechIcon sx={{ width: 80, height: 80, fontSize: 40, color: "rgba(255, 255, 255, 0.8)" }} />
+				<Typography variant="h2">MiMe</Typography>
+				<Typography variant="h5" sx={{ mt: 2 }}>
+					Welcome to MiMe,
 				</Typography>
-			)}
-			<Typography variant="h4" sx={{ fontWeight: 500, color: "#0c2f57" }}>
-				Welcome to MiMe,
-			</Typography>
-			<Typography paragraph sx={{ fontSize: 20, mt: 2 }}>
-				Microscopy Metadata Index (MiMe) is a platform designed to streamline the sharing and collaboration of
-				histology data. Discover, contribute, and manage your data seamlessly.
-			</Typography>
-
-			{/* show the option to explore public collections if the user is not logged in */}
-			<Button component={Link} to={`/collection/public`} variant="contained">
-				Explore Public Collections
-			</Button>
+				<Typography paragraph sx={{ mt: 2 }}>
+					Microscopy Metadata Index (MiMe) is a platform designed to streamline the sharing and collaboration
+					of histology data. Discover, contribute, and manage your data seamlessly.
+				</Typography>
+				<Button component={Link} to={`/collection/public`} variant="contained" sx={{ mt: 3 }}>
+					Explore Public Collections
+				</Button>
+			</Box>
 		</Layout>
 	);
 };
