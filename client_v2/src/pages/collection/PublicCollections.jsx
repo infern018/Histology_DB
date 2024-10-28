@@ -50,7 +50,6 @@ const PublicCollections = () => {
 						flex: 2,
 						maxWidth: 800,
 						padding: 3,
-						backgroundColor: "#ffffff",
 						borderRadius: 2,
 						textAlign: "center",
 						boxShadow: 3,

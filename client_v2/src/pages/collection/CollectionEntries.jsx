@@ -193,7 +193,15 @@ const CollectionEntriesPage = () => {
 										variant="outlined"
 										color="primary"
 										onClick={() => setOpenUploadDialog(true)}
-										startIcon={<VerticalAlignBottomIcon />}>
+										startIcon={<VerticalAlignBottomIcon />}
+										sx={{
+											color: "#FFFFFF", // White text color
+											borderColor: "#FFFFFF", // White border color
+											"&:hover": {
+												borderColor: "#FFFFFF",
+												backgroundColor: "rgba(255, 255, 255, 0.1)", // Optional: light background on hover
+											},
+										}}>
 										Import
 									</Button>
 								</Grid>

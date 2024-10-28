@@ -57,6 +57,7 @@ const Navbar = () => {
 							maxHeight: 40,
 							border: "1px solid",
 							borderColor: "divider",
+							backgroundColor: "rgba(255, 255, 255, 0.1)",
 						}}>
 						<Link
 							to="/"
@@ -84,7 +85,7 @@ const Navbar = () => {
 										to={`/user/${user.username}`}
 										state={{ user: user }}
 										variant="text"
-										color="primary">
+										sx={{ color: "#ffffff" }}>
 										{user.username}
 									</Button>
 									<Button variant="text" onClick={() => setOpen(true)} sx={{ color: "#ffffff" }}>

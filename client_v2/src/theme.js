@@ -5,7 +5,7 @@ import { createTheme } from "@mui/material/styles";
 const theme = createTheme({
 	palette: {
 		primary: {
-			main: "#4A4E69", // Slate blue
+			main: "#F2E9E4", // Slate blue
 		},
 		secondary: {
 			main: "#9A8C98", // Warm gray
@@ -21,17 +21,24 @@ const theme = createTheme({
 	},
 	typography: {
 		fontFamily: "Roboto, sans-serif",
+		color: "#ffffff",
 		h2: {
 			fontWeight: "bold",
-			color: "#F2E9E4",
+			color: "#FFFFFF",
 		},
 		h5: {
 			fontWeight: 500,
-			color: "#F2E9E4",
+			color: "#FFFFFF",
+		},
+		h6: {
+			color: "#FFFFFF",
 		},
 		body1: {
 			fontSize: 20,
-			color: "#F2E9E4",
+			color: "#FFFFFF",
+		},
+		subtitle1: {
+			color: "#FFFFFF",
 		},
 	},
 });

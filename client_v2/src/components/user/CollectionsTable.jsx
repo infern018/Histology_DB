@@ -21,7 +21,7 @@ const CollectionTable = ({ collections, isPublic }) => {
 		<TableContainer>
 			<Table>
 				<TableHead>
-					<TableRow sx={{ backgroundColor: "#0f0f0f" }}>
+					<TableRow sx={{ backgroundColor: "#333333" }}>
 						<TableCell>
 							<Typography variant="subtitle1" fontWeight="bold" sx={{ color: "#ffffff" }}>
 								Name
@@ -74,6 +74,13 @@ const CollectionTable = ({ collections, isPublic }) => {
 									<IconButton
 										component={Link}
 										to={`/collection/${collection.collection_id}/settings`}
+										sx={{
+											color: "#f0f0f0",
+											"&:hover": {
+												backgroundColor: "#0f0f0f", // Example hover background color
+											},
+											cursor: "pointer",
+										}}
 										size="small"
 										edge="end">
 										<SettingsIcon fontSize="small" />

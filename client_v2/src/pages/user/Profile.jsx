@@ -76,11 +76,9 @@ const Profile = () => {
 						flex: 1,
 						maxWidth: 400,
 						padding: 3,
-						backgroundColor: "rgba(0,0,0,0.9)",
 						borderRadius: 2,
 						textAlign: "left",
 						boxShadow: 3,
-						boxSizing: "border-box",
 					}}>
 					{loading ? (
 						<CircularProgress />
@@ -105,7 +103,6 @@ const Profile = () => {
 						flex: 2,
 						maxWidth: 800,
 						padding: 3,
-						backgroundColor: "#000000",
 						borderRadius: 2,
 						textAlign: "center",
 						boxShadow: 3,
