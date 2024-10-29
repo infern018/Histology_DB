@@ -11,7 +11,7 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 		onSelectEntry(entryId);
 	};
 
-	const tableSize = currUserMode === "view" ? "medium" : "small";
+	const tableSize = currUserMode === "view" ? "small" : "small";
 
 	return (
 		<TableContainer>
