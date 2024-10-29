@@ -267,3 +267,12 @@ export const getEntryAPI = async (entryID, accessToken) => {
 		throw new Error(error.message);
 	}
 };
+
+export const getPublicEntryAPI = async (entryID) => {
+	try {
+		const response = await axiosReq.get(`/entries/public/${entryID}`);
+		return response.data;
+	} catch (error) {
+		throw new Error(error.message);
+	}
+};

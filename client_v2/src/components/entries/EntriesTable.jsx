@@ -2,7 +2,7 @@ import React from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Checkbox } from "@mui/material";
 import { Link } from "react-router-dom";
 
-const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, currUserMode }) => {
+const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, currUserMode, isPublic }) => {
 	const handleSelectAll = (event) => {
 		onSelectAll(event);
 	};
@@ -91,7 +91,7 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 								<Typography
 									variant="body1"
 									component={Link}
-									to={`/entry/${entry._id}`}
+									to={`/entry/${entry._id}?isPublic=${isPublic}`}
 									sx={{
 										color: "white",
 										"&:hover": {

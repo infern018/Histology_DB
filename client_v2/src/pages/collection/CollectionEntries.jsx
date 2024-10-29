@@ -259,6 +259,7 @@ const CollectionEntriesPage = () => {
 				onSelectEntry={handleSelectEntry}
 				onSelectAll={handleSelectAll}
 				currUserMode={currUserMode}
+                isPublic = {isPublic}
 			/>
 
 			<Grid container justifyContent="space-between" alignItems="center" mt={3}>
