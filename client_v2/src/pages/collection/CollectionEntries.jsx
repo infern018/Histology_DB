@@ -10,6 +10,7 @@ import {
 	TextField, // Import TextField for search bar
 } from "@mui/material";
 import { Delete as DeleteIcon } from "@mui/icons-material";
+import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 
 import VerticalAlignBottomIcon from "@mui/icons-material/VerticalAlignBottom";
 import {
@@ -213,6 +214,21 @@ const CollectionEntriesPage = () => {
 							</Grid>
 						</Grid>
 					)}
+					{/* add a button with VISUALIZE to take to page /visualize/collection/:collectionID?isPublic={isPublic} */}
+					<Grid item xs={12} md={6}>
+						<Grid container spacing={2} alignItems="center" justifyContent="flex-end">
+							<Grid item>
+								<Button
+									component={Link}
+									to={`/visualize/collection/${collectionID}?isPublic=${isPublic}`}
+									variant="contained"
+									startIcon={<AutoFixHighIcon />}
+									color="primary">
+									Visualize
+								</Button>
+							</Grid>
+						</Grid>
+					</Grid>
 					<Grid item xs={12} md={3}>
 						<TextField
 							label={`Search in ${totalEntries} entries`}

@@ -12,6 +12,7 @@ import CollectionEntriesPage from "./pages/collection/CollectionEntries";
 import CreateEntryStepper from "./pages/entries/CreateEntryStepper";
 import EntryDetailsPage from "./pages/entries/EntryDetails";
 import PublicCollections from "./pages/collection/PublicCollections";
+import CollectionEntriesChart from "./pages/collection/CollectionEntriesChart";
 
 function App() {
 	const theme = createTheme({
@@ -35,6 +36,7 @@ function App() {
 					<Route path="/user/:username" element={<Profile />} />
 					<Route path="/collection/create" element={<CollectionCreate />} />
 					<Route path="/collection/:collectionID/entries" element={<CollectionEntriesPage />} />
+					<Route path="/visualize/collection/:collectionID" element={<CollectionEntriesChart />} />
 					<Route path="/collection/:collectionID/settings" element={<CollectionSettings />} />
 					<Route path="/collection/:collectionID/entry/create" element={<CreateEntryStepper />} />
 					<Route path="/entry/:entryID" element={<EntryDetailsPage />} />
