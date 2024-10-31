@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { fetchEntriesByCollectionID, fetchEntriesOfPublicCollection } from "../../utils/apiCalls";
-import { CircularProgress, Box } from "@mui/material";
+import { CircularProgress, Box, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import ParallelCoordinatesChart from "../../components/entries/ParallelCoordinatesChart";
 import Navbar from "../../components/navbar/Navbar";
@@ -10,6 +10,7 @@ import Navbar from "../../components/navbar/Navbar";
 const CollectionEntriesChart = () => {
 	const { collectionID } = useParams();
 	const [data, setData] = useState([]);
+	const [collectionName, setCollectionName] = useState("");
 	const [loading, setLoading] = useState(true);
 
 	const location = useLocation();
@@ -32,6 +33,7 @@ const CollectionEntriesChart = () => {
 				}
 
 				setData(response.entries);
+				setCollectionName(response.collectionName);
 			} catch (error) {
 				console.error("Failed to fetch collection entries:", error);
 			} finally {
@@ -66,6 +68,9 @@ const CollectionEntriesChart = () => {
 					</Box>
 				) : (
 					<>
+						<Typography variant="h4" align="center">
+							{collectionName}
+						</Typography>
 						<ParallelCoordinatesChart data={data} />
 					</>
 				)}

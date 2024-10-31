@@ -1,4 +1,5 @@
 const Entry = require("../models/Entry");
+const Collection = require("../models/Collection");
 const fs = require("fs");
 const csvParser = require("csv-parser");
 const validateRowAgainstSchema = require("../utils/entryValidator");
@@ -169,11 +170,14 @@ const getEntriesByCollectionId = async (req, res) => {
 		// total entries = total entries with that collectionID
 		const totalEntries = await Entry.countDocuments({ collectionID: req.params.id, backupEntry: { $ne: true } });
 
+		const collection = await Collection.findById(req.params.id);
+
 		res.status(200).json({
 			entries,
 			totalEntries,
 			totalPages: Math.ceil(totalEntries / limit),
 			currentPage: parseInt(page),
+			collectionName: collection.name,
 		});
 	} catch (err) {
 		res.status(500).json(err);
