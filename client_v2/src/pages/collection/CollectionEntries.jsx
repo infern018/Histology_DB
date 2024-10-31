@@ -5,15 +5,11 @@ import {
 	Button,
 	Grid,
 	Typography,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogTitle,
 	Box,
 	Pagination,
 	TextField, // Import TextField for search bar
 } from "@mui/material";
-import { Delete as DeleteIcon, CloudDownload } from "@mui/icons-material";
+import { Delete as DeleteIcon } from "@mui/icons-material";
 
 import VerticalAlignBottomIcon from "@mui/icons-material/VerticalAlignBottom";
 import {
@@ -27,12 +23,12 @@ import { useLocation } from "react-router-dom";
 import Layout from "../../components/utils/Layout";
 import { Link } from "react-router-dom";
 import EntriesTable from "../../components/entries/EntriesTable";
-import CSVUploader from "../../components/utils/CSVUploader";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import { ErrorOutline } from "@mui/icons-material"; // Error icon
 
-import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import UploadCSVDialog from "../../components/dialogs/UploadCSVDialog";
+import DeleteConfirmationDialog from "../../components/dialogs/DeleteConfirmationDialog";
+import FailedRowsInsertDialog from "../../components/dialogs/FailedRowsInsertDialog";
 
 const CollectionEntriesPage = () => {
 	const { collectionID } = useParams();
@@ -259,7 +255,7 @@ const CollectionEntriesPage = () => {
 				onSelectEntry={handleSelectEntry}
 				onSelectAll={handleSelectAll}
 				currUserMode={currUserMode}
-                isPublic = {isPublic}
+				isPublic={isPublic}
 			/>
 
 			<Grid container justifyContent="space-between" alignItems="center" mt={3}>
@@ -297,108 +293,25 @@ const CollectionEntriesPage = () => {
 			</Grid>
 
 			{/* Upload CSV Dialog */}
-			<Dialog
+			<UploadCSVDialog
 				open={openUploadDialog}
 				onClose={() => setOpenUploadDialog(false)}
-				// make the dialog bigger
-				maxWidth="xl">
-				<DialogTitle>Bulk Upload Your Data 🚀</DialogTitle>
-				<DialogContent>
-					<Typography variant="body1" gutterBottom>
-						Easily import your data by uploading a CSV file. Follow the sample format shown below to ensure
-						a smooth upload experience :
-					</Typography>
-					<br />
-
-					{/* Reference Image */}
-					<Box display="flex" justifyContent="center" mb={2}>
-						<img
-							src={`${process.env.PUBLIC_URL}/entries_upload.png`} // Update with your image path
-							alt="Reference for CSV Upload"
-							style={{ maxWidth: "100%", height: "auto" }} // Responsive styling
-						/>
-					</Box>
-					<div style={{ marginBottom: 16, marginTop: 10 }}>
-						<Button
-							variant="contained"
-							color="primary"
-							startIcon={<CloudDownload />} // Add the download icon at the start
-							onClick={() => {
-								const link = document.createElement("a");
-								link.href = `${process.env.PUBLIC_URL}/entries_upload_sample.csv`;
-								link.download = "entries_upload_sample.csv"; // Specify the download attribute
-								document.body.appendChild(link);
-								link.click();
-								document.body.removeChild(link);
-							}} // Trigger download on click
-						>
-							Sample CSV
-						</Button>
-					</div>
-
-					<CSVUploader onUpload={handleCSVUpload} />
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={() => setOpenUploadDialog(false)} color="primary">
-						Cancel
-					</Button>
-				</DialogActions>
-			</Dialog>
+				onUpload={handleCSVUpload}
+			/>
 
 			{/* Delete Confirmation Dialog */}
-			<Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
-				<DialogTitle>Confirm Deletion</DialogTitle>
-				<DialogContent>
-					<Typography variant="body1">Are you sure you want to delete the selected entries?</Typography>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={() => setOpenDeleteDialog(false)} color="primary">
-						Cancel
-					</Button>
-					<Button onClick={handleDeleteSelected} color="secondary">
-						Delete
-					</Button>
-				</DialogActions>
-			</Dialog>
+			<DeleteConfirmationDialog
+				open={openDeleteDialog}
+				onClose={() => setOpenDeleteDialog(false)}
+				onConfirm={handleDeleteSelected}
+			/>
 
 			{/* Failed Rows Dialog */}
-			<Dialog open={openFailedDialog} onClose={() => setOpenFailedDialog(false)} maxWidth="lg" fullWidth>
-				<DialogTitle sx={{ bgcolor: "#ffeef0", display: "flex", alignItems: "center" }}>
-					<ErrorOutline sx={{ marginRight: 1 }} />
-					Failed Rows Details
-				</DialogTitle>
-				<DialogContent sx={{ padding: 3, marginTop: 2 }}>
-					<Typography variant="body1" gutterBottom>
-						Partial Success: Some entries were processed with errors.
-					</Typography>
-					{/* Display the failed rows in a table or list */}
-					{failedRows.length > 0 ? (
-						<Table>
-							<TableHead>
-								<TableRow>
-									<TableCell>Error Details</TableCell>
-								</TableRow>
-							</TableHead>
-							<TableBody>
-								{failedRows.map((row, index) => (
-									<TableRow key={index}>
-										<TableCell>
-											<pre>{JSON.stringify(row, null, 2)}</pre>
-										</TableCell>
-									</TableRow>
-								))}
-							</TableBody>
-						</Table>
-					) : (
-						<Typography>No failed rows to display.</Typography>
-					)}
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={() => setOpenFailedDialog(false)} color="primary">
-						Close
-					</Button>
-				</DialogActions>
-			</Dialog>
+			<FailedRowsInsertDialog
+				open={openFailedDialog}
+				onClose={() => setOpenFailedDialog(false)}
+				failedRows={failedRows}
+			/>
 
 			<Snackbar
 				open={openSnackbar}
