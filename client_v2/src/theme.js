@@ -12,7 +12,7 @@ const theme = createTheme({
 		},
 		background: {
 			default: "#2E2E2E", // Dark gray background
-			paper: "#3C3C3C", // Slightly lighter gray for paper elements
+			paper: "#2E2E2E", // Slightly lighter gray for paper elements
 		},
 		text: {
 			primary: "#F2E9E4", // Off-white text

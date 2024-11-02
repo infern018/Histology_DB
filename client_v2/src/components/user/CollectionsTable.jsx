@@ -18,7 +18,7 @@ const CollectionTable = ({ collections, isPublic }) => {
 	}
 
 	return (
-		<TableContainer>
+		<TableContainer sx={{ backgroundColor: "#262625" }}>
 			<Table>
 				<TableHead>
 					<TableRow sx={{ backgroundColor: "#333333" }}>
@@ -42,30 +42,34 @@ const CollectionTable = ({ collections, isPublic }) => {
 				</TableHead>
 				<TableBody>
 					{collections.map((collection, index) => (
-						<TableRow key={index} hover>
+						<TableRow
+							key={index}
+							hover
+							component={Link}
+							to={`/collection/${collection.collection_id}/entries?mode=${collection.mode}&isPublic=${isPublic}`}
+							sx={{
+								cursor: "pointer", // Makes the row indicate clickability
+								textDecoration: "none", // Remove underline from Link
+								color: "inherit", // Inherit text color
+								"&:hover": {
+									backgroundColor: "#333333 !important", // Stronger hover color with !important
+									borderColor: "#ffffff", // Optional border color on hover
+									borderWidth: "1px",
+									borderStyle: "solid",
+								},
+							}}>
 							<TableCell>
-								<Typography
-									variant="body1"
-									component={Link}
-									to={`/collection/${collection.collection_id}/entries?mode=${collection.mode}&isPublic=${isPublic}`}
-									sx={{
-										textDecoration: "none",
-										color: "#f0f0f0", // Set link color to light
-										"&:hover": {
-											color: "primary.main", // Standout color on hover
-											textDecoration: "underline", // Underline on hover
-										},
-									}}>
+								<Typography variant="body2" color="white">
 									{collection.name}
 								</Typography>
 							</TableCell>
 							<TableCell>
-								<Typography variant="body1" sx={{ color: "#f0f0f0" }}>
+								<Typography variant="body2" color="white">
 									{collection.numCollaborators}
 								</Typography>
 							</TableCell>
 							<TableCell>
-								<Typography variant="body1" sx={{ color: "#f0f0f0" }}>
+								<Typography variant="body2" color="white">
 									{collection.mode}
 								</Typography>
 							</TableCell>

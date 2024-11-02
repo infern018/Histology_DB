@@ -54,6 +54,7 @@ const CollectionEntriesPage = () => {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [failedRows, setFailedRows] = useState([]);
 	const [openFailedDialog, setOpenFailedDialog] = useState(false);
+	const [collectionName, setCollectionName] = useState("Collection");
 
 	// Pagination state
 	const [page, setPage] = useState(1);
@@ -79,6 +80,7 @@ const CollectionEntriesPage = () => {
 				setEntries(data.entries);
 				setTotalEntries(data.totalEntries);
 				setTotalPages(data.totalPages);
+				setCollectionName(data.collectionName);
 			} catch (error) {
 				console.error("Error fetching entries:", error);
 			} finally {
@@ -108,6 +110,7 @@ const CollectionEntriesPage = () => {
 			setEntries(updatedEntries.entries);
 			setTotalEntries(updatedEntries.totalEntries);
 			setTotalPages(updatedEntries.totalPages);
+			setCollectionName(updatedEntries.collectionName);
 		} catch (error) {
 			console.error("Error uploading CSV:", error);
 			alert("Error uploading CSV. Please try again.");
@@ -148,6 +151,7 @@ const CollectionEntriesPage = () => {
 				setEntries(updatedEntries.entries);
 				setTotalEntries(updatedEntries.totalEntries);
 				setTotalPages(updatedEntries.totalPages);
+				setCollectionName(updatedEntries.collectionName);
 				setSelectedEntries([]);
 			}
 		} catch (error) {
@@ -175,15 +179,16 @@ const CollectionEntriesPage = () => {
 		<Layout>
 			<Box mb={2}>
 				<Grid container spacing={2} alignItems="center">
-					<Grid item xs={12} md={3}>
+					{/* collection name */}
+					<Grid item xs={12} md={4}>
 						<Typography variant="h5" sx={{ fontWeight: "bold", color: "f0f0f0" }}>
-							Collection Entries
+							{collectionName}
 						</Typography>
 					</Grid>
 
-					{/* TODO : Propogate a mode check, curr user is what mode for the collection */}
+					{/* import bulk, new entry button */}
 					{currUserMode !== "view" && (
-						<Grid item xs={12} md={9}>
+						<Grid item xs={12} md={8}>
 							<Grid container spacing={2} alignItems="center" justifyContent="flex-end">
 								<Grid item>
 									<Button
@@ -214,9 +219,9 @@ const CollectionEntriesPage = () => {
 							</Grid>
 						</Grid>
 					)}
-					{/* add a button with VISUALIZE to take to page /visualize/collection/:collectionID?isPublic={isPublic} */}
+					{/* visualise button */}
 					<Grid item xs={12} md={6}>
-						<Grid container spacing={2} alignItems="center" justifyContent="flex-end">
+						<Grid container spacing={2} alignItems="center">
 							<Grid item>
 								<Button
 									component={Link}
@@ -229,7 +234,8 @@ const CollectionEntriesPage = () => {
 							</Grid>
 						</Grid>
 					</Grid>
-					<Grid item xs={12} md={3}>
+					{/* search collection button */}
+					<Grid item xs={12} md={6}>
 						<TextField
 							label={`Search in ${totalEntries} entries`}
 							variant="outlined"
