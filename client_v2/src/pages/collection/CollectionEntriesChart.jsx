@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { fetchEntriesByCollectionID, fetchEntriesOfPublicCollection } from "../../utils/apiCalls";
-import { CircularProgress, Box, Typography } from "@mui/material";
+import { CircularProgress, Box, Typography, Button } from "@mui/material";
 import { useSelector } from "react-redux";
 
 import Navbar from "../../components/navbar/Navbar";
@@ -75,6 +75,11 @@ const CollectionEntriesChart = () => {
 						<PlotlyChart data={data} />
 					</>
 				)}
+			</Box>
+			<Box textAlign="center">
+				<Button variant="contained" color="primary" onClick={() => window.history.back()}>
+					Back
+				</Button>
 			</Box>
 		</Box>
 	);

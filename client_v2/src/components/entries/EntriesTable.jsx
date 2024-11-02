@@ -109,7 +109,7 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 								fontSize="small"
 								onClick={() => handleFieldSort("physiologicalInformation.bodyWeight")}
 								sx={{ cursor: "pointer" }}>
-								Body Weight{" "}
+								Body Weight(g){" "}
 								{sortField === "physiologicalInformation.bodyWeight" &&
 									(sortOrder === "asc" ? "↑" : "↓")}
 							</Typography>
@@ -122,7 +122,7 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 								fontSize="small"
 								onClick={() => handleFieldSort("physiologicalInformation.brainWeight")}
 								sx={{ cursor: "pointer" }}>
-								Brain Weight{" "}
+								Brain Weight(g){" "}
 								{sortField === "physiologicalInformation.brainWeight" &&
 									(sortOrder === "asc" ? "↑" : "↓")}
 							</Typography>
@@ -135,7 +135,7 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 								fontSize="small"
 								onClick={() => handleFieldSort("histologicalInformation.stainingMethod")}
 								sx={{ cursor: "pointer" }}>
-								Staining Method{" "}
+								Staining Method(µm){" "}
 								{sortField === "histologicalInformation.stainingMethod" &&
 									(sortOrder === "asc" ? "↑" : "↓")}
 							</Typography>
