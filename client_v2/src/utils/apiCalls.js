@@ -151,10 +151,18 @@ export const deleteCollaboratorAPI = async (collectionID, collaboratorID, access
 	}
 };
 
-export const fetchEntriesByCollectionID = async (collectionID, accessToken, page = 1, limit = 10, searchQuery = "") => {
+export const fetchEntriesByCollectionID = async (
+	collectionID,
+	accessToken,
+	page = 1,
+	limit = 10,
+	searchQuery = "",
+	sortField = "identification.bionomialSpeciesName",
+	sortOrder = "asc"
+) => {
 	try {
 		const response = await axiosReq.get(
-			`/collections/${collectionID}/entries?page=${page}&limit=${limit}&searchQuery=${searchQuery}`,
+			`/collections/${collectionID}/entries?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortField=${sortField}&sortOrder=${sortOrder}`,
 			{
 				headers: { token: `${accessToken}` },
 			}
@@ -166,10 +174,17 @@ export const fetchEntriesByCollectionID = async (collectionID, accessToken, page
 	}
 };
 
-export const fetchEntriesOfPublicCollection = async (collectionID, page = 1, limit = 10, searchQuery = "") => {
+export const fetchEntriesOfPublicCollection = async (
+	collectionID,
+	page = 1,
+	limit = 10,
+	searchQuery = "",
+	sortField = "identification.bionomialSpeciesName",
+	sortOrder = "asc"
+) => {
 	try {
 		const response = await axiosReq.get(
-			`/collections/${collectionID}/entries/public?page=${page}&limit=${limit}&searchQuery=${searchQuery}`
+			`/collections/${collectionID}/entries/public?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortField=${sortField}&sortOrder=${sortOrder}`
 		);
 
 		return response.data;

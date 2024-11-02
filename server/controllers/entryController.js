@@ -148,7 +148,13 @@ const getEntry = async (req, res) => {
 // get entry by collection id
 const getEntriesByCollectionId = async (req, res) => {
 	try {
-		const { page = 1, limit = 10, searchQuery = "" } = req.query; // Default to page 1 and limit 10
+		const {
+			page = 1,
+			limit = 10,
+			searchQuery = "",
+			sortField = "identification.bionomialSpeciesName",
+			sortOrder = "asc",
+		} = req.query; // Default to page 1 and limit 10
 
 		const skip = (page - 1) * limit;
 
@@ -165,7 +171,11 @@ const getEntriesByCollectionId = async (req, res) => {
 			...searchFilter,
 		};
 
-		const entries = await Entry.find(filter).skip(skip).limit(parseInt(limit)).exec();
+		const sortOption = {
+			[sortField]: sortOrder === "asc" ? 1 : -1,
+		};
+
+		const entries = await Entry.find(filter).sort(sortOption).skip(skip).limit(parseInt(limit)).exec();
 
 		// total entries = total entries with that collectionID
 		const totalEntries = await Entry.countDocuments({ collectionID: req.params.id, backupEntry: { $ne: true } });

@@ -56,6 +56,9 @@ const CollectionEntriesPage = () => {
 	const [openFailedDialog, setOpenFailedDialog] = useState(false);
 	const [collectionName, setCollectionName] = useState("Collection");
 
+	const [sortField, setSortField] = useState("identification.bionomialSpeciesName");
+	const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
+
 	// Pagination state
 	const [page, setPage] = useState(1);
 	const [totalEntries, setTotalEntries] = useState(0);
@@ -71,10 +74,25 @@ const CollectionEntriesPage = () => {
 				let data;
 				if (isPublic) {
 					// Fetch from the public endpoint without the accessToken
-					data = await fetchEntriesOfPublicCollection(collectionID, page, limit, searchQuery, true);
+					data = await fetchEntriesOfPublicCollection(
+						collectionID,
+						page,
+						limit,
+						searchQuery,
+						sortField,
+						sortOrder
+					);
 				} else {
 					// Fetch from the private endpoint with the accessToken
-					data = await fetchEntriesByCollectionID(collectionID, accessToken, page, limit, searchQuery);
+					data = await fetchEntriesByCollectionID(
+						collectionID,
+						accessToken,
+						page,
+						limit,
+						searchQuery,
+						sortField,
+						sortOrder
+					);
 				}
 
 				setEntries(data.entries);
@@ -89,7 +107,7 @@ const CollectionEntriesPage = () => {
 		};
 
 		fetchEntries();
-	}, [collectionID, accessToken, page, limit, searchQuery, isPublic]);
+	}, [collectionID, accessToken, page, limit, searchQuery, isPublic, sortField, sortOrder]);
 
 	const handleCSVUpload = async (csvData) => {
 		try {
@@ -135,6 +153,11 @@ const CollectionEntriesPage = () => {
 		setSelectedEntries((prevSelected) =>
 			prevSelected.includes(entryId) ? prevSelected.filter((id) => id !== entryId) : [...prevSelected, entryId]
 		);
+	};
+
+	const handleSort = (field, order) => {
+		setSortField(field);
+		setSortOrder(order);
 	};
 
 	const handleDeleteSelected = async () => {
@@ -278,6 +301,7 @@ const CollectionEntriesPage = () => {
 				onSelectAll={handleSelectAll}
 				currUserMode={currUserMode}
 				isPublic={isPublic}
+				handleSort={handleSort}
 			/>
 
 			<Grid container justifyContent="space-between" alignItems="center" mt={3}>

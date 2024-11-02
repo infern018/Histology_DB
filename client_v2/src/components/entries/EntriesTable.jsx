@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
 	Table,
 	TableBody,
@@ -10,15 +10,30 @@ import {
 	Checkbox,
 	Paper,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, currUserMode, isPublic }) => {
+const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, currUserMode, isPublic, handleSort }) => {
+	const [sortField, setSortField] = useState("identification.bionomialSpeciesName");
+	const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
+	const navigate = useNavigate();
+
+	const handleFieldSort = (field) => {
+		const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
+		setSortField(field);
+		setSortOrder(newSortOrder);
+		handleSort(field, newSortOrder);
+	};
+
 	const handleSelectAll = (event) => {
 		onSelectAll(event);
 	};
 
 	const handleSelectEntry = (entryId) => {
 		onSelectEntry(entryId);
+	};
+
+	const handleRowClick = (entryId) => {
+		navigate(`/entry/${entryId}?isPublic=${isPublic}`);
 	};
 
 	return (
@@ -50,33 +65,79 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 							</TableCell>
 						)}
 						<TableCell>
-							<Typography variant="subtitle2" fontWeight="bold" color="white" fontSize="small">
-								Bionomial Species Name
+							<Typography
+								variant="subtitle2"
+								fontWeight="bold"
+								color="white"
+								fontSize="small"
+								onClick={() => handleFieldSort("identification.bionomialSpeciesName")}
+								sx={{ cursor: "pointer" }}>
+								Bionomial Species Name{" "}
+								{sortField === "identification.bionomialSpeciesName" &&
+									(sortOrder === "asc" ? "↑" : "↓")}
 							</Typography>
 						</TableCell>
 						<TableCell>
-							<Typography variant="subtitle2" fontWeight="bold" color="white" fontSize="small">
-								Developmental Stage
+							<Typography
+								variant="subtitle2"
+								fontWeight="bold"
+								color="white"
+								fontSize="small"
+								onClick={() => handleFieldSort("physiologicalInformation.age.developmentalStage")}
+								sx={{ cursor: "pointer" }}>
+								Developmental Stage{" "}
+								{sortField === "physiologicalInformation.age.developmentalStage" &&
+									(sortOrder === "asc" ? "↑" : "↓")}
 							</Typography>
 						</TableCell>
 						<TableCell>
-							<Typography variant="subtitle2" fontWeight="bold" color="white" fontSize="small">
-								Sex
+							<Typography
+								variant="subtitle2"
+								fontWeight="bold"
+								color="white"
+								fontSize="small"
+								onClick={() => handleFieldSort("physiologicalInformation.sex")}
+								sx={{ cursor: "pointer" }}>
+								Sex {sortField === "physiologicalInformation.sex" && (sortOrder === "asc" ? "↑" : "↓")}
 							</Typography>
 						</TableCell>
 						<TableCell>
-							<Typography variant="subtitle2" fontWeight="bold" color="white" fontSize="small">
-								Body Weight
+							<Typography
+								variant="subtitle2"
+								fontWeight="bold"
+								color="white"
+								fontSize="small"
+								onClick={() => handleFieldSort("physiologicalInformation.bodyWeight")}
+								sx={{ cursor: "pointer" }}>
+								Body Weight{" "}
+								{sortField === "physiologicalInformation.bodyWeight" &&
+									(sortOrder === "asc" ? "↑" : "↓")}
 							</Typography>
 						</TableCell>
 						<TableCell>
-							<Typography variant="subtitle2" fontWeight="bold" color="white" fontSize="small">
-								Brain Weight
+							<Typography
+								variant="subtitle2"
+								fontWeight="bold"
+								color="white"
+								fontSize="small"
+								onClick={() => handleFieldSort("physiologicalInformation.brainWeight")}
+								sx={{ cursor: "pointer" }}>
+								Brain Weight{" "}
+								{sortField === "physiologicalInformation.brainWeight" &&
+									(sortOrder === "asc" ? "↑" : "↓")}
 							</Typography>
 						</TableCell>
 						<TableCell>
-							<Typography variant="subtitle2" fontWeight="bold" color="white" fontSize="small">
-								Staining Method
+							<Typography
+								variant="subtitle2"
+								fontWeight="bold"
+								color="white"
+								fontSize="small"
+								onClick={() => handleFieldSort("histologicalInformation.stainingMethod")}
+								sx={{ cursor: "pointer" }}>
+								Staining Method{" "}
+								{sortField === "histologicalInformation.stainingMethod" &&
+									(sortOrder === "asc" ? "↑" : "↓")}
 							</Typography>
 						</TableCell>
 					</TableRow>
@@ -86,12 +147,9 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 						<TableRow
 							key={entry._id}
 							hover
-							component={Link}
-							to={`/entry/${entry._id}?isPublic=${isPublic}`}
+							onClick={() => handleRowClick(entry._id)}
 							sx={{
 								cursor: "pointer", // Makes the row indicate clickability
-								textDecoration: "none", // Remove underline from Link
-								color: "inherit", // Inherit text color
 								"&:hover": {
 									backgroundColor: "#333333 !important", // Stronger hover color with !important
 									borderColor: "#ffffff", // Optional border color on hover
