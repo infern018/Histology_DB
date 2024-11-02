@@ -30,7 +30,6 @@ const PlotlyChart = ({ data }) => {
 					[0.5, "#99ff33"], // Lime green
 					[1, "#ffcc00"], // Bright yellow
 				],
-				showscale: true, // Display color scale for reference
 			},
 			dimensions: [
 				{
