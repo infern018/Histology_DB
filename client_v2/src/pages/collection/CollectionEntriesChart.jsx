@@ -4,8 +4,9 @@ import { useLocation, useParams } from "react-router-dom";
 import { fetchEntriesByCollectionID, fetchEntriesOfPublicCollection } from "../../utils/apiCalls";
 import { CircularProgress, Box, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
-import ParallelCoordinatesChart from "../../components/entries/ParallelCoordinatesChart";
+
 import Navbar from "../../components/navbar/Navbar";
+import PlotlyChart from "../../components/entries/PlotlyChart";
 
 const CollectionEntriesChart = () => {
 	const { collectionID } = useParams();
@@ -71,7 +72,7 @@ const CollectionEntriesChart = () => {
 						<Typography variant="h4" align="center">
 							{collectionName}
 						</Typography>
-						<ParallelCoordinatesChart data={data} />
+						<PlotlyChart data={data} />
 					</>
 				)}
 			</Box>
