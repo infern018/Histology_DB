@@ -51,6 +51,9 @@ const EntrySchema = mongoose.Schema(
 				type: String,
 				required: true,
 			},
+			order: {
+				type: String,
+			},
 		},
 		archivalIdentification: {
 			archivalIndividualCode: {
@@ -117,22 +120,9 @@ const EntrySchema = mongoose.Schema(
 			brainPart: {
 				type: String,
 			},
-
-			//work on this field
-			dataThumbnailImage: {
-				type: String,
-			},
 			comments: {
 				type: String,
 			},
-		},
-
-		//media column to add image:
-
-		//TODO : work on this later on
-		media: {
-			data: Buffer,
-			contentType: String,
 		},
 
 		//backup entry, initially false

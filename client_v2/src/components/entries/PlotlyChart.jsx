@@ -62,6 +62,7 @@ const PlotlyChart = ({ data }) => {
 					range: [0, Math.max(...unpack(transformedData, "sectionThickness")) || 1],
 					label: "Section Thickness",
 					values: unpack(transformedData, "sectionThickness"),
+					thickness: 300,
 				},
 				{
 					range: [0, distinctValues(transformedData, "stainingMethod").length - 1],
