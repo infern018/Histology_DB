@@ -411,7 +411,12 @@ const advancedSearch = async (req, res) => {
 		}
 
 		if (sex && sex !== "") {
-			query["physiologicalInformation.sex"] = sex;
+			const sexMap = {
+				male: "m",
+				female: "f",
+				undefined: "u",
+			};
+			query["physiologicalInformation.sex"] = sexMap[sex.toLowerCase()] || sex;
 		}
 
 		if (speciesName && speciesName !== "") {
