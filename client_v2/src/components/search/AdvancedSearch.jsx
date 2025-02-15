@@ -118,7 +118,7 @@ const AdvancedSearch = ({ onSearch }) => {
 							onChange={(e, newValue) => setBrainWeightRange(newValue)}
 							valueLabelDisplay="auto"
 							min={0}
-							max={100}
+							max={1000}
 						/>
 					</Box>
 					<Box sx={{ mb: 2 }}>
