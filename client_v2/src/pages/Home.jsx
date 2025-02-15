@@ -40,6 +40,10 @@ const Home = () => {
 				<Box sx={{ width: "80%", mt: 3 }}>
 					<AdvancedSearch onSearch={handleSearch} />
 				</Box>
+				{/* or
+				<Button component={Link} to={`/collection/public`} variant="contained" sx={{ mt: 3 }}>
+					Explore All Public Collections
+				</Button> */}
 			</Box>
 		</Layout>
 	);
