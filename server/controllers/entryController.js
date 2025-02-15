@@ -348,6 +348,101 @@ const getOrder = (taxonomy_id) => {
 	return null;
 };
 
+// make a new route that return all distinct orders from the entry.identification.order
+// return a list of orders
+const getDistinctOrders = async (req, res) => {
+	try {
+		const orders = await Entry.distinct("identification.order");
+		res.status(200).json(orders);
+	} catch (err) {
+		res.status(500).json(err);
+	}
+};
+
+const advancedSearch = async (req, res) => {
+	try {
+		console.log("Advanced search endpoint called");
+
+		const {
+			searchQuery,
+			brainWeightRange,
+			bodyWeightRange,
+			developmentalStage,
+			unitsOfNumber,
+			sex,
+			speciesName,
+			taxonomyCode,
+			selectedOrder,
+		} = req.query;
+
+		console.log("SEARCH QUERY", searchQuery);
+
+		const query = {};
+
+		if (searchQuery) {
+			const searchTerms = searchQuery.split(",").map((term) => term.trim());
+			searchTerms.forEach((term) => {
+				const [key, value] = term.split(":").map((item) => item.trim());
+
+				if (["taxonomy_id", "taxon_id", "taxon"].includes(key)) {
+					query["identification.NCBITaxonomyCode"] = value;
+				} else if (["name", "species", "species_name"].includes(key)) {
+					query["identification.bionomialSpeciesName"] = { $regex: value, $options: "i" };
+				} else if (["staining", "stain", "staining_method"].includes(key)) {
+					query["histologicalInformation.stainingMethod"] = { $regex: value, $options: "i" };
+				}
+			});
+		}
+
+		if (brainWeightRange && brainWeightRange !== "") {
+			const [minBrainWeight, maxBrainWeight] = brainWeightRange.split(",").map(Number);
+			query["physiologicalInformation.brainWeight"] = { $gte: minBrainWeight, $lte: maxBrainWeight };
+		}
+
+		if (bodyWeightRange && bodyWeightRange !== "") {
+			const [minBodyWeight, maxBodyWeight] = bodyWeightRange.split(",").map(Number);
+			query["physiologicalInformation.bodyWeight"] = { $gte: minBodyWeight, $lte: maxBodyWeight };
+		}
+
+		if (developmentalStage && developmentalStage !== "") {
+			query["physiologicalInformation.age.developmentalStage"] = developmentalStage;
+		}
+
+		if (unitsOfNumber && unitsOfNumber !== "") {
+			query["physiologicalInformation.age.unitOfNumber"] = unitsOfNumber;
+		}
+
+		if (sex && sex !== "") {
+			query["physiologicalInformation.sex"] = sex;
+		}
+
+		if (speciesName && speciesName !== "") {
+			query["identification.bionomialSpeciesName"] = { $regex: speciesName, $options: "i" };
+		}
+
+		if (taxonomyCode && taxonomyCode !== "") {
+			query["identification.NCBITaxonomyCode"] = taxonomyCode;
+		}
+
+		if (selectedOrder && selectedOrder !== "") {
+			query["identification.order"] = selectedOrder;
+		}
+
+		console.log("Query:", query);
+
+		query["collectionID"] = {
+			$in: await Collection.find({ publicStatus: "approved", backupCollection: { $ne: true } }).distinct("_id"),
+		};
+
+		const entries = await Entry.find(query);
+
+		res.json({ entries });
+	} catch (error) {
+		console.error("Error fetching search results:", error);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
 module.exports = {
 	createEntry,
 	updateEntry,
@@ -358,4 +453,6 @@ module.exports = {
 	deleteMultipleEntries,
 	getOrderFromTaxonomy,
 	getOrder,
+	getDistinctOrders,
+	advancedSearch,
 };

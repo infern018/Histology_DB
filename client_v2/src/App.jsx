@@ -13,6 +13,8 @@ import CreateEntryStepper from "./pages/entries/CreateEntryStepper";
 import EntryDetailsPage from "./pages/entries/EntryDetails";
 import PublicCollections from "./pages/collection/PublicCollections";
 import CollectionEntriesChart from "./pages/collection/CollectionEntriesChart";
+import LandingPage from "./pages/LandingPage";
+import SearchResults from "./pages/SearchResults";
 
 function App() {
 	const theme = createTheme({
@@ -40,6 +42,8 @@ function App() {
 					<Route path="/collection/:collectionID/settings" element={<CollectionSettings />} />
 					<Route path="/collection/:collectionID/entry/create" element={<CreateEntryStepper />} />
 					<Route path="/entry/:entryID" element={<EntryDetailsPage />} />
+					<Route path="/v2" element={<LandingPage />} />
+					<Route path="/search/results" element={<SearchResults />} />
 				</Routes>
 			</Router>
 		</ThemeProvider>

@@ -2,11 +2,19 @@
 import React from "react";
 import { Typography, Button, Box } from "@mui/material";
 import Layout from "../components/utils/Layout";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import BiotechIcon from "@mui/icons-material/Biotech";
 import Background from "../components/utils/Background";
+import AdvancedSearch from "../components/search/AdvancedSearch";
 
 const Home = () => {
+	const navigate = useNavigate();
+
+	const handleSearch = (searchParams) => {
+		const queryParams = new URLSearchParams(searchParams).toString();
+		navigate(`/search/results?${queryParams}`);
+	};
+
 	return (
 		<Layout>
 			<Box
@@ -29,9 +37,9 @@ const Home = () => {
 					Microscopy Metadata Index (MiMe) is a platform designed to streamline the sharing and collaboration
 					of histology data. Discover, contribute, and manage your data seamlessly.
 				</Typography>
-				<Button component={Link} to={`/collection/public`} variant="contained" sx={{ mt: 3 }}>
-					Explore Public Collections
-				</Button>
+				<Box sx={{ width: "80%", mt: 3 }}>
+					<AdvancedSearch onSearch={handleSearch} />
+				</Box>
 			</Box>
 		</Layout>
 	);

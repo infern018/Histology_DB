@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-	CircularProgress,
-	Button,
-	Grid,
-	Typography,
-	Box,
-	Pagination,
-	TextField, // Import TextField for search bar
-} from "@mui/material";
+import { CircularProgress, Button, Grid, Typography, Box, Pagination } from "@mui/material";
 import { Delete as DeleteIcon } from "@mui/icons-material";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 
@@ -61,12 +53,9 @@ const CollectionEntriesPage = () => {
 
 	// Pagination state
 	const [page, setPage] = useState(1);
-	const [totalEntries, setTotalEntries] = useState(0);
+	// const [totalEntries, setTotalEntries] = useState(0);
 	const [totalPages, setTotalPages] = useState(0);
 	const [limit] = useState(10); // Entries per page
-
-	// Search state
-	const [searchQuery, setSearchQuery] = useState("");
 
 	useEffect(() => {
 		const fetchEntries = async () => {
@@ -74,14 +63,7 @@ const CollectionEntriesPage = () => {
 				let data;
 				if (isPublic) {
 					// Fetch from the public endpoint without the accessToken
-					data = await fetchEntriesOfPublicCollection(
-						collectionID,
-						page,
-						limit,
-						searchQuery,
-						sortField,
-						sortOrder
-					);
+					data = await fetchEntriesOfPublicCollection(collectionID, page, limit, "", sortField, sortOrder);
 				} else {
 					// Fetch from the private endpoint with the accessToken
 					data = await fetchEntriesByCollectionID(
@@ -89,14 +71,14 @@ const CollectionEntriesPage = () => {
 						accessToken,
 						page,
 						limit,
-						searchQuery,
+						"",
 						sortField,
 						sortOrder
 					);
 				}
 
 				setEntries(data.entries);
-				setTotalEntries(data.totalEntries);
+				// setTotalEntries(data.totalEntries);
 				setTotalPages(data.totalPages);
 				setCollectionName(data.collectionName);
 			} catch (error) {
@@ -107,7 +89,7 @@ const CollectionEntriesPage = () => {
 		};
 
 		fetchEntries();
-	}, [collectionID, accessToken, page, limit, searchQuery, isPublic, sortField, sortOrder]);
+	}, [collectionID, accessToken, page, limit, isPublic, sortField, sortOrder]);
 
 	const handleCSVUpload = async (csvData) => {
 		try {
@@ -126,7 +108,7 @@ const CollectionEntriesPage = () => {
 
 			const updatedEntries = await fetchEntriesByCollectionID(collectionID, accessToken, page, limit);
 			setEntries(updatedEntries.entries);
-			setTotalEntries(updatedEntries.totalEntries);
+			// setTotalEntries(updatedEntries.totalEntries);
 			setTotalPages(updatedEntries.totalPages);
 			setCollectionName(updatedEntries.collectionName);
 		} catch (error) {
@@ -172,7 +154,7 @@ const CollectionEntriesPage = () => {
 				setPage((prevPage) => prevPage - 1); // Go to the previous page
 			} else {
 				setEntries(updatedEntries.entries);
-				setTotalEntries(updatedEntries.totalEntries);
+				// setTotalEntries(updatedEntries.totalEntries);
 				setTotalPages(updatedEntries.totalPages);
 				setCollectionName(updatedEntries.collectionName);
 				setSelectedEntries([]);
@@ -186,12 +168,6 @@ const CollectionEntriesPage = () => {
 
 	const handlePageChange = (event, newPage) => {
 		setPage(newPage);
-	};
-
-	const handleSearchChange = (event) => {
-		const query = event.target.value;
-		setSearchQuery(query);
-		setPage(1);
 	};
 
 	if (loading) {
@@ -256,40 +232,6 @@ const CollectionEntriesPage = () => {
 								</Button>
 							</Grid>
 						</Grid>
-					</Grid>
-					{/* search collection button */}
-					<Grid item xs={12} md={6}>
-						<TextField
-							label={`Search in ${totalEntries} entries`}
-							variant="outlined"
-							fullWidth
-							size="small"
-							value={searchQuery}
-							onChange={handleSearchChange}
-							sx={{
-								// Custom styles for the TextField
-								"& .MuiOutlinedInput-root": {
-									"& fieldset": {
-										borderColor: "white", // Border color of the input
-									},
-									"&:hover fieldset": {
-										borderColor: "white", // Border color on hover
-									},
-									"&.Mui-focused fieldset": {
-										borderColor: "white", // Border color when focused
-									},
-									"& input": {
-										color: "white", // Input text color
-									},
-								},
-								"& .MuiInputLabel-root": {
-									color: "white", // Label color
-								},
-								"& .MuiInputLabel-root.Mui-focused": {
-									color: "white", // Label color when focused
-								},
-							}}
-						/>
 					</Grid>
 				</Grid>
 			</Box>

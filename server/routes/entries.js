@@ -4,6 +4,10 @@ const { verifyEntryEditAccess, verifyEntryReadAccess, verifyPublicEntry } = requ
 
 const entryController = require("../controllers/entryController");
 
+router.get("/distinct-orders", entryController.getDistinctOrders);
+
+router.get("/advanced-search", entryController.advancedSearch);
+
 router.post("/", verifyEntryEditAccess, entryController.createEntry);
 
 router.put("/:id", verifyEntryEditAccess, entryController.updateEntry);

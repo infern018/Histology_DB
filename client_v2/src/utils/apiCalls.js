@@ -313,3 +313,22 @@ export const getPublicEntryAPI = async (entryID) => {
 		throw new Error(error.message);
 	}
 };
+
+export const fetchSearchResults = async (searchParams) => {
+	try {
+		const response = await axiosReq.get("/entries/advanced-search", { params: searchParams });
+		return response.data;
+	} catch (error) {
+		console.error("Error fetching search results:", error);
+		throw error;
+	}
+};
+
+export const fetchDistinctOrders = async () => {
+	try {
+		const response = await axiosReq.get("/entries/distinct-orders");
+		return response.data;
+	} catch (error) {
+		throw new Error(error.message);
+	}
+};
