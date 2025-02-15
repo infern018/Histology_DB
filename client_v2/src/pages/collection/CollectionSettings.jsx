@@ -8,6 +8,7 @@ import {
 	deleteCollaboratorAPI,
 	addCollaboratorAPI,
 	getAllUserMetas,
+	flushCollectionAPI,
 } from "../../utils/apiCalls";
 import Layout from "../../components/utils/Layout";
 import {
@@ -90,6 +91,15 @@ const CollectionSettings = () => {
 
 		fetchData();
 	}, [collectionID, accessToken, currentUserID]);
+
+	// Method to flush collection, delete all its entries
+	const handleFlushCollection = async () => {
+		try {
+			await flushCollectionAPI(collectionID, accessToken);
+		} catch (error) {
+			console.error("Failed to flush collection", error);
+		}
+	};
 
 	const handleModeToggle = async (collaboratorID, newMode) => {
 		try {
@@ -180,6 +190,11 @@ const CollectionSettings = () => {
 						<Grid item xs={6} sx={{ textAlign: "right" }}>
 							<Button variant="contained" sx={{ marginBottom: 2 }} onClick={() => setOpenAddDialog(true)}>
 								<AddIcon /> Add Collaborator
+							</Button>
+						</Grid>
+						<Grid item xs={12}>
+							<Button variant="contained" color="error" onClick={handleFlushCollection}>
+								Flush Collection
 							</Button>
 						</Grid>
 					</Grid>

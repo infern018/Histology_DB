@@ -214,6 +214,7 @@ const processCSVEntries = async (req, res) => {
 			const itemCode = `${scientificName}_${data.stainingMethod}_${generateRandomAlphaNumeric(scientificName)}`;
 			const individualCode = `${scientificName}_${generateRandomAlphaNumeric(scientificName)}`;
 			const wikipediaSpeciesName = `https://en.wikipedia.org/wiki/${scientificName}`;
+			const order = getOrder(data.NCBITaxonomyCode);
 
 			// Add these modifications to the data object
 			updatedCollection.collectionID = collectionID;
@@ -223,11 +224,12 @@ const processCSVEntries = async (req, res) => {
 				individualCode,
 				NCBITaxonomyCode: data.NCBITaxonomyCode || null,
 				wikipediaSpeciesName,
+				order,
 			};
 
 			updatedCollection.physiologicalInformation = {
 				age: {
-					developmentalStage: data.developmentalStage,
+					developmentalStage: data.developmentalStage || "adult",
 					number: data.ageNumber || null,
 					unitOfNumber: data.ageUnit || null,
 					origin: data.origin || "postNatal",
@@ -296,6 +298,56 @@ const processCSVEntries = async (req, res) => {
 		});
 };
 
+const getOrderFromTaxonomy = (req, res) => {
+	const { taxonomyId } = req.params; // Get taxonomy ID from the request parameter
+
+	fs.readFile("server/utils/combined_taxonomy_reports.json", "utf8", (err, data) => {
+		if (err) {
+			return res.status(500).json({ error: "Error reading taxonomy data" });
+		}
+
+		const taxonomyData = JSON.parse(data);
+
+		// Search for the taxonomy data with the matching taxonomyId
+		const taxonomyItem = taxonomyData.find((item) => item.taxonomy.taxId === parseInt(taxonomyId));
+
+		// If taxonomy is found, return the order, else return an error
+		if (taxonomyItem) {
+			const order = taxonomyItem.taxonomy.classification.order;
+			if (order && order.name) {
+				res.status(200).json({ order: order.name });
+			} else {
+				res.status(404).json({ error: "Order not found" });
+			}
+		} else {
+			res.status(404).json({ error: "Taxonomy ID not found" });
+		}
+	});
+};
+
+// create a simple function that returns the order from the taxonomy_id, else return Null
+const getOrder = (taxonomy_id) => {
+	try {
+		// read the filer
+		const data = fs.readFileSync("combined_taxonomy_reports.json", "utf8");
+		const taxonomyData = JSON.parse(data);
+
+		// Search for the taxonomy data with the matching taxonomyId
+		const taxonomyItem = taxonomyData.find((item) => item.taxonomy.taxId === parseInt(taxonomy_id));
+
+		// If taxonomy is found, return the order, else return null
+		if (taxonomyItem) {
+			const order = taxonomyItem.taxonomy.classification.order;
+			if (order && order.name) {
+				return order.name;
+			}
+		}
+	} catch (err) {
+		console.error("Error reading taxonomy data:", err);
+	}
+	return null;
+};
+
 module.exports = {
 	createEntry,
 	updateEntry,
@@ -304,4 +356,6 @@ module.exports = {
 	getEntriesByCollectionId,
 	processCSVEntries,
 	deleteMultipleEntries,
+	getOrderFromTaxonomy,
+	getOrder,
 };

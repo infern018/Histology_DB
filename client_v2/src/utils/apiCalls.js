@@ -89,6 +89,28 @@ export const createCollectionAPI = async (collection, accessToken) => {
 	}
 };
 
+export const deleteCollectionAPI = async (collectionID, accessToken) => {
+	try {
+		const response = await axiosReq.delete(`/collections/${collectionID}`, {
+			headers: { token: `${accessToken}` },
+		});
+		return response.data;
+	} catch (error) {
+		throw new Error(error.message);
+	}
+};
+
+export const flushCollectionAPI = async (collectionID, accessToken) => {
+	try {
+		const response = await axiosReq.delete(`/collections/${collectionID}/flush`, {
+			headers: { token: `${accessToken}` },
+		});
+		return response.data;
+	} catch (error) {
+		throw new Error(error.message);
+	}
+};
+
 // return user details of ther userIDs provided in the body
 export const fetchUserDetails = async (userIDs, accessToken) => {
 	// make the userIDs array of format : {user_IDs: [id1, id2, id3, ...]}

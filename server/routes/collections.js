@@ -10,6 +10,8 @@ const multer = require("multer");
 router.post("/", verifyToken, collectionController.createCollection);
 router.put("/:id", verifyTokenAndAuthCollection, collectionController.updateCollection);
 router.delete("/:id", verifyTokenAndAuthCollection, collectionController.deleteCollection);
+// flush collection (delete all entries)
+router.delete("/:id/flush", verifyTokenAndAuthCollection, collectionController.flushCollection);
 
 router.get("/public", collectionController.getPublicCollections);
 router.get("/:id", verifyTokenAndAuthCollection, collectionController.getCollection);

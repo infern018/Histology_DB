@@ -1,4 +1,5 @@
 const Collection = require("../models/Collection");
+const Entry = require("../models/Entry");
 
 const generateCollectionCode = (collectionName) => {
 	collectionName = collectionName.replace(/\s/g, "");
@@ -60,6 +61,16 @@ const deleteCollection = async (req, res) => {
 	}
 };
 
+// API that will delete all entries with collectionID = req.params.id
+const flushCollection = async (req, res) => {
+	try {
+		await Entry.deleteMany({ collectionID: req.params.id });
+		res.status(200).json("Collection flushed successfully");
+	} catch (err) {
+		res.status(500).json(err);
+	}
+};
+
 const getCollection = async (req, res) => {
 	try {
 		const collection = await Collection.findById(req.params.id);
@@ -103,4 +114,5 @@ module.exports = {
 	getCollection,
 	getCollectionNameAndNumCollaborators,
 	getPublicCollections,
+	flushCollection,
 };

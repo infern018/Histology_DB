@@ -14,6 +14,8 @@ router.get("/:id", verifyEntryReadAccess, entryController.getEntry);
 
 router.get("/public/:id", verifyPublicEntry, entryController.getEntry);
 
+router.get("/:id/order/", entryController.getOrderFromTaxonomy);
+
 //GET ALL ENTRIES
 //name - regex
 router.get("/", async (req, res) => {

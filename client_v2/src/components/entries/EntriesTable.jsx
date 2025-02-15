@@ -13,6 +13,9 @@ import {
 import { useNavigate } from "react-router-dom";
 
 const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, currUserMode, isPublic, handleSort }) => {
+    // console log the identification field of 5 entries
+    console.log(entries.slice(5, 20).map((entry) => entry.identification));
+
 	const [sortField, setSortField] = useState("identification.bionomialSpeciesName");
 	const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
 	const navigate = useNavigate();
@@ -140,6 +143,19 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 									(sortOrder === "asc" ? "↑" : "↓")}
 							</Typography>
 						</TableCell>
+                        <TableCell>
+							<Typography
+								variant="subtitle2"
+								fontWeight="bold"
+								color="white"
+								fontSize="small"
+								onClick={() => handleFieldSort("identification.order")}
+								sx={{ cursor: "pointer" }}>
+								Order{" "}
+								{sortField === "identification.order" &&
+									(sortOrder === "asc" ? "↑" : "↓")}
+							</Typography>
+						</TableCell>
 					</TableRow>
 				</TableHead>
 				<TableBody>
@@ -203,6 +219,11 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 							<TableCell>
 								<Typography variant="body2" color="white">
 									{entry.histologicalInformation.stainingMethod}
+								</Typography>
+							</TableCell>
+                            <TableCell>
+								<Typography variant="body2" color="white">
+									{entry.identification.order}
 								</Typography>
 							</TableCell>
 						</TableRow>

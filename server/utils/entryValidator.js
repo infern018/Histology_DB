@@ -21,7 +21,10 @@ const validateRowAgainstSchema = (row, schema, parentKey = "") => {
 		// Check for enum values
 		if (
 			options.enum &&
-			(fieldValue === undefined || fieldValue === null || fieldValue === "" || !options.enum.includes(fieldValue))
+			(fieldValue === undefined ||
+				(fieldValue === null && !options.enum.includes(null)) ||
+				fieldValue === "" ||
+				!options.enum.includes(fieldValue))
 		) {
 			rowErrors.push(`${key} must be one of: ${options.enum.join(", ")}`);
 		}

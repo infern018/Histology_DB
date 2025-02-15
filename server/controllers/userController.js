@@ -28,11 +28,12 @@ const getUserCollections = async (req, res) => {
 			return res.status(404).json({ message: "User not found" });
 		}
 
-		const userOwnedCollections = await Collection.find({ ownerID: user._id });
+		const userOwnedCollections = await Collection.find({ ownerID: user._id, backupCollection: { $ne: true } });
 
 		const userCollaboratedCollectionIDs = user.collaboratingCollections.map((collab) => collab.collection_id);
 		const userCollaboratedCollections = await Collection.find({
 			_id: { $in: userCollaboratedCollectionIDs },
+			backupCollection: { $ne: true },
 		});
 
 		const ownedCollections = userOwnedCollections.map((collection) => ({
