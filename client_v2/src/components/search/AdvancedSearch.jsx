@@ -49,6 +49,8 @@ const AdvancedSearch = ({ onSearch }) => {
 			unitsOfNumber,
 			sex,
 			selectedOrder,
+			page: 1, // Start from the first page
+			limit: 10, // Default limit per page
 		};
 		onSearch(searchParams);
 		setDrawerOpen(false);
@@ -57,6 +59,8 @@ const AdvancedSearch = ({ onSearch }) => {
 	const handleNormalSearch = () => {
 		const searchParams = {
 			searchQuery,
+			page: 1, // Start from the first page
+			limit: 10, // Default limit per page
 		};
 		onSearch(searchParams);
 	};

@@ -361,8 +361,6 @@ const getDistinctOrders = async (req, res) => {
 
 const advancedSearch = async (req, res) => {
 	try {
-		console.log("Advanced search endpoint called");
-
 		const {
 			searchQuery,
 			brainWeightRange,
@@ -373,9 +371,9 @@ const advancedSearch = async (req, res) => {
 			speciesName,
 			taxonomyCode,
 			selectedOrder,
+			page = 1,
+			limit = 10,
 		} = req.query;
-
-		console.log("SEARCH QUERY", searchQuery);
 
 		const query = {};
 
@@ -428,15 +426,21 @@ const advancedSearch = async (req, res) => {
 			query["identification.order"] = selectedOrder;
 		}
 
-		console.log("Query:", query);
-
 		query["collectionID"] = {
 			$in: await Collection.find({ publicStatus: "approved", backupCollection: { $ne: true } }).distinct("_id"),
 		};
 
-		const entries = await Entry.find(query);
+		const skip = (page - 1) * limit;
 
-		res.json({ entries });
+		const entries = await Entry.find(query).skip(skip).limit(parseInt(limit));
+		const totalEntries = await Entry.countDocuments(query);
+
+		res.json({
+			entries,
+			totalEntries,
+			totalPages: Math.ceil(totalEntries / limit),
+			currentPage: parseInt(page),
+		});
 	} catch (error) {
 		console.error("Error fetching search results:", error);
 		res.status(500).json({ error: "Internal Server Error" });
