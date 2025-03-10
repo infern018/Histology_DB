@@ -1,12 +1,14 @@
-
 # 🔬 MiMe
 An online database for storing, curating and sharing metadata from diverse collections of histological data.
+
+## Summary
+MiMe (Microscopy Metadata Index) is a platform designed to streamline the sharing and collaboration of histology data. It allows users to store, curate, and share metadata from diverse collections of histological data. The platform supports advanced search capabilities, data visualization, and collaboration features to enhance the research and analysis of histological specimens.
 
 ## Prerequisites
 Make sure you have the following installed on your system:
 
- - Node.js (version 14 or above)
- - npm (Node package manager) or **yarn**
+- Node.js (version 14 or above)
+- npm (Node package manager) or **yarn**
 
 ## 🌳 Project Structure
 
@@ -80,7 +82,6 @@ Default API and Client URLs:
 
 - API: http://localhost:5000/api
 - Client: http://localhost:3000
-
 
 ## 🪁 Styling frameworks
 The app uses following frameworks to ease styling of the app:
