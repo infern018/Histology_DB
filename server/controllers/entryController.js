@@ -366,7 +366,6 @@ const advancedSearch = async (req, res) => {
 			brainWeightRange,
 			bodyWeightRange,
 			developmentalStage,
-			unitsOfNumber,
 			sex,
 			speciesName,
 			taxonomyCode,
@@ -394,20 +393,22 @@ const advancedSearch = async (req, res) => {
 
 		if (brainWeightRange && brainWeightRange !== "") {
 			const [minBrainWeight, maxBrainWeight] = brainWeightRange.split(",").map(Number);
-			query["physiologicalInformation.brainWeight"] = { $gte: minBrainWeight, $lte: maxBrainWeight };
+			query["$or"] = [
+				{ "physiologicalInformation.brainWeight": { $gte: minBrainWeight, $lte: maxBrainWeight } },
+				...(minBrainWeight === 0 ? [{ "physiologicalInformation.brainWeight": null }] : []),
+			];
 		}
 
 		if (bodyWeightRange && bodyWeightRange !== "") {
 			const [minBodyWeight, maxBodyWeight] = bodyWeightRange.split(",").map(Number);
-			query["physiologicalInformation.bodyWeight"] = { $gte: minBodyWeight, $lte: maxBodyWeight };
+			query["$or"] = [
+				{ "physiologicalInformation.bodyWeight": { $gte: minBodyWeight, $lte: maxBodyWeight } },
+				...(minBodyWeight === 0 ? [{ "physiologicalInformation.bodyWeight": null }] : []),
+			];
 		}
 
 		if (developmentalStage && developmentalStage !== "") {
 			query["physiologicalInformation.age.developmentalStage"] = developmentalStage;
-		}
-
-		if (unitsOfNumber && unitsOfNumber !== "") {
-			query["physiologicalInformation.age.unitOfNumber"] = unitsOfNumber;
 		}
 
 		if (sex && sex !== "") {

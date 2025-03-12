@@ -18,10 +18,9 @@ import { fetchDistinctOrders } from "../../utils/apiCalls";
 
 const AdvancedSearch = ({ onSearch }) => {
 	const [searchQuery, setSearchQuery] = useState("");
-	const [brainWeightRange, setBrainWeightRange] = useState([0, 100]);
+	const [brainWeightRange, setBrainWeightRange] = useState([0, 1000]);
 	const [bodyWeightRange, setBodyWeightRange] = useState([0, 1000]);
 	const [developmentalStage, setDevelopmentalStage] = useState("");
-	const [unitsOfNumber, setUnitsOfNumber] = useState("");
 	const [sex, setSex] = useState("");
 
 	const [drawerOpen, setDrawerOpen] = useState(false);
@@ -46,7 +45,6 @@ const AdvancedSearch = ({ onSearch }) => {
 			brainWeightRange,
 			bodyWeightRange,
 			developmentalStage,
-			unitsOfNumber,
 			sex,
 			selectedOrder,
 			page: 1, // Start from the first page
@@ -144,20 +142,6 @@ const AdvancedSearch = ({ onSearch }) => {
 								<MenuItem value="infant">Infant</MenuItem>
 								<MenuItem value="juvenile">Juvenile</MenuItem>
 								<MenuItem value="adult">Adult</MenuItem>
-							</Select>
-						</FormControl>
-					</Box>
-					<Box sx={{ mb: 2 }}>
-						<FormControl fullWidth>
-							<InputLabel>Units of Number</InputLabel>
-							<Select
-								value={unitsOfNumber}
-								onChange={(e) => setUnitsOfNumber(e.target.value)}
-								label="Units of Number">
-								<MenuItem value="days">Days</MenuItem>
-								<MenuItem value="weeks">Weeks</MenuItem>
-								<MenuItem value="months">Months</MenuItem>
-								<MenuItem value="years">Years</MenuItem>
 							</Select>
 						</FormControl>
 					</Box>
