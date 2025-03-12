@@ -459,6 +459,7 @@ const advancedSearch = async (req, res) => {
 			query["identification.order"] = selectedOrder;
 		}
 
+		// We search non deleted public collections only
 		query["collectionID"] = {
 			$in: await Collection.find({ publicStatus: "approved", backupCollection: { $ne: true } }).distinct("_id"),
 		};

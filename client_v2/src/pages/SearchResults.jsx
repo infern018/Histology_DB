@@ -53,6 +53,7 @@ const SearchResults = () => {
 					selectedEntries={[]}
 					onSelectEntry={() => {}}
 					onSelectAll={() => {}}
+					isPublic={true}
 				/>
 				<Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
 					<Pagination
