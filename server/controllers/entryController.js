@@ -311,6 +311,8 @@ const getOrderFromTaxonomy = (req, res) => {
 		// Search for the taxonomy data with the matching taxonomyId
 		const taxonomyItem = taxonomyData.find((item) => item.taxonomy.taxId === parseInt(taxonomyId));
 
+		console.log("taxonomyItem", taxonomyItem);
+
 		// If taxonomy is found, return the order, else return an error
 		if (taxonomyItem) {
 			const order = taxonomyItem.taxonomy.classification.order;
@@ -359,6 +361,25 @@ const getDistinctOrders = async (req, res) => {
 	}
 };
 
+const getTaxonomyIDs = (commonName, scientificName) => {
+	// print current working directory
+	console.log(process.cwd());
+	const taxonomyData = JSON.parse(fs.readFileSync("combined_taxonomy_reports.json", "utf8"));
+	let matchingTaxonomies = [];
+
+	if (scientificName) {
+		matchingTaxonomies = taxonomyData.filter((item) =>
+			new RegExp(scientificName, "i").test(item.taxonomy.currentScientificName.name)
+		);
+	} else if (commonName) {
+		matchingTaxonomies = taxonomyData.filter((item) =>
+			new RegExp(commonName, "i").test(item.taxonomy.curatorCommonName)
+		);
+	}
+
+	return matchingTaxonomies.map((item) => item.taxonomy.taxId);
+};
+
 const advancedSearch = async (req, res) => {
 	try {
 		const {
@@ -381,9 +402,15 @@ const advancedSearch = async (req, res) => {
 			searchTerms.forEach((term) => {
 				const [key, value] = term.split(":").map((item) => item.trim());
 
-				if (["taxonomy_id", "taxon_id", "taxon"].includes(key)) {
+				if (["scientific_name", "name", "species"].includes(key)) {
+					const taxonomy_ids = getTaxonomyIDs(null, value);
+					query["identification.NCBITaxonomyCode"] = { $in: taxonomy_ids };
+				} else if (["common_name"].includes(key)) {
+					const taxonomy_ids = getTaxonomyIDs(value, null);
+					query["identification.NCBITaxonomyCode"] = { $in: taxonomy_ids };
+				} else if (["taxonomy_id", "taxon_id", "taxon"].includes(key)) {
 					query["identification.NCBITaxonomyCode"] = value;
-				} else if (["name", "species", "species_name"].includes(key)) {
+				} else if (["archival_name"].includes(key)) {
 					query["identification.bionomialSpeciesName"] = { $regex: value, $options: "i" };
 				} else if (["staining", "stain", "staining_method"].includes(key)) {
 					query["histologicalInformation.stainingMethod"] = { $regex: value, $options: "i" };

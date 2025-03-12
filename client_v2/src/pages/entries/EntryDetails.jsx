@@ -64,9 +64,30 @@ const EntryDetailsPage = () => {
 				<Grid container spacing={3}>
 					<Grid item xs={12} md={6}>
 						<Box mb={2}>
+							<Typography variant="h6">NCBI Taxonomy Code:</Typography>
+							<Typography variant="body1">{entry.identification.NCBITaxonomyCode || "N/A"}</Typography>
+						</Box>
+					</Grid>
+
+					<Grid item xs={12} md={6}>
+						<Box mb={2}>
 							<Typography variant="h6">Binomial Species Name:</Typography>
 							<Typography variant="body1">
 								{entry.identification.bionomialSpeciesName || "N/A"}
+							</Typography>
+						</Box>
+					</Grid>
+
+					<Grid item xs={12} md={6}>
+						<Box mb={2}>
+							<Typography variant="h6">NCBI Taxonomy Browser Link:</Typography>
+							<Typography variant="body1">
+								<a
+									href={`https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=${entry.identification.NCBITaxonomyCode}`}
+									target="_blank"
+									rel="noopener noreferrer">
+									{entry.identification.NCBITaxonomyCode || "N/A"}
+								</a>
 							</Typography>
 						</Box>
 					</Grid>
@@ -97,15 +118,21 @@ const EntryDetailsPage = () => {
 					<Grid item xs={12} md={6}>
 						<Box mb={2}>
 							<Typography variant="h6">Sex:</Typography>
-							<Typography variant="body1">{entry.physiologicalInformation.sex || "N/A"}</Typography>
+							<Typography variant="body1">
+								{{
+									m: "Male",
+									f: "Female",
+									u: "Undefined",
+								}[entry.physiologicalInformation.sex] || "N/A"}
+							</Typography>
 						</Box>
 					</Grid>
 
 					<Grid item xs={12} md={6}>
 						<Box mb={2}>
-							<Typography variant="h6">Body Weight (grams):</Typography>
+							<Typography variant="h6">Body Weight:</Typography>
 							<Typography variant="body1">
-								{entry.physiologicalInformation.bodyWeight || "N/A"}
+								{entry.physiologicalInformation.bodyWeight || "N/A"} {"g"}
 							</Typography>
 						</Box>
 					</Grid>
@@ -119,7 +146,7 @@ const EntryDetailsPage = () => {
 						</Box>
 					</Grid>
 
-					<Grid item xs={12}>
+					<Grid item xs={12} md={6}>
 						<Box mb={2}>
 							<Typography variant="h6">Staining Method:</Typography>
 							<Typography variant="body1">
@@ -139,14 +166,14 @@ const EntryDetailsPage = () => {
 
 					<Grid item xs={12} md={6}>
 						<Box mb={2}>
-							<Typography variant="h6">Inter-Section Distance:</Typography>
+							<Typography variant="h6">Inter-Section Distance(um):</Typography>
 							<Typography variant="body1">
 								{entry.histologicalInformation.interSectionDistance || "N/A"}
 							</Typography>
 						</Box>
 					</Grid>
 
-					<Grid item xs={12}>
+					<Grid item xs={12} md={6}>
 						<Box mb={2}>
 							<Typography variant="h6">Comments:</Typography>
 							<Typography variant="body1">{entry.histologicalInformation.comments || "N/A"}</Typography>

@@ -11,6 +11,7 @@ import {
 	FormControl,
 	InputLabel,
 	InputAdornment,
+	Tooltip,
 	Link,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -63,44 +64,62 @@ const AdvancedSearch = ({ onSearch }) => {
 		onSearch(searchParams);
 	};
 
+	const searchStyles = {
+		mb: 2,
+		"& .MuiOutlinedInput-root": {
+			"& fieldset": {
+				borderColor: "white",
+			},
+			"&:hover fieldset": {
+				borderColor: "white",
+			},
+			"&.Mui-focused fieldset": {
+				borderColor: "white",
+			},
+		},
+		"& .MuiInputBase-input": {
+			color: "white",
+		},
+		"& .MuiInputLabel-root": {
+			color: "white",
+		},
+	};
+
 	return (
 		<Box>
-			<TextField
-				label="Search via taxon, species..."
-				variant="outlined"
-				fullWidth
-				value={searchQuery}
-				onChange={(e) => setSearchQuery(e.target.value)}
-				sx={{
-					mb: 2,
-					"& .MuiOutlinedInput-root": {
-						"& fieldset": {
-							borderColor: "white",
-						},
-						"&:hover fieldset": {
-							borderColor: "white",
-						},
-						"&.Mui-focused fieldset": {
-							borderColor: "white",
-						},
-					},
-					"& .MuiInputBase-input": {
-						color: "white",
-					},
-					"& .MuiInputLabel-root": {
-						color: "white",
-					},
-				}}
-				InputProps={{
-					endAdornment: (
-						<InputAdornment position="end">
-							<Button onClick={handleNormalSearch} variant="contained" sx={{ color: "white" }}>
-								<SearchIcon />
-							</Button>
-						</InputAdornment>
-					),
-				}}
-			/>
+			<Tooltip
+				arrow
+				placement="bottom-start"
+				title={
+					<Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
+						<strong>Search Formats:</strong>
+						{"\n"}
+						<strong>• species:</strong> Homo sapiens{"\n"}
+						<strong>• common_name:</strong> Human{"\n"}
+						<strong>• taxonomy_id:</strong> 9606{"\n"}
+						<strong>• archival_name:</strong> alligator{"\n"}
+						<strong>• staining:</strong> nissyl
+					</Typography>
+				}>
+				<TextField
+					label="Search via taxon, species..."
+					variant="outlined"
+					fullWidth
+					value={searchQuery}
+					onChange={(e) => setSearchQuery(e.target.value)}
+					sx={searchStyles}
+					InputProps={{
+						endAdornment: (
+							<InputAdornment position="end">
+								<Button onClick={handleNormalSearch} variant="contained" sx={{ color: "white" }}>
+									<SearchIcon />
+								</Button>
+							</InputAdornment>
+						),
+					}}
+				/>
+			</Tooltip>
+
 			<Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
 				<Link component="button" variant="body2" onClick={() => setDrawerOpen(true)} sx={{ color: "white" }}>
 					Advanced Search
