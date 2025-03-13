@@ -136,6 +136,10 @@ const AdvancedSearch = ({ onSearch }) => {
 							valueLabelDisplay="auto"
 							min={0}
 							max={1000}
+							sx={{
+								color:
+									brainWeightRange[0] === 0 && brainWeightRange[1] === 1000 ? "grey" : "primary.main",
+							}}
 						/>
 					</Box>
 					<Box sx={{ mb: 2 }}>
@@ -146,15 +150,22 @@ const AdvancedSearch = ({ onSearch }) => {
 							valueLabelDisplay="auto"
 							min={0}
 							max={1000}
+							sx={{
+								color:
+									bodyWeightRange[0] === 0 && bodyWeightRange[1] === 1000 ? "grey" : "primary.main",
+							}}
 						/>
 					</Box>
 					<Box sx={{ mb: 2 }}>
 						<FormControl fullWidth>
-							<InputLabel>Developmental Stage</InputLabel>
+							<InputLabel sx={{ color: developmentalStage === "" ? "grey" : "primary.main" }}>
+								Developmental Stage
+							</InputLabel>
 							<Select
 								value={developmentalStage}
 								onChange={(e) => setDevelopmentalStage(e.target.value)}
-								label="Developmental Stage">
+								label="Developmental Stage"
+								sx={{ color: developmentalStage === "" ? "grey" : "primary.main" }}>
 								<MenuItem value="embryo">Embryo</MenuItem>
 								<MenuItem value="fetus">Fetus</MenuItem>
 								<MenuItem value="neonate">Neonate</MenuItem>
@@ -166,8 +177,12 @@ const AdvancedSearch = ({ onSearch }) => {
 					</Box>
 					<Box sx={{ mb: 2 }}>
 						<FormControl fullWidth>
-							<InputLabel>Sex</InputLabel>
-							<Select value={sex} onChange={(e) => setSex(e.target.value)} label="Sex">
+							<InputLabel sx={{ color: sex === "" ? "grey" : "primary.main" }}>Sex</InputLabel>
+							<Select
+								value={sex}
+								onChange={(e) => setSex(e.target.value)}
+								label="Sex"
+								sx={{ color: sex === "" ? "grey" : "primary.main" }}>
 								<MenuItem value="male">Male</MenuItem>
 								<MenuItem value="female">Female</MenuItem>
 								<MenuItem value="undefined">Undefined</MenuItem>
@@ -176,11 +191,14 @@ const AdvancedSearch = ({ onSearch }) => {
 					</Box>
 					<Box sx={{ mb: 2 }}>
 						<FormControl fullWidth>
-							<InputLabel>Order</InputLabel>
+							<InputLabel sx={{ color: selectedOrder === "" ? "grey" : "primary.main" }}>
+								Order
+							</InputLabel>
 							<Select
 								value={selectedOrder}
 								onChange={(e) => setSelectedOrder(e.target.value)}
-								label="Order">
+								label="Order"
+								sx={{ color: selectedOrder === "" ? "grey" : "primary.main" }}>
 								{orders.map((order) => (
 									<MenuItem key={order} value={order}>
 										{order}

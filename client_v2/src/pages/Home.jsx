@@ -1,8 +1,8 @@
 // Home.js
 import React from "react";
-import { Typography, Button, Box } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import Layout from "../components/utils/Layout";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import BiotechIcon from "@mui/icons-material/Biotech";
 import Background from "../components/utils/Background";
 import AdvancedSearch from "../components/search/AdvancedSearch";
