@@ -3,77 +3,84 @@ const fs = require("fs");
 const path = require("path");
 const Entry = require("../models/Entry");
 
-// MongoDB connection URI (update with your MongoDB connection string)
-const MONGO_URL = "mongodb://localhost:27017/";
+const MONGO_URL =
+	"mongodb+srv://histmetadata:Heidenhain@histology-metadata.gtdly.mongodb.net/?retryWrites=true&w=majority";
 
 mongoose
 	.connect(MONGO_URL, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 	})
-	.then(() => console.log("Connected to MongoDB"))
+	.then(() => console.log("✅ Connected to MongoDB"))
 	.catch((err) => {
-		console.log("MongoDB connection error:", err);
+		console.error("❌ MongoDB connection error:", err);
 		process.exit(1);
 	});
 
 const updateEntriesWithOrder = async () => {
 	try {
 		// Fetch all entries
-		const rawEntries = await Entry.find({});
+		const allEntries = await Entry.find({});
+		console.log(`📌 Total entries in DB: ${allEntries.length}`);
 
-		// Read the JSON file with taxonomy reports
-		const combinedTaxonomyReports = JSON.parse(
+		// Filter entries that do NOT have the 'order' field
+		const entriesToUpdate = allEntries.filter(
+			(entry) => !entry.identification.order || entry.identification.order === "Unknown"
+		);
+		console.log(`🔍 Entries missing 'order': ${entriesToUpdate.length}`);
+
+		// Read taxonomy reports
+		const taxonomyReports = JSON.parse(
 			fs.readFileSync(
 				"/Users/vishwaas.singh/Documents/Personal/Projects/Histology_DB/server/utils/combined_taxonomy_reports.json",
 				"utf-8"
 			)
 		);
+		console.log(`📂 Loaded ${taxonomyReports.length} taxonomy reports`);
 
+		let updatedCount = 0;
 		let orderNotFoundTaxIds = [];
+		let missingTaxReportIds = [];
 
-		console.log("Combined Taxonomy Reports: ", combinedTaxonomyReports[0].taxonomy.classification);
+		// Process each entry that needs updating
+		for (const entry of entriesToUpdate) {
+			const taxId = entry.identification.NCBITaxonomyCode;
+			const taxonomyReport = taxonomyReports.find((report) => report.taxonomy.taxId === taxId);
 
-		// Loop through each entry and find matching taxonomy report
-		for (const entry of rawEntries) {
-			// Find taxonomy report based on taxId
-			const taxonomyReport = combinedTaxonomyReports.find(
-				(report) => report.taxonomy.taxId === entry.identification.NCBITaxonomyCode
-			);
-
-			// If a matching report is found, update the order field
 			if (taxonomyReport) {
-				if (taxonomyReport.taxonomy.classification.order) {
-					entry.identification.order = taxonomyReport.taxonomy.classification.order.name;
+				const classification = taxonomyReport.taxonomy.classification;
+
+				if (classification?.order?.name) {
+					entry.identification.order = classification.order.name;
 					await entry.save();
-					// console.log(`Updated order for Entry ID: ${entry._id}`);
+					console.log(`🔄 Updated entry: ${entry._id}`);
+					updatedCount++;
 				} else {
-					console.log(`No order found for taxonomy code: ${entry.identification.NCBITaxonomyCode}`);
-					orderNotFoundTaxIds.push(entry.identification.NCBITaxonomyCode);
-					console.log(`Taxonomy Classification: ${taxonomyReport.taxonomy.classification}`);
+					orderNotFoundTaxIds.push(taxId);
+					console.warn(`⚠️ No 'order' found for taxonomy code: ${taxId}`);
+					console.warn(`🧐 Taxonomy classification: ${JSON.stringify(classification, null, 2)}`);
 				}
+			} else {
+				console.warn(`⚠️ No taxonomy report found for taxId: ${taxId}`);
+				missingTaxReportIds.push(taxId);
 			}
 		}
 
-		// for all those entries where order is not updated, make it as Unkown
-		const entriesWithUnknownOrder = rawEntries.filter((entry) => !entry.identification.order);
-		for (const entry of entriesWithUnknownOrder) {
-			entry.identification.order = "Unknown";
-			await entry.save({ validateModifiedOnly: true });
-			// console.log(`Updated order for Entry ID: ${entry._id} to Unknown`);
-		}
-
-		// distinct orderNotFoundTaxIds
+		// Remove duplicates from missing order list
 		orderNotFoundTaxIds = [...new Set(orderNotFoundTaxIds)];
 
-		console.log("Entries with no order found: ", orderNotFoundTaxIds);
-
-		console.log("Entries updated with order field successfully");
+		console.log(`✅ Successfully updated ${updatedCount}/${entriesToUpdate.length} entries`);
+		if (orderNotFoundTaxIds.length > 0) {
+			console.warn(`⚠️ Entries with no order found: ${orderNotFoundTaxIds.length}`);
+			console.warn(`📝 Missing order for taxIds: ${orderNotFoundTaxIds.join(", ")}`);
+		}
+		console.log(`✅ Missing taxonomy reports for taxIds: ${missingTaxReportIds.length}`);
 	} catch (err) {
-		console.error("Error updating entries:", err);
+		console.error("❌ Error updating entries:", err);
 	} finally {
 		// Close the MongoDB connection
 		mongoose.connection.close();
+		console.log("🔌 MongoDB connection closed");
 	}
 };
 
