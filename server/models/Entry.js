@@ -54,15 +54,15 @@ const EntrySchema = mongoose.Schema(
 			order: {
 				type: String,
 			},
-            source_link: {
-                type: String,
-            },
-            microdraw_link: {
-                type: String, // Link to https://microdraw.pasteur.fr/
-            },
-            thumbnail: {
-                type: String, // Preview image of the brain slice
-            },
+			source_link: {
+				type: String,
+			},
+			microdraw_link: {
+				type: String, // Link to https://microdraw.pasteur.fr/
+			},
+			thumbnail: {
+				type: String, // Preview image of the brain slice
+			},
 		},
 		archivalIdentification: {
 			archivalIndividualCode: {

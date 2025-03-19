@@ -215,9 +215,9 @@ const processCSVEntries = async (req, res) => {
 			const individualCode = `${scientificName}_${generateRandomAlphaNumeric(scientificName)}`;
 			const wikipediaSpeciesName = `https://en.wikipedia.org/wiki/${scientificName}`;
 			const order = getOrder(data.NCBITaxonomyCode);
-            const microdraw_link = data.microdraw_link || null;
-            const source_link = data.source_link || null;
-            const thumbnail = data.thumbnail || null;
+			const microdraw_link = data.microdraw_link || null;
+			const source_link = data.source_link || null;
+			const thumbnail = data.thumbnail || null;
 
 			// Add these modifications to the data object
 			updatedCollection.collectionID = collectionID;
@@ -228,9 +228,9 @@ const processCSVEntries = async (req, res) => {
 				NCBITaxonomyCode: data.NCBITaxonomyCode || null,
 				wikipediaSpeciesName,
 				order,
-                microdraw_link,
-                source_link,
-                thumbnail,
+				microdraw_link,
+				source_link,
+				thumbnail,
 			};
 
 			updatedCollection.physiologicalInformation = {
@@ -391,14 +391,20 @@ const advancedSearch = async (req, res) => {
 			searchQuery,
 			brainWeightRange,
 			bodyWeightRange,
+			allowNAWeight,
 			developmentalStage,
 			sex,
 			speciesName,
 			taxonomyCode,
 			selectedOrder,
+			selectedCollections,
 			page = 1,
 			limit = 10,
 		} = req.query;
+
+		console.log("allowNAWeight", allowNAWeight);
+		// print type of allowNAWeight
+		console.log("type of allowNAWeight", typeof allowNAWeight);
 
 		const query = {};
 
@@ -423,7 +429,7 @@ const advancedSearch = async (req, res) => {
 			});
 		}
 
-		if (brainWeightRange && brainWeightRange !== "") {
+		if (brainWeightRange && brainWeightRange !== "" && allowNAWeight !== "true") {
 			const [minBrainWeight, maxBrainWeight] = brainWeightRange.split(",").map(Number);
 			query["$or"] = [
 				{ "physiologicalInformation.brainWeight": { $gte: minBrainWeight, $lte: maxBrainWeight } },
@@ -431,7 +437,7 @@ const advancedSearch = async (req, res) => {
 			];
 		}
 
-		if (bodyWeightRange && bodyWeightRange !== "") {
+		if (bodyWeightRange && bodyWeightRange !== "" && allowNAWeight !== "true") {
 			const [minBodyWeight, maxBodyWeight] = bodyWeightRange.split(",").map(Number);
 			query["$or"] = [
 				{ "physiologicalInformation.bodyWeight": { $gte: minBodyWeight, $lte: maxBodyWeight } },
@@ -464,10 +470,16 @@ const advancedSearch = async (req, res) => {
 			query["identification.order"] = selectedOrder;
 		}
 
+		console.log("query", query);
+
 		// We search non deleted public collections only
 		query["collectionID"] = {
 			$in: await Collection.find({ publicStatus: "approved", backupCollection: { $ne: true } }).distinct("_id"),
 		};
+
+		if (selectedCollections && selectedCollections.length > 0) {
+			query["collectionID"] = { $in: selectedCollections };
+		}
 
 		const skip = (page - 1) * limit;
 

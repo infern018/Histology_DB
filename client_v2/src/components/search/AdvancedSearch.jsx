@@ -9,17 +9,21 @@ import {
 	MenuItem,
 	Select,
 	FormControl,
+	FormControlLabel,
 	InputLabel,
 	InputAdornment,
 	Tooltip,
 	Link,
+	Checkbox,
+	ListItemText,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { fetchDistinctOrders } from "../../utils/apiCalls";
+import { fetchDistinctOrders, fetchPublicCollections } from "../../utils/apiCalls";
 
 const AdvancedSearch = ({ onSearch }) => {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [brainWeightRange, setBrainWeightRange] = useState([0, 1000]);
+	const [allowNAWeight, setAllowNAWeight] = useState(false);
 	const [bodyWeightRange, setBodyWeightRange] = useState([0, 1000]);
 	const [developmentalStage, setDevelopmentalStage] = useState("");
 	const [sex, setSex] = useState("");
@@ -27,6 +31,8 @@ const AdvancedSearch = ({ onSearch }) => {
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [orders, setOrders] = useState([]);
 	const [selectedOrder, setSelectedOrder] = useState("");
+	const [collections, setCollections] = useState([]);
+	const [selectedCollections, setSelectedCollections] = useState([]);
 
 	useEffect(() => {
 		const fetchOrders = async () => {
@@ -37,7 +43,18 @@ const AdvancedSearch = ({ onSearch }) => {
 				console.error("Error fetching distinct orders:", error);
 			}
 		};
+
+		const fetchCollections = async () => {
+			try {
+				const collectionsData = await fetchPublicCollections();
+				setCollections(collectionsData);
+			} catch (error) {
+				console.error("Error fetching public collections:", error);
+			}
+		};
+
 		fetchOrders();
+		fetchCollections();
 	}, []);
 
 	const handleSearch = () => {
@@ -45,9 +62,11 @@ const AdvancedSearch = ({ onSearch }) => {
 			searchQuery,
 			brainWeightRange,
 			bodyWeightRange,
+			allowNAWeight,
 			developmentalStage,
 			sex,
 			selectedOrder,
+			selectedCollections: selectedCollections.map((col) => col.collection_id),
 			page: 1, // Start from the first page
 			limit: 10, // Default limit per page
 		};
@@ -156,6 +175,20 @@ const AdvancedSearch = ({ onSearch }) => {
 							}}
 						/>
 					</Box>
+
+					<Box sx={{ mb: 2 }}>
+						<FormControlLabel
+							control={
+								<Checkbox
+									checked={allowNAWeight}
+									onChange={(e) => setAllowNAWeight(e.target.checked)}
+									color="primary"
+								/>
+							}
+							label="Allow N/A Brain Weight"
+						/>
+					</Box>
+
 					<Box sx={{ mb: 2 }}>
 						<FormControl fullWidth>
 							<InputLabel sx={{ color: developmentalStage === "" ? "grey" : "primary.main" }}>
@@ -202,6 +235,24 @@ const AdvancedSearch = ({ onSearch }) => {
 								{orders.map((order) => (
 									<MenuItem key={order} value={order}>
 										{order}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+					</Box>
+
+					<Box sx={{ mb: 2 }}>
+						<FormControl fullWidth>
+							<InputLabel>Collections</InputLabel>
+							<Select
+								multiple
+								value={selectedCollections}
+								onChange={(e) => setSelectedCollections(e.target.value)}
+								renderValue={(selected) => selected.map((col) => col.name).join(", ")}>
+								{collections.map((collection) => (
+									<MenuItem key={collection.name} value={collection}>
+										<Checkbox checked={selectedCollections.indexOf(collection) > -1} />
+										<ListItemText primary={collection.name} />
 									</MenuItem>
 								))}
 							</Select>

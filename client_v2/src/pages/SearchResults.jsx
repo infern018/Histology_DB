@@ -15,9 +15,11 @@ const SearchResults = () => {
 
 	useEffect(() => {
 		const queryParams = new URLSearchParams(location.search);
+
 		const fetchResults = async () => {
 			try {
 				const searchParams = Object.fromEntries(queryParams.entries());
+				console.log("searchParams", searchParams);
 				searchParams.page = page;
 
 				const data = await fetchSearchResults(searchParams);
