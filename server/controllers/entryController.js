@@ -363,7 +363,6 @@ const getDistinctOrders = async (req, res) => {
 
 const getTaxonomyIDs = (commonName, scientificName) => {
 	// print current working directory
-	console.log(process.cwd());
 	const taxonomyData = JSON.parse(fs.readFileSync("combined_taxonomy_reports.json", "utf8"));
 	let matchingTaxonomies = [];
 
