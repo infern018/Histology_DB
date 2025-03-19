@@ -104,13 +104,13 @@ const EntryDetailsPage = () => {
 
 							<Grid item xs={12} md={6}>
 								<Box mb={2}>
-									<Typography variant="h6">NCBI Taxonomy Browser Link:</Typography>
+									<Typography variant="h6">NCBI Taxonomy Browser:</Typography>
 									<Typography variant="body1">
 										<a
 											href={`https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=${entry.identification.NCBITaxonomyCode}`}
 											target="_blank"
 											rel="noopener noreferrer">
-											{entry.identification.NCBITaxonomyCode || "N/A"} 
+											{entry.identification.NCBITaxonomyCode || "N/A"}
 										</a>
 									</Typography>
 								</Box>
