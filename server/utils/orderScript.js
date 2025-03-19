@@ -4,7 +4,8 @@ const fs = require("fs");
 const path = require("path");
 const Entry = require("../models/Entry");
 
-const MONGO_URL = "mongodb://localhost:27017/";
+const MONGO_URL =
+	"mongodb+srv://histmetadata:Heidenhain@histology-metadata.gtdly.mongodb.net/?retryWrites=true&w=majority";
 const API_KEY = "c97db3d9ed989c074b2e7faf503128d33108"; // Replace with your actual API key
 
 // Connect to MongoDB
@@ -25,11 +26,16 @@ const updateEntriesWithOrder = async () => {
 		});
 
 		// Get distinct entries by NCBITaxonomyCode
-		const distinctEntries = rawEntries.filter(
-			(entry, index, self) =>
-				index ===
-				self.findIndex((t) => t.identification.NCBITaxonomyCode === entry.identification.NCBITaxonomyCode)
-		);
+		const distinctEntries = rawEntries
+			.filter(
+				(entry, index, self) =>
+					index ===
+					self.findIndex((t) => t.identification.NCBITaxonomyCode === entry.identification.NCBITaxonomyCode)
+			)
+			.filter((entry) => {
+				const taxonomyCode = entry.identification.NCBITaxonomyCode;
+				return taxonomyCode && taxonomyCode !== "" && taxonomyCode !== "null" && !entry.identification.order;
+			});
 
 		const totalEntries = distinctEntries.length;
 
@@ -40,6 +46,10 @@ const updateEntriesWithOrder = async () => {
 
 			// if taxnomyCode is null, skip
 			if (!taxonomyCode || taxonomyCode === "" || taxonomyCode === "null") {
+				continue;
+			}
+
+			if (entry.identification.order) {
 				continue;
 			}
 

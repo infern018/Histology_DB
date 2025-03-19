@@ -215,6 +215,9 @@ const processCSVEntries = async (req, res) => {
 			const individualCode = `${scientificName}_${generateRandomAlphaNumeric(scientificName)}`;
 			const wikipediaSpeciesName = `https://en.wikipedia.org/wiki/${scientificName}`;
 			const order = getOrder(data.NCBITaxonomyCode);
+            const microdraw_link = data.microdraw_link || null;
+            const source_link = data.source_link || null;
+            const thumbnail = data.thumbnail || null;
 
 			// Add these modifications to the data object
 			updatedCollection.collectionID = collectionID;
@@ -225,6 +228,9 @@ const processCSVEntries = async (req, res) => {
 				NCBITaxonomyCode: data.NCBITaxonomyCode || null,
 				wikipediaSpeciesName,
 				order,
+                microdraw_link,
+                source_link,
+                thumbnail,
 			};
 
 			updatedCollection.physiologicalInformation = {

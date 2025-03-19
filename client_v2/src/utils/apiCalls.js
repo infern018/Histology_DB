@@ -244,6 +244,9 @@ export const uploadCSVEntries = async (collectionID, csvData, accessToken) => {
 		"brainPart",
 		"comments",
 		"NCBITaxonomyCode",
+		"microdraw_link",
+		"source_link",
+		"thumbnail",
 	];
 
 	const csvContent = [
@@ -265,6 +268,9 @@ export const uploadCSVEntries = async (collectionID, csvData, accessToken) => {
 				row.brainPart,
 				row.comments,
 				row.NCBITaxonomyCode,
+				row.microdraw_link,
+				row.source_link,
+				row.thumbnail,
 			].join(",")
 		),
 	].join("\n");
