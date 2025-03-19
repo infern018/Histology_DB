@@ -70,6 +70,16 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 								fontWeight="bold"
 								color="white"
 								fontSize="small"
+								sx={{ cursor: "pointer" }}>
+								Thumbnail
+							</Typography>
+						</TableCell>
+						<TableCell>
+							<Typography
+								variant="subtitle2"
+								fontWeight="bold"
+								color="white"
+								fontSize="small"
 								onClick={() => handleFieldSort("identification.bionomialSpeciesName")}
 								sx={{ cursor: "pointer" }}>
 								Bionomial Species Name{" "}
@@ -99,32 +109,6 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 								onClick={() => handleFieldSort("physiologicalInformation.sex")}
 								sx={{ cursor: "pointer" }}>
 								Sex {sortField === "physiologicalInformation.sex" && (sortOrder === "asc" ? "↑" : "↓")}
-							</Typography>
-						</TableCell>
-						<TableCell>
-							<Typography
-								variant="subtitle2"
-								fontWeight="bold"
-								color="white"
-								fontSize="small"
-								onClick={() => handleFieldSort("physiologicalInformation.bodyWeight")}
-								sx={{ cursor: "pointer" }}>
-								Body Weight(g){" "}
-								{sortField === "physiologicalInformation.bodyWeight" &&
-									(sortOrder === "asc" ? "↑" : "↓")}
-							</Typography>
-						</TableCell>
-						<TableCell>
-							<Typography
-								variant="subtitle2"
-								fontWeight="bold"
-								color="white"
-								fontSize="small"
-								onClick={() => handleFieldSort("physiologicalInformation.brainWeight")}
-								sx={{ cursor: "pointer" }}>
-								Brain Weight(g){" "}
-								{sortField === "physiologicalInformation.brainWeight" &&
-									(sortOrder === "asc" ? "↑" : "↓")}
 							</Typography>
 						</TableCell>
 						<TableCell>
@@ -187,6 +171,15 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 								</TableCell>
 							)}
 							<TableCell>
+								{entry.identification.thumbnail ? (
+									<img
+										src={entry.identification.thumbnail}
+										alt="Thumbnail"
+										style={{ width: 50, height: 50, objectFit: "cover", borderRadius: 5 }}
+									/>
+								) : null}
+							</TableCell>
+							<TableCell>
 								<Typography variant="body2" color="white">
 									{entry.identification.bionomialSpeciesName}
 								</Typography>
@@ -199,16 +192,6 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 							<TableCell>
 								<Typography variant="body2" color="white">
 									{entry.physiologicalInformation.sex}
-								</Typography>
-							</TableCell>
-							<TableCell>
-								<Typography variant="body2" color="white">
-									{entry.physiologicalInformation.bodyWeight || "N/A"}
-								</Typography>
-							</TableCell>
-							<TableCell>
-								<Typography variant="body2" color="white">
-									{entry.physiologicalInformation.brainWeight || "N/A"}
 								</Typography>
 							</TableCell>
 							<TableCell>
