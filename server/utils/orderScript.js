@@ -4,8 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const Entry = require("../models/Entry");
 
-const MONGO_URL =
-	"mongodb+srv://histmetadata:Heidenhain@histology-metadata.gtdly.mongodb.net/?retryWrites=true&w=majority";
+const MONGO_URL ="mongodb://localhost:27017/";
 const API_KEY = "c97db3d9ed989c074b2e7faf503128d33108"; // Replace with your actual API key
 
 // Connect to MongoDB
