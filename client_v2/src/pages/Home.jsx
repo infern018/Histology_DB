@@ -27,7 +27,6 @@ const Home = () => {
 					height: "100vh",
 					textAlign: "center",
 				}}>
-				<Background /> {/* Use Background component */}
 				<BiotechIcon sx={{ width: 80, height: 80, fontSize: 40, color: "rgba(255, 255, 255, 0.8)" }} />
 				<Typography variant="h2">MiMe</Typography>
 				<Typography variant="h5" sx={{ mt: 2 }}>
