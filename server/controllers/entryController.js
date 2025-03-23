@@ -402,10 +402,6 @@ const advancedSearch = async (req, res) => {
 			limit = 10,
 		} = req.query;
 
-		console.log("allowNAWeight", allowNAWeight);
-		// print type of allowNAWeight
-		console.log("type of allowNAWeight", typeof allowNAWeight);
-
 		const query = {};
 
 		if (searchQuery) {
@@ -450,11 +446,7 @@ const advancedSearch = async (req, res) => {
 		}
 
 		if (sex && sex !== "") {
-			const sexMap = {
-				male: "m",
-				female: "f",
-				undefined: "u",
-			};
+			const sexMap = { male: "m", female: "f", undefined: "u" };
 			query["physiologicalInformation.sex"] = sexMap[sex.toLowerCase()] || sex;
 		}
 
@@ -470,21 +462,24 @@ const advancedSearch = async (req, res) => {
 			query["identification.order"] = selectedOrder;
 		}
 
-		console.log("query", query);
-
-		// We search non deleted public collections only
-		query["collectionID"] = {
-			$in: await Collection.find({ publicStatus: "approved", backupCollection: { $ne: true } }).distinct("_id"),
-		};
-
 		if (selectedCollections && selectedCollections.length > 0) {
 			query["collectionID"] = { $in: selectedCollections };
+		} else {
+			query["collectionID"] = {
+				$in: await Collection.find({ publicStatus: "approved", backupCollection: { $ne: true } }).select("_id"),
+			};
 		}
 
 		const skip = (page - 1) * limit;
 
-		const entries = await Entry.find(query).skip(skip).limit(parseInt(limit));
-		const totalEntries = await Entry.countDocuments(query);
+		const entries = await Entry.find(query)
+			.select(
+				"identification.thumbnail identification.bionomialSpeciesName physiologicalInformation.age.developmentalStage physiologicalInformation.sex histologicalInformation.stainingMethod identification.order"
+			)
+			.skip(skip)
+			.limit(parseInt(limit));
+
+		const totalEntries = entries.length;
 
 		res.json({
 			entries,
