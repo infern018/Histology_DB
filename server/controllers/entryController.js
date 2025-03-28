@@ -470,6 +470,8 @@ const advancedSearch = async (req, res) => {
 			};
 		}
 
+		query["backupEntry"] = { $ne: true };
+
 		const skip = (page - 1) * limit;
 
 		const entries = await Entry.find(query)
@@ -479,7 +481,7 @@ const advancedSearch = async (req, res) => {
 			.skip(skip)
 			.limit(parseInt(limit));
 
-		const totalEntries = entries.length;
+		const totalEntries = await Entry.countDocuments(query);
 
 		res.json({
 			entries,
