@@ -145,6 +145,20 @@ const verifyPublicEntry = async (req, res, next) => {
 	}
 };
 
+const verifyPublicCollection = async (req, res, next) => {
+	const collection = await Collection.findById(req.params.id);
+
+	if (!collection) {
+		return res.status(404).json({ error: "Collection not found" });
+	}
+
+	if (collection.publicStatus === "approved") {
+		next();
+	} else {
+		res.status(403).json("Not a public collection");
+	}
+};
+
 // make a function where a user requesting to view the entries of a collection has to be either the owner or a collaborator with view access
 const verifyCollectionReadAccess = async (req, res, next) => {
 	verifyToken(req, res, async () => {
@@ -210,5 +224,6 @@ module.exports = {
 	verifyEntryEditAccess,
 	verifyEntryReadAccess,
 	verifyPublicEntry,
+	verifyPublicCollection,
 	verifyCollectionReadAccess,
 };

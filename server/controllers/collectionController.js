@@ -23,6 +23,9 @@ const createCollection = async (req, res) => {
 const updateCollection = async (req, res) => {
 	const newCollection = req.body;
 
+	console.log("newCollection", newCollection);
+	console.log("req.body", req.body);
+
 	if (req.body.name) {
 		newCollection.collectionCode = generateCollectionCode(req.body.name);
 	}

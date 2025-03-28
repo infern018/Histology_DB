@@ -46,11 +46,11 @@ const CollectionTable = ({ collections, isPublic }) => {
 								Name
 							</Typography>
 						</TableCell>
-						<TableCell>
+						{/* <TableCell>
 							<Typography variant="subtitle1" fontWeight="bold" sx={{ color: "#ffffff" }}>
 								Collaborators
 							</Typography>
-						</TableCell>
+						</TableCell> */}
 						<TableCell>
 							<Typography variant="subtitle1" fontWeight="bold" sx={{ color: "#ffffff" }}>
 								Mode
@@ -76,19 +76,18 @@ const CollectionTable = ({ collections, isPublic }) => {
 							}}>
 							<TableCell>
 								<Link
-									to={`/collection/${collection.collection_id}/entries?mode=${collection.mode}&isPublic=${isPublic}`}
-									style={{ textDecoration: "none", color: "inherit" }}
-								>
+									to={`/collection/${collection.collection_id}?isPublic=${isPublic}`}
+									style={{ textDecoration: "none", color: "inherit" }}>
 									<Typography variant="body2" color="white">
 										{collection.name}
 									</Typography>
 								</Link>
 							</TableCell>
-							<TableCell>
+							{/* <TableCell>
 								<Typography variant="body2" color="white">
 									{collection.numCollaborators}
 								</Typography>
-							</TableCell>
+							</TableCell> */}
 							<TableCell>
 								<Typography variant="body2" color="white">
 									{collection.mode}

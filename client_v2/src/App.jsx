@@ -5,6 +5,7 @@ import Logout from "./pages/auth/Logout";
 import Home from "./pages/Home";
 import Profile from "./pages/user/Profile";
 import CollectionCreate from "./pages/collection/CollectionCreate";
+import CollectionEdit from "./pages/collection/CollectionEdit";
 import CollectionSettings from "./pages/collection/CollectionSettings";
 import GithubLogin from "./pages/auth/Github";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -15,6 +16,7 @@ import PublicCollections from "./pages/collection/PublicCollections";
 import CollectionEntriesChart from "./pages/collection/CollectionEntriesChart";
 import LandingPage from "./pages/LandingPage";
 import SearchResults from "./pages/SearchResults";
+import CollectionDetails from "./pages/collection/CollectionDetails";
 
 function App() {
 	const theme = createTheme({
@@ -37,6 +39,8 @@ function App() {
 
 					<Route path="/user/:username" element={<Profile />} />
 					<Route path="/collection/create" element={<CollectionCreate />} />
+					<Route path="/collection/:collectionID/edit" element={<CollectionEdit />} />
+					<Route path="/collection/:collectionID" element={<CollectionDetails />} />
 					<Route path="/collection/:collectionID/entries" element={<CollectionEntriesPage />} />
 					<Route path="/visualize/collection/:collectionID" element={<CollectionEntriesChart />} />
 					<Route path="/collection/:collectionID/settings" element={<CollectionSettings />} />

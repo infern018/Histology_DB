@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { fetchDistinctOrders, fetchPublicCollections } from "../../utils/apiCalls";
+import { Link as RouterLink } from "react-router-dom";
 
 const AdvancedSearch = ({ onSearch }) => {
 	const [searchQuery, setSearchQuery] = useState("");
@@ -262,6 +263,12 @@ const AdvancedSearch = ({ onSearch }) => {
 					<Button variant="contained" color="primary" onClick={handleSearch} sx={{ mt: 2 }}>
 						Search
 					</Button>
+
+					<Box sx={{ mt: 2 }}>
+						<Button component={RouterLink} to={`/collection/public`} variant="text">
+							Explore public collections {">"}
+						</Button>
+					</Box>
 				</Box>
 			</Drawer>
 		</Box>

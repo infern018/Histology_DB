@@ -78,9 +78,40 @@ export const fetchCollectionStats = async (collectionID) => {
 	}
 };
 
+export const getCollectionAPI = async (collectionID, accessToken) => {
+	try {
+		const response = await axiosReq.get(`/collections/${collectionID}`, {
+			headers: { token: `${accessToken}` },
+		});
+		return response.data;
+	} catch (error) {
+		throw new Error(error.message);
+	}
+};
+
+export const getPublicCollectionAPI = async (collectionID) => {
+	try {
+		const response = await axiosReq.get(`/collections/public/${collectionID}`);
+		return response.data;
+	} catch (error) {
+		throw new Error(error.message);
+	}
+};
+
 export const createCollectionAPI = async (collection, accessToken) => {
 	try {
 		const response = await axiosReq.post("/collections", collection, {
+			headers: { token: `${accessToken}` },
+		});
+		return response;
+	} catch (error) {
+		throw new Error(error.message);
+	}
+};
+
+export const updateCollectionAPI = async (collectionID, updatedCollection, accessToken) => {
+	try {
+		const response = await axiosReq.put(`/collections/${collectionID}`, updatedCollection, {
 			headers: { token: `${accessToken}` },
 		});
 		return response;

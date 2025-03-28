@@ -2,15 +2,17 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { CircularProgress, Typography, Paper, Box, Button, Divider, Grid } from "@mui/material";
-import { getEntryAPI, getPublicEntryAPI } from "../../utils/apiCalls";
+import { getEntryAPI, getPublicEntryAPI, getCollectionAPI, getPublicCollectionAPI } from "../../utils/apiCalls";
 import Layout from "../../components/utils/Layout";
 import { useSelector } from "react-redux";
+import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 
 const EntryDetailsPage = () => {
 	const user = useSelector((state) => state.auth.currentUser);
 
 	const { entryID } = useParams();
 	const [entry, setEntry] = useState(null);
+	const [collection, setCollection] = useState(null);
 	const [loading, setLoading] = useState(true);
 
 	const location = useLocation();
@@ -38,6 +40,26 @@ const EntryDetailsPage = () => {
 		fetchEntry();
 	}, [entryID, user, isPublic]);
 
+	useEffect(() => {
+		const fetchCollection = async () => {
+			if (entry?.collectionID) {
+				try {
+					let collection;
+					if (isPublic) {
+						collection = await getPublicCollectionAPI(entry.collectionID);
+					} else {
+						collection = await getCollectionAPI(entry.collectionID, user.accessToken);
+					}
+					setCollection(collection);
+				} catch (error) {
+					console.error("Error fetching collection:", error);
+				}
+			}
+		};
+
+		fetchCollection();
+	}, [entry, user, isPublic]);
+
 	if (loading) {
 		return <CircularProgress />;
 	}
@@ -56,10 +78,33 @@ const EntryDetailsPage = () => {
 					margin: "0 auto",
 					background: "rgba(255, 255, 255, 0.8)",
 				}}>
-				<Typography variant="h4" gutterBottom>
-					Entry Details
-				</Typography>
-				<Divider style={{ margin: "20px 0" }} />
+				<Grid container alignItems="center" justifyContent="space-between">
+					{/* Entry Details on the Left */}
+					<Grid item>
+						<Typography variant="h6" gutterBottom>
+							Entry Details:
+						</Typography>
+					</Grid>
+
+					{/* Collection Name on the Right */}
+					<Grid item>
+						<Typography variant="h6" gutterBottom>
+							Collection:{" "}
+							{collection?.name ? (
+								<a
+									href={`/collection/${collection._id}?isPublic=${isPublic}`}
+									style={{ textDecoration: "none", color: "#1976d2" }}>
+									{collection.name}
+								</a>
+							) : (
+								"N/A"
+							)}
+							<ArrowOutwardIcon sx={{ color: "#1976d2", ml: 1 }} />
+						</Typography>
+					</Grid>
+				</Grid>
+
+				<Divider style={{ margin: "5px 0" }} />
 
 				<Grid container spacing={3}>
 					{/* Display Thumbnail Separately on the Left */}

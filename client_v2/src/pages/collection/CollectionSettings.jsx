@@ -10,6 +10,7 @@ import {
 	getAllUserMetas,
 	flushCollectionAPI,
 } from "../../utils/apiCalls";
+import { Link } from "react-router-dom";
 import Layout from "../../components/utils/Layout";
 import {
 	Box,
@@ -35,6 +36,7 @@ import {
 } from "@mui/material";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 import SearchUserSelectComponent from "../../components/user/SearchUserSelect";
 
 const CollectionSettings = () => {
@@ -182,16 +184,35 @@ const CollectionSettings = () => {
 			<Box sx={{ padding: 0 }}>
 				<Paper sx={{ padding: 4, marginBottom: 3, background: "#2e2e2e" }}>
 					<Grid container spacing={0} alignItems="center">
-						<Grid item xs={6}>
+						<Grid item xs={4}>
 							<Typography variant="h6" gutterBottom sx={{ color: "#F2E9E4" }}>
 								Collaborators
 							</Typography>
 						</Grid>
-						<Grid item xs={6} sx={{ textAlign: "right" }}>
+						<Grid item xs={4} sx={{ textAlign: "right" }}>
+							<Button
+								variant="contained"
+								component={Link}
+								to={`/collection/${collectionID}/edit`}
+								sx={{
+									color: "#f0f0f0", // Slight red color
+									"&:hover": {
+										backgroundColor: "#0f0f0f", // Example hover background color
+									},
+									cursor: "pointer",
+									marginBottom: 2,
+								}}
+								size="small"
+								edge="end">
+								<EditIcon /> Edit Collection
+							</Button>
+						</Grid>
+						<Grid item xs={4} sx={{ textAlign: "right" }}>
 							<Button variant="contained" sx={{ marginBottom: 2 }} onClick={() => setOpenAddDialog(true)}>
 								<AddIcon /> Add Collaborator
 							</Button>
 						</Grid>
+
 						<Grid item xs={12}>
 							<Button variant="contained" color="error" onClick={handleFlushCollection}>
 								Flush Collection
