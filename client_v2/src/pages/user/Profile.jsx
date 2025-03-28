@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchUserCollections, fetchCollectionStats, fetchUserDetails } from "../../utils/apiCalls";
+import { fetchUserCollections, fetchUserDetails } from "../../utils/apiCalls";
 import CollectionTable from "../../components/user/CollectionsTable";
 import { Box, Typography, CircularProgress, Button } from "@mui/material";
 import { useSelector } from "react-redux";
@@ -29,17 +29,17 @@ const Profile = () => {
 				});
 
 				const collectionsData = await fetchUserCollections(user._id);
-				const collectionsWithStats = await Promise.all(
-					collectionsData.map(async (collection) => {
-						const stats = await fetchCollectionStats(collection.collection_id);
-						return {
-							...collection,
-							numCollaborators: stats.numCollaborators,
-						};
-					})
-				);
+				// const collectionsWithStats = await Promise.all(
+				// 	collectionsData.map(async (collection) => {
+				// 		const stats = await fetchCollectionStats(collection.collection_id);
+				// 		return {
+				// 			...collection,
+				// 			numCollaborators: stats.numCollaborators,
+				// 		};
+				// 	})
+				// );
 
-				setCollections(collectionsWithStats);
+				setCollections(collectionsData);
 				setLoading(false);
 			} catch (error) {
 				console.error("Failed to fetch data", error);

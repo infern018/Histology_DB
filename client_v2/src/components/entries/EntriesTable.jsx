@@ -173,10 +173,7 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 							<TableCell>
 								{entry.identification.thumbnail ? (
 									<img
-										src={
-											entry.identification.thumbnail ||
-											"https://jkfenner.com/wp-content/uploads/2019/11/default.jpg"
-										}
+										src={entry.identification.thumbnail}
 										alt="Thumbnail"
 										style={{ width: 50, height: 50, objectFit: "cover", borderRadius: 5 }}
 									/>
