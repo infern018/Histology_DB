@@ -4,7 +4,6 @@ import { Typography, Box } from "@mui/material";
 import Layout from "../components/utils/Layout";
 import { useNavigate } from "react-router-dom";
 import BiotechIcon from "@mui/icons-material/Biotech";
-import Background from "../components/utils/Background";
 import AdvancedSearch from "../components/search/AdvancedSearch";
 
 const Home = () => {
@@ -27,7 +26,6 @@ const Home = () => {
 					height: "100vh",
 					textAlign: "center",
 				}}>
-				<Background /> {/* Use Background component */}
 				<BiotechIcon sx={{ width: 80, height: 80, fontSize: 40, color: "rgba(255, 255, 255, 0.8)" }} />
 				<Typography variant="h2">MiMe</Typography>
 				<Typography variant="h5" sx={{ mt: 2 }}>
@@ -37,7 +35,7 @@ const Home = () => {
 					Microscopy Metadata Index (MiMe) is a platform designed to streamline the sharing and collaboration
 					of histology data. Discover, contribute, and manage your data seamlessly.
 				</Typography>
-				<Box sx={{ width: "80%", mt: 3 }}>
+				<Box sx={{ width: "85%", mt: 3 }}>
 					<AdvancedSearch onSearch={handleSearch} />
 				</Box>
 				{/* or

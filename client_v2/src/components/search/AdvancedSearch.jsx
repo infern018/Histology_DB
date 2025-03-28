@@ -23,7 +23,7 @@ import { fetchDistinctOrders, fetchPublicCollections } from "../../utils/apiCall
 const AdvancedSearch = ({ onSearch }) => {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [brainWeightRange, setBrainWeightRange] = useState([0, 1000]);
-	const [allowNAWeight, setAllowNAWeight] = useState(false);
+	const [allowNAWeight, setAllowNAWeight] = useState(true);
 	const [bodyWeightRange, setBodyWeightRange] = useState([0, 1000]);
 	const [developmentalStage, setDevelopmentalStage] = useState("");
 	const [sex, setSex] = useState("");
