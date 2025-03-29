@@ -59,11 +59,11 @@ const Login = () => {
 					flexDirection: "column",
 					alignItems: "center",
 					justifyContent: "center",
-					maxWidth: 400,
+					maxWidth: 500,
 					width: "100%",
-					padding: 4,
-					backgroundColor: "rgba(20, 20, 0, 0.7)", // Dark background
-					borderRadius: 2,
+					padding: 10,
+					backgroundColor: "rgba(14, 14, 10, 0.7)", // Dark background
+					borderRadius: 1,
 					boxShadow: "0 4px 8px rgba(50, 50, 50, 0.2)", // Light shadow
 					margin: "0 auto",
 				}}
@@ -145,7 +145,7 @@ const Login = () => {
 					Login
 				</Button>
 				<Root sx={{ mb: 2 }}>
-					<Divider sx={{ color: "#ffffff" }}>or sign in with</Divider>
+					<Divider sx={{ color: "#ffffff" }}>or </Divider>
 				</Root>
 				<Button
 					variant="outlined"
@@ -160,8 +160,14 @@ const Login = () => {
 						},
 					}}>
 					<GitHubIcon sx={{ mr: 1, color: "#ffffff" }} />
-					GitHub
+					Sign in with GitHub
 				</Button>
+				<Typography variant="body2" sx={{ mt: 2, color: "#ffffff" }}>
+					New Here?{" "}
+					<Button component="a" href="/signup" sx={{ color: "rgb(0, 179, 255)", textTransform: "none" }}>
+						Sign up
+					</Button>
+				</Typography>
 			</Box>
 		</Layout>
 	);
