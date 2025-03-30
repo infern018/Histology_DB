@@ -209,13 +209,12 @@ export const fetchEntriesByCollectionID = async (
 	accessToken,
 	page = 1,
 	limit = 10,
-	searchQuery = "",
-	sortField = "identification.bionomialSpeciesName",
+	sortField = "_id",
 	sortOrder = "asc"
 ) => {
 	try {
 		const response = await axiosReq.get(
-			`/collections/${collectionID}/entries?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortField=${sortField}&sortOrder=${sortOrder}`,
+			`/collections/${collectionID}/entries?page=${page}&limit=${limit}&sortField=${sortField}&sortOrder=${sortOrder}`,
 			{
 				headers: { token: `${accessToken}` },
 			}
@@ -231,13 +230,12 @@ export const fetchEntriesOfPublicCollection = async (
 	collectionID,
 	page = 1,
 	limit = 10,
-	searchQuery = "",
-	sortField = "identification.bionomialSpeciesName",
+	sortField = "_id",
 	sortOrder = "asc"
 ) => {
 	try {
 		const response = await axiosReq.get(
-			`/collections/${collectionID}/entries/public?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortField=${sortField}&sortOrder=${sortOrder}`
+			`/collections/${collectionID}/entries/public?page=${page}&limit=${limit}&sortField=${sortField}&sortOrder=${sortOrder}`
 		);
 
 		return response.data;
