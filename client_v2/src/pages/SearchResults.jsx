@@ -45,37 +45,35 @@ const SearchResults = () => {
 
 	return (
 		<Layout>
-			<Box sx={{ padding: 3 }}>
-				<Typography variant="h5" gutterBottom>
-					Search Results
-				</Typography>
-				<EntriesTable
-					entries={entries}
-					currUserMode={"view"}
-					selectedEntries={[]}
-					onSelectEntry={() => {}}
-					onSelectAll={() => {}}
-					isPublic={true}
+			<Typography variant="h5" gutterBottom>
+				Search Results
+			</Typography>
+			<EntriesTable
+				entries={entries}
+				currUserMode={"view"}
+				selectedEntries={[]}
+				onSelectEntry={() => {}}
+				onSelectAll={() => {}}
+				isPublic={true}
+			/>
+			<Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+				<Pagination
+					count={totalPages}
+					page={page}
+					onChange={handlePageChange}
+					color="primary"
+					sx={{
+						"& .MuiPaginationItem-root": {
+							color: "white", // Change the text color of pagination items to white
+						},
+						"& .MuiPaginationItem-root.Mui-selected": {
+							color: "white", // Ensure the selected item text is also white
+						},
+						"& .MuiPaginationItem-root:hover": {
+							backgroundColor: "rgba(255, 255, 255, 0.2)", // Optional: change background color on hover
+						},
+					}}
 				/>
-				<Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-					<Pagination
-						count={totalPages}
-						page={page}
-						onChange={handlePageChange}
-						color="primary"
-						sx={{
-							"& .MuiPaginationItem-root": {
-								color: "white", // Change the text color of pagination items to white
-							},
-							"& .MuiPaginationItem-root.Mui-selected": {
-								color: "white", // Ensure the selected item text is also white
-							},
-							"& .MuiPaginationItem-root:hover": {
-								backgroundColor: "rgba(255, 255, 255, 0.2)", // Optional: change background color on hover
-							},
-						}}
-					/>
-				</Box>
 			</Box>
 		</Layout>
 	);

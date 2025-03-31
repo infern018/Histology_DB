@@ -36,17 +36,21 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 		navigate(`/entry/${entryId}?isPublic=${isPublic}`);
 	};
 
+	const tableRowHeight = 68;
+
 	return (
 		<TableContainer
 			component={Paper}
 			sx={{
+				width: "100%",
+				maxWidth: "100%",
 				maxHeight: "900px", // Set a fixed height
 				overflowY: "auto", // Enable vertical scrolling if content overflows
 				backgroundColor: "#262625", // Optional: Dark background for better contrast
 			}}>
-			<Table size="small">
+			<Table sx={{ width: "100%" }} size="small">
 				<TableHead>
-					<TableRow>
+					<TableRow sx={{ height: tableRowHeight }}>
 						{currUserMode !== "view" && (
 							<TableCell>
 								<Checkbox
@@ -64,6 +68,16 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 								/>
 							</TableCell>
 						)}
+						<TableCell>
+							<Typography
+								variant="subtitle2"
+								fontWeight="bold"
+								color="white"
+								fontSize="small"
+								sx={{ cursor: "pointer" }}>
+								Specimen ID
+							</Typography>
+						</TableCell>
 						<TableCell>
 							<Typography
 								variant="subtitle2"
@@ -155,6 +169,7 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 							hover
 							onClick={() => handleRowClick(entry._id)}
 							sx={{
+								height: tableRowHeight,
 								cursor: "pointer", // Makes the row indicate clickability
 								"&:hover": {
 									backgroundColor: "#333333 !important", // Stronger hover color with !important
@@ -181,6 +196,13 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 									/>
 								</TableCell>
 							)}
+							<TableCell>
+								{entry.archivalIdentification?.archivalSpeciesCode && (
+									<Typography variant="body2" color="white">
+										{entry.archivalIdentification.archivalSpeciesCode}
+									</Typography>
+								)}
+							</TableCell>
 							<TableCell>
 								<Typography variant="body2" color="white">
 									{entry.histologicalInformation.brainPart}

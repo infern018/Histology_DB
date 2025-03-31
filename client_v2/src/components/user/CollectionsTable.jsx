@@ -78,7 +78,7 @@ const CollectionTable = ({ collections, isPublic }) => {
 								<Link
 									to={
 										!isPublic && user
-											? `/collection/${collection.collection_id}/entries`
+											? `/collection/${collection.collection_id}/entries?collectionName=${collection.name}`
 											: `/collection/${collection.collection_id}?isPublic=${isPublic}`
 									}
 									style={{ textDecoration: "none", color: "inherit" }}>

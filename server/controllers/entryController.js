@@ -509,12 +509,7 @@ const advancedSearch = async (req, res) => {
 
 		const skip = (page - 1) * limit;
 
-		const entries = await Entry.find(query)
-			.select(
-				"identification.thumbnail identification.bionomialSpeciesName physiologicalInformation.age.developmentalStage physiologicalInformation.sex histologicalInformation.stainingMethod identification.order"
-			)
-			.skip(skip)
-			.limit(parseInt(limit));
+		const entries = await Entry.find(query).skip(skip).limit(parseInt(limit));
 
 		const queryHash = generateFilterHash(query);
 

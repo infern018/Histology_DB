@@ -26,6 +26,7 @@ const Home = () => {
 					justifyContent: "center",
 					height: "100vh",
 					textAlign: "center",
+					maxWidth: "65%",
 				}}>
 				<BiotechIcon sx={{ width: 80, height: 80, fontSize: 40, color: "rgba(255, 255, 255, 0.8)" }} />
 				<Typography variant="h2">MiMe</Typography>

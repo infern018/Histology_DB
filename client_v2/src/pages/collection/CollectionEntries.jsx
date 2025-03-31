@@ -25,10 +25,12 @@ import FailedRowsInsertDialog from "../../components/dialogs/FailedRowsInsertDia
 
 const CollectionEntriesPage = () => {
 	const { collectionID } = useParams();
+
 	const location = useLocation();
 
 	const queryParams = new URLSearchParams(location.search);
 	const isPublic = queryParams.get("isPublic") === "true";
+	const collectionName = queryParams.get("collectionName");
 	const currUserMode = queryParams.get("mode");
 
 	const currUser = useSelector((state) => state.auth.currentUser);
@@ -46,7 +48,6 @@ const CollectionEntriesPage = () => {
 	const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 	const [failedRows, setFailedRows] = useState([]);
 	const [openFailedDialog, setOpenFailedDialog] = useState(false);
-	const [collectionName, setCollectionName] = useState("Collection");
 
 	const [sortField, setSortField] = useState("_id");
 	const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
@@ -108,7 +109,6 @@ const CollectionEntriesPage = () => {
 			setEntries(updatedEntries.entries);
 			// setTotalEntries(updatedEntries.totalEntries);
 			setTotalPages(updatedEntries.totalPages);
-			setCollectionName(updatedEntries.collectionName);
 		} catch (error) {
 			console.error("Error uploading CSV:", error);
 			alert("Error uploading CSV. Please try again.");
@@ -154,7 +154,6 @@ const CollectionEntriesPage = () => {
 				setEntries(updatedEntries.entries);
 				// setTotalEntries(updatedEntries.totalEntries);
 				setTotalPages(updatedEntries.totalPages);
-				setCollectionName(updatedEntries.collectionName);
 				setSelectedEntries([]);
 			}
 		} catch (error) {
@@ -174,63 +173,48 @@ const CollectionEntriesPage = () => {
 
 	return (
 		<Layout>
-			<Box mb={2}>
-				<Grid container spacing={2} alignItems="center">
-					{/* collection name */}
-					<Grid item xs={12} md={4}>
-						<Typography variant="h5" sx={{ fontWeight: "bold", color: "f0f0f0" }}>
-							{collectionName}
-						</Typography>
+			<Box mb={2} sx={{ width: "100%" }}>
+				<Grid container spacing={2} alignItems="center" justifyContent="space-between">
+					{/* Collection Name & Visualize Button - Always on the Left */}
+					<Grid item sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+						<Typography variant="h5">{collectionName}</Typography>
+						<Button
+							component={Link}
+							to={`/visualize/collection/${collectionID}?isPublic=${isPublic}`}
+							variant="contained"
+							startIcon={<AutoFixHighIcon />}
+							color="primary">
+							Visualize
+						</Button>
 					</Grid>
 
-					{/* import bulk, new entry button */}
+					{/* Import & New Entry Buttons - Always on the Right */}
 					{currUserMode !== "view" && (
-						<Grid item xs={12} md={8}>
-							<Grid container spacing={2} alignItems="center" justifyContent="flex-end">
-								<Grid item>
-									<Button
-										variant="outlined"
-										color="primary"
-										onClick={() => setOpenUploadDialog(true)}
-										startIcon={<VerticalAlignBottomIcon />}
-										sx={{
-											color: "#FFFFFF", // White text color
-											borderColor: "#FFFFFF", // White border color
-											"&:hover": {
-												borderColor: "#FFFFFF",
-												backgroundColor: "rgba(255, 255, 255, 0.1)", // Optional: light background on hover
-											},
-										}}>
-										Import
-									</Button>
-								</Grid>
-								<Grid item>
-									<Button
-										component={Link}
-										to={`/collection/${collectionID}/entry/create`}
-										variant="contained"
-										color="primary">
-										+ New Entry
-									</Button>
-								</Grid>
-							</Grid>
+						<Grid item sx={{ display: "flex", gap: 2 }}>
+							<Button
+								variant="outlined"
+								color="primary"
+								onClick={() => setOpenUploadDialog(true)}
+								startIcon={<VerticalAlignBottomIcon />}
+								sx={{
+									color: "#FFFFFF",
+									borderColor: "#FFFFFF",
+									"&:hover": {
+										borderColor: "#FFFFFF",
+										backgroundColor: "rgba(255, 255, 255, 0.1)",
+									},
+								}}>
+								Import
+							</Button>
+							<Button
+								component={Link}
+								to={`/collection/${collectionID}/entry/create`}
+								variant="contained"
+								color="primary">
+								+ New Entry
+							</Button>
 						</Grid>
 					)}
-					{/* visualise button */}
-					<Grid item xs={12} md={6}>
-						<Grid container spacing={2} alignItems="center">
-							<Grid item>
-								<Button
-									component={Link}
-									to={`/visualize/collection/${collectionID}?isPublic=${isPublic}`}
-									variant="contained"
-									startIcon={<AutoFixHighIcon />}
-									color="primary">
-									Visualize
-								</Button>
-							</Grid>
-						</Grid>
-					</Grid>
 				</Grid>
 			</Box>
 

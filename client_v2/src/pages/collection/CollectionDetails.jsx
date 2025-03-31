@@ -4,7 +4,7 @@ import { useParams, useLocation } from "react-router-dom";
 import { getCollectionAPI, getPublicCollectionAPI } from "../../utils/apiCalls";
 import Layout from "../../components/utils/Layout";
 import { Link } from "react-router-dom";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 
 const CollectionDetails = () => {
 	const { collectionID } = useParams();
@@ -35,63 +35,69 @@ const CollectionDetails = () => {
 
 	return (
 		<Layout>
-			{collection ? (
-				<div style={{ color: "white" }}>
-					{/* Required Field */}
-					<h1>{collection.name} Collection</h1>
+			<Box
+				sx={{
+					textAlign: "left",
+					maxWidth: "65%",
+				}}>
+				{collection ? (
+					<div style={{ color: "white" }}>
+						{/* Required Field */}
+						<h1>{collection.name} Collection</h1>
 
-					{/* Optional Fields */}
-					{collection.description && <p>{collection.description}</p>}
+						{/* Optional Fields */}
+						{collection.description && <p>{collection.description}</p>}
 
-					{/* Contact Information */}
-					{collection.contact?.name && (
-						<p>
-							<strong>Contact Name:</strong> {collection.contact.name}
-						</p>
-					)}
+						{/* Contact Information */}
+						{collection.contact?.name && (
+							<p>
+								<strong>Contact Name:</strong> {collection.contact.name}
+							</p>
+						)}
 
-					{collection.contact?.email && (
-						<p>
-							<strong>Contact Email:</strong>{" "}
-							<a href={`mailto:${collection.contact.email}`} style={{ color: "white" }}>
-								{collection.contact.email}
-							</a>
-						</p>
-					)}
+						{collection.contact?.email && (
+							<p>
+								<strong>Contact Email:</strong>{" "}
+								<a href={`mailto:${collection.contact.email}`} style={{ color: "white" }}>
+									{collection.contact.email}
+								</a>
+							</p>
+						)}
 
-					{collection.contact?.phone && (
-						<p>
-							<strong>Contact Phone:</strong> {collection.contact.phone}
-						</p>
-					)}
+						{collection.contact?.phone && (
+							<p>
+								<strong>Contact Phone:</strong> {collection.contact.phone}
+							</p>
+						)}
 
-					{collection.contact?.doi && (
-						<p>
-							<strong>DOI:</strong>{" "}
-							<a href={`${collection.contact.doi}`} style={{ color: "white" }}>
-								{collection.contact.doi}
-							</a>
-						</p>
-					)}
+						{collection.contact?.doi && (
+							<p>
+								<strong>DOI:</strong>{" "}
+								<a href={`${collection.contact.doi}`} style={{ color: "white" }}>
+									{collection.contact.doi}
+								</a>
+							</p>
+						)}
 
-					{/* View Entries */}
-					<Button
-						component={Link}
-						to={`/collection/${collection._id}/entries?mode=view&isPublic=${isPublic}`}
-						variant="contained"
-						sx={{
-							backgroundColor: "#212020",
-							color: "white",
-							"&:hover": {
-								backgroundColor: "#555", // Slightly lighter grey on hover
-							},
-						}}>
-						View all entries in {collection.name}
-					</Button>
-				</div>
-			) : (
-				<p style={{ color: "white" }}>Loading...</p>
-			)}
+						{/* View Entries */}
+						<Button
+							component={Link}
+							to={`/collection/${collection._id}/entries?mode=view&isPublic=${isPublic}&collectionName=${collection.name}`}
+							variant="contained"
+							sx={{
+								backgroundColor: "#212020",
+								color: "white",
+								"&:hover": {
+									backgroundColor: "#555", // Slightly lighter grey on hover
+								},
+							}}>
+							View all entries in {collection.name}
+						</Button>
+					</div>
+				) : (
+					<p style={{ color: "white" }}>Loading...</p>
+				)}
+			</Box>
 		</Layout>
 	);
 };

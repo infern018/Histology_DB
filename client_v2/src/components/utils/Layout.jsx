@@ -9,9 +9,9 @@ const Layout = ({ children }) => {
 				display: "flex",
 				flexDirection: "column",
 				alignItems: "center",
-				justifyContent: "flex-start",
 				minHeight: "100vh",
 				maxWidth: "100%",
+				width: "100%",
 				margin: 0,
 				padding: 0,
 			}}>
@@ -19,9 +19,12 @@ const Layout = ({ children }) => {
 			<Box
 				sx={{
 					width: "100%",
-					maxWidth: 950,
 					paddingX: 2,
 					marginTop: 15,
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+					justifyContent: "center",
 				}}>
 				{children}
 			</Box>
