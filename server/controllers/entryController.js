@@ -20,6 +20,11 @@ const createEntry = async (req, res) => {
 		if (newEntry.identification.NCBITaxonomyCode) {
 			const id = newEntry.identification.NCBITaxonomyCode;
 
+			if (!newEntry.identification.order) {
+				const order = getOrder(newEntry.identification.NCBITaxonomyCode);
+				newEntry.identification.order = order;
+			}
+
 			//FETCH API
 			const resp = await fetch(`http://rest.ensembl.org/taxonomy/classification/${id}`, {
 				// agent:proxyAgent,
@@ -52,6 +57,11 @@ const createEntry = async (req, res) => {
 			newEntry.identification.wikipediaSpeciesName = `https://en.wikipedia.org/wiki/${binomialName}`;
 		}
 
+		if (!newEntry.identification.order) {
+			const order = getOrder(data.NCBITaxonomyCode);
+			newEntry.identification.order = order;
+		}
+
 		const savedEntry = await newEntry.save();
 		res.status(200).json(savedEntry);
 	} catch (err) {
@@ -67,6 +77,11 @@ const updateEntry = async (req, res) => {
 
 		if (newEntry.identification.NCBITaxonomyCode) {
 			const id = newEntry.identification.NCBITaxonomyCode;
+
+			if (!newEntry.identification.order) {
+				const order = getOrder(newEntry.identification.NCBITaxonomyCode);
+				newEntry.identification.order = order;
+			}
 
 			// const proxyAgent = new HttpProxyAgent(process.env.PROXY_UNI);
 
@@ -218,6 +233,7 @@ const processCSVEntries = async (req, res) => {
 			const microdraw_link = data.microdraw_link || null;
 			const source_link = data.source_link || null;
 			const thumbnail = data.thumbnail || null;
+			const archivalCode = data.archivalCode || null;
 
 			// Add these modifications to the data object
 			updatedCollection.collectionID = collectionID;
@@ -231,6 +247,10 @@ const processCSVEntries = async (req, res) => {
 				microdraw_link,
 				source_link,
 				thumbnail,
+			};
+
+			updatedCollection.archivalIdentification = {
+				archivalSpeciesCode: archivalCode,
 			};
 
 			updatedCollection.physiologicalInformation = {

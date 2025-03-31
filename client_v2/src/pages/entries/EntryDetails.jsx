@@ -1,6 +1,6 @@
 // src/pages/EntryDetailsPage.js
 import React, { useState, useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { CircularProgress, Typography, Paper, Box, Button, Divider, Grid } from "@mui/material";
 import { getEntryAPI, getPublicEntryAPI, getCollectionAPI, getPublicCollectionAPI } from "../../utils/apiCalls";
 import Layout from "../../components/utils/Layout";
@@ -29,6 +29,10 @@ const EntryDetailsPage = () => {
 				} else {
 					data = await getEntryAPI(entryID, user.accessToken);
 				}
+				console.log("THUMBNAIL DATA", data.identification.thumbnail);
+				console.log("BRAIN PART", data.histologicalInformation.brainPart);
+				console.log("ARCHIVAL CODE", data.archivalIdentification.archivalSpeciesCode);
+
 				setEntry(data);
 			} catch (error) {
 				console.error("Error fetching entry:", error);
@@ -79,13 +83,6 @@ const EntryDetailsPage = () => {
 					background: "rgba(255, 255, 255, 0.8)",
 				}}>
 				<Grid container alignItems="center" justifyContent="space-between">
-					{/* Entry Details on the Left */}
-					<Grid item>
-						<Typography variant="h6" gutterBottom>
-							Entry Details:
-						</Typography>
-					</Grid>
-
 					{/* Collection Name on the Right */}
 					<Grid item>
 						<Typography variant="h6" gutterBottom>
@@ -101,6 +98,18 @@ const EntryDetailsPage = () => {
 							)}
 							<ArrowOutwardIcon sx={{ color: "#1976d2", ml: 1 }} />
 						</Typography>
+					</Grid>
+
+					<Grid item>
+						{!isPublic && user && (
+							<Button
+								component={Link}
+								variant="contained"
+								to={`/collection/${collection?._id}/entry/${entry._id}/edit`}
+								edge="end">
+								Edit
+							</Button>
+						)}
 					</Grid>
 				</Grid>
 

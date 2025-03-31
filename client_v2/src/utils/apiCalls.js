@@ -258,6 +258,17 @@ export const createEntryAPI = async (newEntry, accessToken) => {
 	}
 };
 
+export const updateEntryAPI = async (entryID, updatedEntry, accessToken) => {
+	try {
+		const response = await axiosReq.put(`/entries/${entryID}`, updatedEntry, {
+			headers: { token: `${accessToken}` },
+		});
+		return response;
+	} catch (error) {
+		throw new Error(error.message);
+	}
+};
+
 export const uploadCSVEntries = async (collectionID, csvData, accessToken) => {
 	const headers = [
 		"bionomialSpeciesName",
@@ -278,6 +289,7 @@ export const uploadCSVEntries = async (collectionID, csvData, accessToken) => {
 		"microdraw_link",
 		"source_link",
 		"thumbnail",
+		"archivalCode",
 	];
 
 	const csvContent = [
@@ -302,12 +314,15 @@ export const uploadCSVEntries = async (collectionID, csvData, accessToken) => {
 				row.microdraw_link,
 				row.source_link,
 				row.thumbnail,
+				row.archivalCode,
 			].join(",")
 		),
 	].join("\n");
 
 	const formData = new FormData();
 	const blob = new Blob([csvContent], { type: "text/csv" });
+
+	console.log("INPUT CSV DATA", csvData);
 
 	formData.append("file", blob, "entries.csv");
 

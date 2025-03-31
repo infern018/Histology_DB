@@ -13,10 +13,12 @@ import PhysiologicalInformationForm from "../../components/entries/Physiological
 import HistologicalInformationForm from "../../components/entries/HistologicalInformationForm";
 import Layout from "../../components/utils/Layout";
 
-import { createEntryAPI } from "../../utils/apiCalls";
+import { createEntryAPI, getEntryAPI, updateEntryAPI } from "../../utils/apiCalls";
 
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useState } from "react";
 
 // Define the steps
 const steps = ["Identification", "Archival Identification", "Physiological Information", "Histological Information"];
@@ -24,7 +26,9 @@ const steps = ["Identification", "Archival Identification", "Physiological Infor
 export default function CreateEntryStepper() {
 	const user = useSelector((state) => state.auth.currentUser);
 	const navigate = useNavigate();
-	const { collectionID } = useParams();
+	const { collectionID, entryID } = useParams();
+	const isEditMode = Boolean(entryID); // Determines if it's edit mode
+	const [loading, setLoading] = useState(isEditMode);
 
 	const [error, setError] = React.useState(null);
 
@@ -36,6 +40,23 @@ export default function CreateEntryStepper() {
 		histologicalInformation: {},
 		collectionID: collectionID,
 	});
+
+	// Fetch entry data if editing
+	useEffect(() => {
+		if (isEditMode) {
+			const fetchEntry = async () => {
+				try {
+					const response = await getEntryAPI(entryID, user.accessToken);
+					setFormValues(response);
+				} catch (err) {
+					setError(err.message);
+				} finally {
+					setLoading(false);
+				}
+			};
+			fetchEntry();
+		}
+	}, [entryID, isEditMode, user.accessToken]);
 
 	const handleNext = () => {
 		setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -58,11 +79,17 @@ export default function CreateEntryStepper() {
 
 	const handleSubmit = async () => {
 		try {
-			const response = await createEntryAPI(formValues, user.accessToken);
-			if (response.status === 200) {
-				navigate(`/collection/${collectionID}/entries`);
+			let response;
+			if (isEditMode) {
+				response = await updateEntryAPI(entryID, formValues, user.accessToken);
 			} else {
-				setError(response.data.message || "Entry create failed");
+				response = await createEntryAPI(formValues, user.accessToken);
+			}
+
+			if (response.status === 200) {
+				navigate(`/collection/${response.data.collectionID}/entries`);
+			} else {
+				setError(response.data.message || "Operation  failed");
 			}
 		} catch (error) {
 			setError(error.message);
@@ -107,6 +134,7 @@ export default function CreateEntryStepper() {
 
 	return (
 		<Layout>
+			{loading && <p>Loading...</p>}
 			{error && <p>{error}</p>}
 			<Box sx={{ width: "100%", backgroundColor: "#f0f0f0", padding: 5 }}>
 				<Stepper activeStep={activeStep}>

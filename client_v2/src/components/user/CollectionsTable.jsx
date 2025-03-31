@@ -76,7 +76,11 @@ const CollectionTable = ({ collections, isPublic }) => {
 							}}>
 							<TableCell>
 								<Link
-									to={`/collection/${collection.collection_id}?isPublic=${isPublic}`}
+									to={
+										!isPublic && user
+											? `/collection/${collection.collection_id}/entries`
+											: `/collection/${collection.collection_id}?isPublic=${isPublic}`
+									}
 									style={{ textDecoration: "none", color: "inherit" }}>
 									<Typography variant="body2" color="white">
 										{collection.name}
@@ -84,10 +88,10 @@ const CollectionTable = ({ collections, isPublic }) => {
 								</Link>
 							</TableCell>
 							{/* <TableCell>
-								<Typography variant="body2" color="white">
-									{collection.numCollaborators}
-								</Typography>
-							</TableCell> */}
+                                <Typography variant="body2" color="white">
+                                    {collection.numCollaborators}
+                                </Typography>
+                            </TableCell> */}
 							<TableCell>
 								<Typography variant="body2" color="white">
 									{collection.mode}

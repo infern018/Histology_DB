@@ -53,6 +53,7 @@ const EntrySchema = mongoose.Schema(
 			},
 			order: {
 				type: String,
+				default: "Unknown",
 			},
 			source_link: {
 				type: String,

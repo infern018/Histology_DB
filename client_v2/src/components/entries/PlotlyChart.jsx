@@ -3,6 +3,8 @@ import Plot from "react-plotly.js";
 
 const PlotlyChart = ({ data }) => {
 	// Transform the data based on the provided transformation logic
+
+	// ToDO check if unknown mappings are getting displayed correctly
 	const transformedData = data.map((entry) => ({
 		developmentalStage: entry.physiologicalInformation.age.developmentalStage || "Unknown",
 		brainWeight: entry.physiologicalInformation.brainWeight || 0,

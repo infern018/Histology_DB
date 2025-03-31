@@ -71,6 +71,17 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 								color="white"
 								fontSize="small"
 								sx={{ cursor: "pointer" }}>
+								Brain Part
+							</Typography>
+						</TableCell>
+
+						<TableCell>
+							<Typography
+								variant="subtitle2"
+								fontWeight="bold"
+								color="white"
+								fontSize="small"
+								sx={{ cursor: "pointer" }}>
 								Thumbnail
 							</Typography>
 						</TableCell>
@@ -170,6 +181,11 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 									/>
 								</TableCell>
 							)}
+							<TableCell>
+								<Typography variant="body2" color="white">
+									{entry.histologicalInformation.brainPart}
+								</Typography>
+							</TableCell>
 							<TableCell>
 								{entry.identification.thumbnail ? (
 									<img

@@ -1,6 +1,6 @@
-bionomialSpeciesName,stainingMethod,bodyWeight,brainWeight,developmentalStage,sex,ageNumber,ageUnit,origin,sectionThickness,planeOfSectioning,interSectionDistance,brainPart,comments,NCBITaxonomyCode
-Homo Sapiens,Cresyl,0.65,22,embryo,u,7,weeks,postConception,10,coronal,0,whole brain,Lorem Ipsum,9606
-Mus Musculus,Nissl,0.025,0.45,fetus,m,14,days,postConception,12,sagittal,0.5,whole brain,Genetic model,10090
-Rattus Norvegicus,Cresyl,0.15,1.5,neonate,f,21,days,postNatal,8,transverse,0.2,whole brain,Brain development study,10116
-Canis Lupus Familiaris,Nissl,1.5,7.2,juvenile,m,6,months,postNatal,15,coronal,0.4,frontal lobe,Behavioral analysis,9615
-Felis Catus,Thionin,0.3,2.1,adult,f,3,years,postNatal,10,coronal,0.3,whole brain,Neuroscience research,9680
+bionomialSpeciesName,stainingMethod,bodyWeight,brainWeight,developmentalStage,sex,ageNumber,ageUnit,origin,sectionThickness,planeOfSectioning,interSectionDistance,brainPart,comments,NCBITaxonomyCode,archivalCode,microdraw_link,source_link
+Homo Sapiens,Cresyl,0.65,22,embryo,u,7,weeks,postConception,10,coronal,0,whole brain,Lorem Ipsum,9606,X56,,
+Mus Musculus,Nissl,0.025,0.45,fetus,m,14,days,postConception,12,sagittal,0.5,whole brain,Genetic model,10090,Sample_P,,
+Rattus Norvegicus,Cresyl,0.15,1.5,neonate,f,21,days,postNatal,8,transverse,0.2,whole brain,Brain development study,10116,Area_51,,
+Canis Lupus Familiaris,Nissl,1.5,7.2,juvenile,m,6,months,postNatal,15,coronal,0.4,frontal lobe,Behavioral analysis,9615,Formula_X,,
+Felis Catus,Thionin,0.3,2.1,adult,f,3,years,postNatal,10,coronal,0.3,whole brain,Neuroscience research,9680,ABCD,,

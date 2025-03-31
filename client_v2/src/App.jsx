@@ -45,6 +45,7 @@ function App() {
 					<Route path="/visualize/collection/:collectionID" element={<CollectionEntriesChart />} />
 					<Route path="/collection/:collectionID/settings" element={<CollectionSettings />} />
 					<Route path="/collection/:collectionID/entry/create" element={<CreateEntryStepper />} />
+					<Route path="/collection/:collectionID/entry/:entryID/edit" element={<CreateEntryStepper />} />
 					<Route path="/entry/:entryID" element={<EntryDetailsPage />} />
 					<Route path="/v2" element={<LandingPage />} />
 					<Route path="/search/results" element={<SearchResults />} />
