@@ -29,9 +29,6 @@ const EntryDetailsPage = () => {
 				} else {
 					data = await getEntryAPI(entryID, user.accessToken);
 				}
-				console.log("THUMBNAIL DATA", data.identification.thumbnail);
-				console.log("BRAIN PART", data.histologicalInformation.brainPart);
-				console.log("ARCHIVAL CODE", data.archivalIdentification.archivalSpeciesCode);
 
 				setEntry(data);
 			} catch (error) {
@@ -115,193 +112,135 @@ const EntryDetailsPage = () => {
 
 				<Divider style={{ margin: "5px 0" }} />
 
-				<Grid container spacing={3}>
-					{/* Display Thumbnail Separately on the Left */}
+				<Grid container spacing={2} sx={{ maxWidth: "1000px", margin: "auto" }}>
+					{/* Thumbnail (Full Width on Small, Side on Large) */}
 					{entry.identification.thumbnail && (
 						<Grid item xs={12} md={4}>
-							<Box mb={2} textAlign="center">
-								<Typography variant="h6">Data Thumbnail:</Typography>
+							<Box sx={{ border: "1px solid #ddd", padding: 2, borderRadius: "8px" }}>
+								<Typography variant="h6">Data Thumbnail</Typography>
 								<img
 									src={entry.identification.thumbnail}
 									alt="Thumbnail"
 									style={{
 										maxWidth: "100%",
 										height: "auto",
-										borderRadius: "8px",
-										boxShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
 									}}
 								/>
 							</Box>
 						</Grid>
 					)}
 
-					{/* Entry Details on the Right */}
-					<Grid item xs={12} md={entry.identification.thumbnail ? 8 : 12}>
-						<Grid container spacing={3}>
-							<Grid item xs={12} md={6}>
-								<Box mb={2}>
-									<Typography variant="body1">NCBI Taxonomy Code:</Typography>
-									<Typography variant="body1">
-										{entry.identification.NCBITaxonomyCode || "N/A"}
-									</Typography>
-								</Box>
-							</Grid>
+					{/* Identification */}
+					<Grid item xs={6}>
+						<Box sx={{ border: "1px solid #ddd", padding: 2, borderRadius: "8px" }}>
+							<Typography variant="h6">Identification</Typography>
+							{entry.archivalIdentification?.archivalSpeciesCode && (
+								<Typography>
+									<strong>Specimen ID: </strong> {entry.archivalIdentification.archivalSpeciesCode}
+								</Typography>
+							)}
+							<Typography>
+								<strong>NCBI Taxonomy Code: </strong> {entry.identification.NCBITaxonomyCode || "N/A"}
+							</Typography>
+							<Typography>
+								<strong>Species Name:</strong> {entry.identification.bionomialSpeciesName || "N/A"}
+							</Typography>
+							<Typography>
+								<strong>Order:</strong> {entry.identification.order || "N/A"}
+							</Typography>
+							<Typography>
+								<strong>Wikipedia:</strong>
+								{entry.identification.wikipediaSpeciesName ? (
+									<a
+										href={entry.identification.wikipediaSpeciesName}
+										target="_blank"
+										rel="noopener noreferrer">
+										{` wikipedia.org/${entry.identification.wikipediaSpeciesName.split("/").pop()}`}{" "}
+									</a>
+								) : (
+									"N/A"
+								)}
+							</Typography>
+						</Box>
+					</Grid>
 
-							<Grid item xs={12} md={6}>
-								<Box mb={2}>
-									<Typography variant="h6">Binomial Species Name:</Typography>
-									<Typography variant="body1">
-										{entry.identification.bionomialSpeciesName || "N/A"}
-									</Typography>
-								</Box>
-							</Grid>
+					{/* Physiological Information */}
+					<Grid item xs={6}>
+						<Box sx={{ border: "1px solid #ddd", padding: 2, borderRadius: "8px" }}>
+							<Typography variant="h6">Physiological Information</Typography>
+							<Typography>
+								<strong>Developmental Stage:</strong>{" "}
+								{entry.physiologicalInformation.age.developmentalStage || "N/A"}
+							</Typography>
+							<Typography>
+								<strong>Sex:</strong>{" "}
+								{{ m: "Male", f: "Female", u: "Undefined" }[entry.physiologicalInformation.sex] ||
+									"N/A"}
+							</Typography>
+							<Typography>
+								<strong>Body Weight:</strong> {entry.physiologicalInformation.bodyWeight || "N/A"} g
+							</Typography>
+							<Typography>
+								<strong>Brain Weight:</strong> {entry.physiologicalInformation.brainWeight || "N/A"} g
+							</Typography>
+						</Box>
+					</Grid>
 
-							<Grid item xs={12} md={6}>
-								<Box mb={2}>
-									<Typography variant="h6">NCBI Taxonomy Browser:</Typography>
-									<Typography variant="body1">
-										<a
-											href={`https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=${entry.identification.NCBITaxonomyCode}`}
-											target="_blank"
-											rel="noopener noreferrer">
-											{entry.identification.NCBITaxonomyCode || "N/A"}
-										</a>
-									</Typography>
-								</Box>
-							</Grid>
+					{/* Histological Information */}
+					<Grid item xs={6}>
+						<Box sx={{ border: "1px solid #ddd", padding: 2, borderRadius: "8px" }}>
+							<Typography variant="h6">Histological Information</Typography>
+							<Typography>
+								<strong>Brain Part:</strong> {entry.histologicalInformation.brainPart || "N/A"}
+							</Typography>
+							<Typography>
+								<strong>Staining Method:</strong>{" "}
+								{entry.histologicalInformation.stainingMethod || "N/A"}
+							</Typography>
+							<Typography>
+								<strong>Plane of Sectioning:</strong>{" "}
+								{entry.histologicalInformation.planeOfSectioning || "N/A"} µm
+							</Typography>
+							<Typography>
+								<strong>Inter-Section Distance:</strong>{" "}
+								{entry.histologicalInformation.interSectionDistance || "N/A"} µm
+							</Typography>
+						</Box>
+					</Grid>
 
-							<Grid item xs={12} md={6}>
-								<Box mb={2}>
-									<Typography variant="h6">Wikipedia Link:</Typography>
-									<Typography variant="body1">
-										{entry.identification.wikipediaSpeciesName ? (
-											<a
-												href={entry.identification.wikipediaSpeciesName}
-												target="_blank"
-												rel="noopener noreferrer">
-												Link →
-											</a>
-										) : (
-											"N/A"
-										)}
-									</Typography>
-								</Box>
-							</Grid>
+					{/* Links & Sources */}
+					<Grid item xs={12}>
+						<Box sx={{ border: "1px solid #ddd", padding: 2, borderRadius: "8px" }}>
+							<Typography variant="h6">Links & Sources</Typography>
+							{entry.identification?.microdraw_link && (
+								<Typography>
+									<strong>MicroDraw:</strong>{" "}
+									<a
+										href={entry.identification.microdraw_link}
+										target="_blank"
+										rel="noopener noreferrer">
+										{entry.identification.microdraw_link.length > 50
+											? entry.identification.microdraw_link.substring(0, 50) + "..."
+											: entry.identification.microdraw_link}
+									</a>
+								</Typography>
+							)}
 
-							{/* Additional Details */}
-							<Grid item xs={12} md={6}>
-								<Box mb={2}>
-									<Typography variant="h6">Developmental Stage:</Typography>
-									<Typography variant="body1">
-										{entry.physiologicalInformation.age.developmentalStage || "N/A"}
-									</Typography>
-								</Box>
-							</Grid>
-
-							<Grid item xs={12} md={6}>
-								<Box mb={2}>
-									<Typography variant="h6">Sex:</Typography>
-									<Typography variant="body1">
-										{{
-											m: "Male",
-											f: "Female",
-											u: "Undefined",
-										}[entry.physiologicalInformation.sex] || "N/A"}
-									</Typography>
-								</Box>
-							</Grid>
-
-							<Grid item xs={12} md={6}>
-								<Box mb={2}>
-									<Typography variant="h6">Body Weight (grams):</Typography>
-									<Typography variant="body1">
-										{entry.physiologicalInformation.bodyWeight || "N/A"} g
-									</Typography>
-								</Box>
-							</Grid>
-
-							<Grid item xs={12} md={6}>
-								<Box mb={2}>
-									<Typography variant="h6">Brain Weight (grams):</Typography>
-									<Typography variant="body1">
-										{entry.physiologicalInformation.brainWeight || "N/A"}
-									</Typography>
-								</Box>
-							</Grid>
-
-							<Grid item xs={12} md={6}>
-								<Box mb={2}>
-									<Typography variant="h6">Staining Method:</Typography>
-									<Typography variant="body1">
-										{entry.histologicalInformation.stainingMethod || "N/A"}
-									</Typography>
-								</Box>
-							</Grid>
-
-							<Grid item xs={12} md={6}>
-								<Box mb={2}>
-									<Typography variant="h6">Plane of Sectioning:</Typography>
-									<Typography variant="body1">
-										{entry.histologicalInformation.planeOfSectioning || "N/A"}
-									</Typography>
-								</Box>
-							</Grid>
-
-							<Grid item xs={12} md={6}>
-								<Box mb={2}>
-									<Typography variant="h6">Inter-Section Distance (µm):</Typography>
-									<Typography variant="body1">
-										{entry.histologicalInformation.interSectionDistance || "N/A"}
-									</Typography>
-								</Box>
-							</Grid>
-
-							<Grid item xs={12} md={6}>
-								<Box mb={2}>
-									<Typography variant="h6">Comments:</Typography>
-									<Typography variant="body1">
-										{entry.histologicalInformation.comments || "N/A"}
-									</Typography>
-								</Box>
-							</Grid>
-
-							{/* Links */}
-							<Grid item xs={12} md={6}>
-								<Box mb={2}>
-									<Typography variant="h6">MicroDraw Link:</Typography>
-									<Typography variant="body1">
-										{entry.identification.microdraw_link ? (
-											<a
-												href={entry.identification.microdraw_link}
-												target="_blank"
-												rel="noopener noreferrer">
-												Link →
-											</a>
-										) : (
-											"N/A"
-										)}
-									</Typography>
-								</Box>
-							</Grid>
-
-							<Grid item xs={12} md={6}>
-								<Box mb={2}>
-									<Typography variant="h6">Source Link:</Typography>
-									<Typography variant="body1">
-										{entry.identification.source_link ? (
-											<a
-												href={entry.identification.source_link}
-												target="_blank"
-												rel="noopener noreferrer">
-												Link →
-											</a>
-										) : (
-											"N/A"
-										)}
-									</Typography>
-								</Box>
-							</Grid>
-						</Grid>
+							<Typography>
+								<strong>Source:</strong>
+								{entry.identification.source_link ? (
+									<a
+										href={entry.identification.source_link}
+										target="_blank"
+										rel="noopener noreferrer">
+										{" "}
+										{entry.identification.source_link}
+									</a>
+								) : (
+									"N/A"
+								)}
+							</Typography>
+						</Box>
 					</Grid>
 				</Grid>
 
