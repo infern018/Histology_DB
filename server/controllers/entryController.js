@@ -3,6 +3,7 @@ const Collection = require("../models/Collection");
 const fs = require("fs");
 const csvParser = require("csv-parser");
 const validateRowAgainstSchema = require("../utils/entryValidator");
+const crypto = require("crypto");
 
 const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
@@ -10,6 +11,11 @@ function generateRandomAlphaNumeric(name) {
 	result = Math.random().toString(16).slice(2, 6);
 	return result;
 }
+
+// Function to generate hash for filters
+const generateFilterHash = (filters) => {
+	return crypto.createHash("sha256").update(JSON.stringify(filters)).digest("hex");
+};
 
 const createEntry = async (req, res) => {
 	const newEntry = new Entry(req.body);
@@ -63,6 +69,9 @@ const createEntry = async (req, res) => {
 		}
 
 		const savedEntry = await newEntry.save();
+
+		invalidateCache(savedEntry.collectionID); // Invalidate cache for the collection
+
 		res.status(200).json(savedEntry);
 	} catch (err) {
 		res.status(500).json(err);
@@ -111,6 +120,9 @@ const updateEntry = async (req, res) => {
 			},
 			{ new: true }
 		);
+
+		invalidateCache(updatedEntry.collectionID); // Invalidate cache for the collection
+
 		res.status(200).json(updatedEntry);
 	} catch (err) {
 		res.status(500).json(err);
@@ -128,6 +140,9 @@ const deleteEntry = async (req, res) => {
 			},
 			{ new: true }
 		);
+
+		invalidateCache(updatedEntry.collectionID); // Invalidate cache for the collection
+
 		res.status(200).json(updatedEntry);
 	} catch (err) {
 		res.status(500).json(err);
@@ -145,6 +160,9 @@ const deleteMultipleEntries = async (req, res) => {
 			},
 			{ new: true }
 		);
+
+		invalidateCache(updatedEntries[0].collectionID); // Invalidate cache for the collection
+
 		res.status(200).json(updatedEntries);
 	} catch (err) {
 		res.status(500).json(err);
@@ -160,30 +178,19 @@ const getEntry = async (req, res) => {
 	}
 };
 
+let totalEntriesCache = {}; // In-memory cache for total entries
+
 // get entry by collection id
 const getEntriesByCollectionId = async (req, res) => {
 	try {
-		const {
-			page = 1,
-			limit = 10,
-			searchQuery = "",
-			sortField = "identification.bionomialSpeciesName",
-			sortOrder = "asc",
-		} = req.query; // Default to page 1 and limit 10
+		const { page = 1, limit = 10, sortField, sortOrder = "asc" } = req.query; // Default to page 1 and limit 10
+		const collectionID = req.params.id;
 
 		const skip = (page - 1) * limit;
 
-		// Build the search filter
-		const searchFilter = searchQuery
-			? {
-					"identification.bionomialSpeciesName": { $regex: searchQuery, $options: "i" }, // Case-insensitive search
-			  }
-			: {};
-
 		const filter = {
-			collectionID: req.params.id,
+			collectionID: collectionID,
 			backupEntry: { $ne: true },
-			...searchFilter,
 		};
 
 		const sortOption = {
@@ -192,21 +199,29 @@ const getEntriesByCollectionId = async (req, res) => {
 
 		const entries = await Entry.find(filter).sort(sortOption).skip(skip).limit(parseInt(limit)).exec();
 
-		// total entries = total entries with that collectionID
-		const totalEntries = await Entry.countDocuments({ collectionID: req.params.id, backupEntry: { $ne: true } });
-
-		const collection = await Collection.findById(req.params.id);
+		// Check if total count is cached
+		let totalEntries;
+		if (totalEntriesCache[collectionID]) {
+			totalEntries = totalEntriesCache[collectionID];
+		} else {
+			totalEntries = await Entry.countDocuments(filter);
+			totalEntriesCache[collectionID] = totalEntries; // Store in cache
+		}
 
 		res.status(200).json({
 			entries,
 			totalEntries,
 			totalPages: Math.ceil(totalEntries / limit),
 			currentPage: parseInt(page),
-			collectionName: collection.name,
 		});
 	} catch (err) {
 		res.status(500).json(err);
 	}
+};
+
+// Invalidate cache when an entry is added or deleted
+const invalidateCache = (collectionID) => {
+	delete totalEntriesCache[collectionID];
 };
 
 const processCSVEntries = async (req, res) => {
@@ -501,7 +516,16 @@ const advancedSearch = async (req, res) => {
 			.skip(skip)
 			.limit(parseInt(limit));
 
-		const totalEntries = await Entry.countDocuments(query);
+		const queryHash = generateFilterHash(query);
+
+		// Check cache for totalEntries
+		let totalEntries;
+		if (totalEntriesCache[queryHash]) {
+			totalEntries = totalEntriesCache[queryHash];
+		} else {
+			totalEntries = await Entry.countDocuments(query);
+			totalEntriesCache[queryHash] = totalEntries; // Cache it
+		}
 
 		res.json({
 			entries,

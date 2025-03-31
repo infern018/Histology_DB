@@ -11,7 +11,8 @@ const Layout = ({ children }) => {
 				alignItems: "center",
 				justifyContent: "flex-start",
 				minHeight: "100vh",
-				margin: -1,
+				maxWidth: "100%",
+				margin: 0,
 				padding: 0,
 			}}>
 			<Navbar />

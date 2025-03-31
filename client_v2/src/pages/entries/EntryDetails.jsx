@@ -140,7 +140,7 @@ const EntryDetailsPage = () => {
 						<Grid container spacing={3}>
 							<Grid item xs={12} md={6}>
 								<Box mb={2}>
-									<Typography variant="h6">NCBI Taxonomy Code:</Typography>
+									<Typography variant="body1">NCBI Taxonomy Code:</Typography>
 									<Typography variant="body1">
 										{entry.identification.NCBITaxonomyCode || "N/A"}
 									</Typography>

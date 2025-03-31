@@ -48,7 +48,7 @@ const CollectionEntriesPage = () => {
 	const [openFailedDialog, setOpenFailedDialog] = useState(false);
 	const [collectionName, setCollectionName] = useState("Collection");
 
-	const [sortField, setSortField] = useState("identification.bionomialSpeciesName");
+	const [sortField, setSortField] = useState("_id");
 	const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
 
 	// Pagination state
@@ -63,7 +63,7 @@ const CollectionEntriesPage = () => {
 				let data;
 				if (isPublic) {
 					// Fetch from the public endpoint without the accessToken
-					data = await fetchEntriesOfPublicCollection(collectionID, page, limit, "", sortField, sortOrder);
+					data = await fetchEntriesOfPublicCollection(collectionID, page, limit, sortField, sortOrder);
 				} else {
 					// Fetch from the private endpoint with the accessToken
 					data = await fetchEntriesByCollectionID(
@@ -71,7 +71,6 @@ const CollectionEntriesPage = () => {
 						accessToken,
 						page,
 						limit,
-						"",
 						sortField,
 						sortOrder
 					);
@@ -80,7 +79,6 @@ const CollectionEntriesPage = () => {
 				setEntries(data.entries);
 				// setTotalEntries(data.totalEntries);
 				setTotalPages(data.totalPages);
-				setCollectionName(data.collectionName);
 			} catch (error) {
 				console.error("Error fetching entries:", error);
 			} finally {
