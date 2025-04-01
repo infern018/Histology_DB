@@ -22,6 +22,7 @@ import Alert from "@mui/material/Alert";
 import UploadCSVDialog from "../../components/dialogs/UploadCSVDialog";
 import DeleteConfirmationDialog from "../../components/dialogs/DeleteConfirmationDialog";
 import FailedRowsInsertDialog from "../../components/dialogs/FailedRowsInsertDialog";
+import TableSkeleton from "../../components/utils/TableSkeleton";
 
 const CollectionEntriesPage = () => {
 	const { collectionID } = useParams();
@@ -168,7 +169,17 @@ const CollectionEntriesPage = () => {
 	};
 
 	if (loading) {
-		return <CircularProgress />;
+		return (
+			<Layout>
+				<Typography
+					variant="h5"
+					gutterBottom
+					sx={{ display: "flex", textAlign: "left", marginBottom: "1.3rem" }}>
+					Loading Collection...
+				</Typography>
+				<TableSkeleton />
+			</Layout>
+		);
 	}
 
 	return (

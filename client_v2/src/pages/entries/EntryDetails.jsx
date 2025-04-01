@@ -1,11 +1,12 @@
 // src/pages/EntryDetailsPage.js
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { CircularProgress, Typography, Paper, Box, Button, Divider, Grid } from "@mui/material";
+import { Typography, Paper, Box, Button, Divider, Grid } from "@mui/material";
 import { getEntryAPI, getPublicEntryAPI, getCollectionAPI, getPublicCollectionAPI } from "../../utils/apiCalls";
 import Layout from "../../components/utils/Layout";
 import { useSelector } from "react-redux";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
+import CardSkeleton from "../../components/utils/CardSkeleton";
 
 const EntryDetailsPage = () => {
 	const user = useSelector((state) => state.auth.currentUser);
@@ -14,6 +15,8 @@ const EntryDetailsPage = () => {
 	const [entry, setEntry] = useState(null);
 	const [collection, setCollection] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const [loadingEntry, setLoadingEntry] = useState(true);
+	const [loadingCollection, setLoadingCollection] = useState(true);
 
 	const location = useLocation();
 
@@ -62,7 +65,11 @@ const EntryDetailsPage = () => {
 	}, [entry, user, isPublic]);
 
 	if (loading) {
-		return <CircularProgress />;
+		return (
+			<Layout>
+				<CardSkeleton />
+			</Layout>
+		);
 	}
 
 	if (!entry) {
@@ -116,7 +123,7 @@ const EntryDetailsPage = () => {
 					{/* Thumbnail (Full Width on Small, Side on Large) */}
 					{entry.identification.thumbnail && (
 						<Grid item xs={12} md={4}>
-							<Box sx={{ border: "1px solid #ddd", padding: 2, borderRadius: "8px" }}>
+							<Box sx={{ border: "1px solid #858585", padding: 2, borderRadius: "8px" }}>
 								<Typography variant="h6">Data Thumbnail</Typography>
 								<img
 									src={entry.identification.thumbnail}
@@ -132,7 +139,7 @@ const EntryDetailsPage = () => {
 
 					{/* Identification */}
 					<Grid item xs={6}>
-						<Box sx={{ border: "1px solid #ddd", padding: 2, borderRadius: "8px" }}>
+						<Box sx={{ border: "1px solid #858585", padding: 2, borderRadius: "8px" }}>
 							<Typography variant="h6">Identification</Typography>
 							{entry.archivalIdentification?.archivalSpeciesCode && (
 								<Typography>
@@ -166,7 +173,7 @@ const EntryDetailsPage = () => {
 
 					{/* Physiological Information */}
 					<Grid item xs={6}>
-						<Box sx={{ border: "1px solid #ddd", padding: 2, borderRadius: "8px" }}>
+						<Box sx={{ border: "1px solid #858585", padding: 2, borderRadius: "8px" }}>
 							<Typography variant="h6">Physiological Information</Typography>
 							<Typography>
 								<strong>Developmental Stage:</strong>{" "}
@@ -188,7 +195,7 @@ const EntryDetailsPage = () => {
 
 					{/* Histological Information */}
 					<Grid item xs={6}>
-						<Box sx={{ border: "1px solid #ddd", padding: 2, borderRadius: "8px" }}>
+						<Box sx={{ border: "1px solid #858585", padding: 2, borderRadius: "8px" }}>
 							<Typography variant="h6">Histological Information</Typography>
 							<Typography>
 								<strong>Brain Part:</strong> {entry.histologicalInformation.brainPart || "N/A"}
@@ -210,7 +217,7 @@ const EntryDetailsPage = () => {
 
 					{/* Links & Sources */}
 					<Grid item xs={12}>
-						<Box sx={{ border: "1px solid #ddd", padding: 2, borderRadius: "8px" }}>
+						<Box sx={{ border: "1px solid #858585", padding: 2, borderRadius: "8px" }}>
 							<Typography variant="h6">Links & Sources</Typography>
 							{entry.identification?.microdraw_link && (
 								<Typography>

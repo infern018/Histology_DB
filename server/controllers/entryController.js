@@ -437,6 +437,8 @@ const advancedSearch = async (req, res) => {
 			limit = 10,
 		} = req.query;
 
+		const selectedCollectionsList = selectedCollections ? selectedCollections.split(",") : [];
+
 		const query = {};
 
 		if (searchQuery) {
@@ -499,8 +501,8 @@ const advancedSearch = async (req, res) => {
 			query["identification.order"] = selectedOrder;
 		}
 
-		if (selectedCollections && selectedCollections.length > 0) {
-			query["collectionID"] = { $in: selectedCollections };
+		if (selectedCollectionsList && selectedCollectionsList.length > 0) {
+			query["collectionID"] = { $in: selectedCollectionsList };
 		} else {
 			query["collectionID"] = {
 				$in: await Collection.find({ publicStatus: "approved", backupCollection: { $ne: true } }).select("_id"),

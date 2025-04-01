@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Box, CircularProgress, Typography, Pagination } from "@mui/material";
+import { Box, Typography, Pagination } from "@mui/material";
 import Layout from "../components/utils/Layout";
 import EntriesTable from "../components/entries/EntriesTable";
 import { fetchSearchResults } from "../utils/apiCalls";
+import TableSkeleton from "../components/utils/TableSkeleton";
 
 const SearchResults = () => {
 	const location = useLocation();
@@ -19,7 +20,6 @@ const SearchResults = () => {
 		const fetchResults = async () => {
 			try {
 				const searchParams = Object.fromEntries(queryParams.entries());
-				console.log("searchParams", searchParams);
 				searchParams.page = page;
 
 				const data = await fetchSearchResults(searchParams);
@@ -40,7 +40,14 @@ const SearchResults = () => {
 	};
 
 	if (loading) {
-		return <CircularProgress />;
+		return (
+			<Layout>
+				<Typography variant="h5" gutterBottom>
+					Search Results
+				</Typography>
+				<TableSkeleton />
+			</Layout>
+		);
 	}
 
 	return (
