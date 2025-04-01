@@ -144,7 +144,7 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 								fontSize="small"
 								onClick={() => handleFieldSort("histologicalInformation.stainingMethod")}
 								sx={{ cursor: "pointer" }}>
-								Staining Method(µm){" "}
+								Staining Method{" "}
 								{sortField === "histologicalInformation.stainingMethod" &&
 									(sortOrder === "asc" ? "↑" : "↓")}
 							</Typography>
