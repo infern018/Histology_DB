@@ -199,7 +199,7 @@ const EntryDetailsPage = () => {
 							</Typography>
 							<Typography>
 								<strong>Plane of Sectioning:</strong>{" "}
-								{entry.histologicalInformation.planeOfSectioning || "N/A"} µm
+								{entry.histologicalInformation.planeOfSectioning || "N/A"}
 							</Typography>
 							<Typography>
 								<strong>Inter-Section Distance:</strong>{" "}

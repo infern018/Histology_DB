@@ -456,6 +456,8 @@ const advancedSearch = async (req, res) => {
 					query["identification.bionomialSpeciesName"] = { $regex: value, $options: "i" };
 				} else if (["staining", "stain", "staining_method"].includes(key)) {
 					query["histologicalInformation.stainingMethod"] = { $regex: value, $options: "i" };
+				} else if (["specimen_id", "specimen_number"].includes(key)) {
+					query["archivalIdentification.archivalSpeciesCode"] = { $regex: value, $options: "i" };
 				}
 			});
 		}

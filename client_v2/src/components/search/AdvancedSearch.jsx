@@ -119,7 +119,8 @@ const AdvancedSearch = ({ onSearch }) => {
 						<strong>• common_name:</strong> Human{"\n"}
 						<strong>• taxonomy_id:</strong> 9606{"\n"}
 						<strong>• archival_name:</strong> tupa{"\n"}
-						<strong>• staining:</strong> cresyl
+						<strong>• staining:</strong> cresyl {"\n"}
+						<strong>• speciemen_id: </strong> 1088{"\n"}
 					</Typography>
 				}>
 				<TextField
