@@ -11,6 +11,7 @@ import {
 	Paper,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import ImageCell from "../utils/ImageSkeleton";
 
 const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, currUserMode, isPublic, handleSort }) => {
 	const [sortField, setSortField] = useState("identification.bionomialSpeciesName");
@@ -210,11 +211,7 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 							</TableCell>
 							<TableCell>
 								{entry.identification.thumbnail ? (
-									<img
-										src={entry.identification.thumbnail}
-										alt="Thumbnail"
-										style={{ width: 50, height: 50, objectFit: "cover", borderRadius: 5 }}
-									/>
+									<ImageCell src={entry.identification.thumbnail} />
 								) : null}
 							</TableCell>
 							<TableCell>

@@ -5,7 +5,6 @@ import Layout from "../components/utils/Layout";
 import { useNavigate } from "react-router-dom";
 import BiotechIcon from "@mui/icons-material/Biotech";
 import AdvancedSearch from "../components/search/AdvancedSearch";
-import { Link } from "react-router-dom";
 
 const Home = () => {
 	const navigate = useNavigate();

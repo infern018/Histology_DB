@@ -15,8 +15,6 @@ const EntryDetailsPage = () => {
 	const [entry, setEntry] = useState(null);
 	const [collection, setCollection] = useState(null);
 	const [loading, setLoading] = useState(true);
-	const [loadingEntry, setLoadingEntry] = useState(true);
-	const [loadingCollection, setLoadingCollection] = useState(true);
 
 	const location = useLocation();
 
