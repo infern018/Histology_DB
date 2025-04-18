@@ -382,3 +382,22 @@ export const fetchDistinctOrders = async () => {
 		throw new Error(error.message);
 	}
 };
+
+export const fetchDistinctStainings = async () => {
+	try {
+		const response = await axiosReq.get("/entries/distinct-stainings");
+
+		return response.data;
+	} catch (error) {
+		throw new Error(error.message);
+	}
+};
+
+export const fetchDistinctBrainParts = async () => {
+	try {
+		const response = await axiosReq.get("/entries/distinct-brain-parts");
+		return response.data;
+	} catch (error) {
+		throw new Error(error.message);
+	}
+};

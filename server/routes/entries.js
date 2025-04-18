@@ -6,6 +6,10 @@ const entryController = require("../controllers/entryController");
 
 router.get("/distinct-orders", entryController.getDistinctOrders);
 
+router.get("/distinct-stainings", entryController.getDistinctStainings);
+
+router.get("/distinct-brain-parts", entryController.getDistinctBrainParts);
+
 router.get("/advanced-search", entryController.advancedSearch);
 
 router.post("/", verifyEntryEditAccess, entryController.createEntry);

@@ -1,10 +1,11 @@
 // Home.js
 import React from "react";
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, Button } from "@mui/material";
 import Layout from "../components/utils/Layout";
 import { useNavigate } from "react-router-dom";
 import BiotechIcon from "@mui/icons-material/Biotech";
 import AdvancedSearch from "../components/search/AdvancedSearch";
+import { Link as RouterLink } from "react-router-dom";
 
 const Home = () => {
 	const navigate = useNavigate();
@@ -39,11 +40,12 @@ const Home = () => {
 				<Box sx={{ width: "85%", mt: 3 }}>
 					<AdvancedSearch onSearch={handleSearch} />
 				</Box>
-
-				{/* or
-				<Button component={Link} to={`/collection/public`} variant="contained" sx={{ mt: 3 }}>
-					Explore All Public Collections
-				</Button> */}
+				or
+				<Box sx={{ mt: 2 }}>
+					<Button component={RouterLink} to={`/collection/public`} variant="contained">
+						Explore public collections
+					</Button>
+				</Box>
 			</Box>
 		</Layout>
 	);

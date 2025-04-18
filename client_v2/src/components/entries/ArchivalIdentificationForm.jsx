@@ -15,7 +15,7 @@ export default function ArchivalIdentificationForm({ values, onChange }) {
 				<TextField
 					label="Archival Species Code"
 					name="archivalSpeciesCode"
-					value={values.archivalSpeciesCode || ""}
+					value={values?.archivalSpeciesCode || ""}
 					onChange={handleInputChange}
 					fullWidth
 					margin="normal"

@@ -352,8 +352,6 @@ const getOrderFromTaxonomy = (req, res) => {
 		// Search for the taxonomy data with the matching taxonomyId
 		const taxonomyItem = taxonomyData.find((item) => item.taxonomy.taxId === parseInt(taxonomyId));
 
-		console.log("taxonomyItem", taxonomyItem);
-
 		// If taxonomy is found, return the order, else return an error
 		if (taxonomyItem) {
 			const order = taxonomyItem.taxonomy.classification.order;
@@ -402,9 +400,28 @@ const getDistinctOrders = async (req, res) => {
 	}
 };
 
+const getDistinctStainings = async (req, res) => {
+	try {
+		const stainings = await Entry.distinct("histologicalInformation.stainingMethod");
+		res.status(200).json(stainings);
+	} catch (err) {
+		res.status(500).json(err);
+	}
+};
+
+const getDistinctBrainParts = async (req, res) => {
+	try {
+		const brainParts = await Entry.distinct("histologicalInformation.brainPart");
+		console.log("brainParts", brainParts);
+		res.status(200).json(brainParts);
+	} catch (err) {
+		res.status(500).json(err);
+	}
+};
+
 const getTaxonomyIDs = (commonName, scientificName) => {
 	// print current working directory
-	const taxonomyData = JSON.parse(fs.readFileSync("combined_taxonomy_reports.json", "utf8"));
+	const taxonomyData = JSON.parse(fs.readFileSync("./utils/combined_taxonomy_reports.json", "utf8"));
 	let matchingTaxonomies = [];
 
 	if (scientificName) {
@@ -550,4 +567,6 @@ module.exports = {
 	getOrder,
 	getDistinctOrders,
 	advancedSearch,
+	getDistinctStainings,
+	getDistinctBrainParts,
 };

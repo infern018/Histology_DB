@@ -207,8 +207,12 @@ const EntryDetailsPage = () => {
 								{entry.histologicalInformation.planeOfSectioning || "N/A"}
 							</Typography>
 							<Typography>
+								<strong>Section Thickness:</strong>{" "}
+								{entry.histologicalInformation.sectionThickness || "N/A"} µm
+							</Typography>
+							<Typography>
 								<strong>Inter-Section Distance:</strong>{" "}
-								{entry.histologicalInformation.interSectionDistance || "N/A"} µm
+								{entry.histologicalInformation.interSectionDistance || "N/A"}
 							</Typography>
 						</Box>
 					</Grid>
