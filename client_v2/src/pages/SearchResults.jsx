@@ -58,11 +58,11 @@ const SearchResults = () => {
 	if (loading) {
 		return (
 			<Layout>
-				<Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+				<Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", mt: -1 }}>
 					<Box sx={{ width: "50%" }}>
 						<AdvancedSearch initialValues={currentSearchParams} onSearch={handleSearch} />
 					</Box>
-					<Typography variant="h6" gutterBottom sx={{ textAlign: "left", mt: 2, alignSelf: "flex-start" }}>
+					<Typography variant="h6" gutterBottom sx={{ textAlign: "left", mt: -2, alignSelf: "flex-start" }}>
 						Loading results...
 					</Typography>
 					<TableSkeleton />
@@ -73,11 +73,11 @@ const SearchResults = () => {
 
 	return (
 		<Layout>
-			<Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+			<Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", mt: -1 }}>
 				<Box sx={{ width: "50%" }}>
 					<AdvancedSearch initialValues={currentSearchParams} onSearch={handleSearch} />
 				</Box>
-				<Typography variant="h6" gutterBottom sx={{ textAlign: "left", mt: 2, alignSelf: "flex-start" }}>
+				<Typography variant="h6" gutterBottom sx={{ textAlign: "left", mt: -2, alignSelf: "flex-start" }}>
 					{totalEntries > 0
 						? `Found ${totalEntries} matching result${totalEntries > 1 ? "s" : ""}...`
 						: "No matching results found."}
@@ -90,7 +90,7 @@ const SearchResults = () => {
 					onSelectAll={() => {}}
 					isPublic={true}
 				/>
-				<Box sx={{ display: "flex", justifyContent: "flex-start", mt: 3, width: "100%" }}>
+				<Box sx={{ display: "flex", justifyContent: "flex-start", mt: 1, width: "100%" }}>
 					<Pagination
 						count={totalPages}
 						page={page}

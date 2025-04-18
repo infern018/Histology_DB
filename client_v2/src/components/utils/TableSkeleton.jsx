@@ -6,13 +6,14 @@ const TableSkeleton = () => {
 	const columns = 8; // Adjust based on your table's column count
 	const backgroundColor = "#262625";
 	const contentColor = "#3a3a39"; // Slightly lighter than the background
-	const tableRowHeight = 68;
+	const tableRowHeight = 65;
+	const tableHeaderRowHeight = 52;
 
 	return (
 		<TableContainer component={Paper} sx={{ backgroundColor, overflow: "hidden" }}>
 			<Table>
 				<TableHead>
-					<TableRow sx={{ height: tableRowHeight }}>
+					<TableRow sx={{ height: tableHeaderRowHeight }}>
 						{Array.from({ length: columns }).map((_, index) => (
 							<TableCell key={index}>
 								<Skeleton variant="text" sx={{ backgroundColor: contentColor }} />

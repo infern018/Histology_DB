@@ -37,7 +37,8 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 		navigate(`/entry/${entryId}?isPublic=${isPublic}`);
 	};
 
-	const tableRowHeight = 68;
+	const tableRowHeight = 65;
+	const tableHeaderRowHeight = 52;
 
 	return (
 		<TableContainer
@@ -53,7 +54,7 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 			}}>
 			<Table sx={{ width: "100%" }} size="small">
 				<TableHead>
-					<TableRow sx={{ height: tableRowHeight, backgroundColor: "#262626" }}>
+					<TableRow sx={{ height: tableHeaderRowHeight, backgroundColor: "#262626" }}>
 						{currUserMode !== "view" && (
 							<TableCell padding="checkbox">
 								<Checkbox
@@ -101,7 +102,6 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 									variant="subtitle2"
 									fontWeight="bold"
 									color="white"
-									fontSize="1.01rem"
 									onClick={() => column.sortField && handleFieldSort(column.sortField)}
 									sx={{
 										cursor: column.sortField ? "pointer" : "default",

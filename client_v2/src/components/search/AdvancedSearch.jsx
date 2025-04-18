@@ -150,7 +150,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 	};
 
 	const searchStyles = {
-		mb: 2,
+		mb: 1,
 		"& .MuiOutlinedInput-root": {
 			borderRadius: 2, // Set border radius here
 			"& fieldset": {

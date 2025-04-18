@@ -131,6 +131,10 @@ const EntryDetailsPage = () => {
 									textAlign: "center",
 									backgroundColor: "#f9f9f9",
 									height: "100%",
+									display: "flex",
+									flexDirection: "column",
+									alignItems: "center",
+									justifyContent: "center",
 								}}>
 								<Typography variant="subtitle1" fontWeight="bold" mb={2}>
 									Data Thumbnail
@@ -139,8 +143,9 @@ const EntryDetailsPage = () => {
 									src={entry.identification.thumbnail}
 									alt="Thumbnail"
 									style={{
-										maxWidth: "100%",
-										height: "auto",
+										width: "140px",
+										height: "140px",
+										objectFit: "cover",
 										borderRadius: "8px",
 									}}
 								/>
@@ -300,7 +305,7 @@ const EntryDetailsPage = () => {
 				</Grid>
 
 				{/* Back Button */}
-				<Box mt={2} textAlign="left">
+				<Box mt={1} textAlign="left">
 					<Button variant="contained" color="primary" onClick={() => window.history.back()}>
 						{"< "}Back
 					</Button>
