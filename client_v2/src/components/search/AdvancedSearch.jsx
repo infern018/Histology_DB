@@ -19,9 +19,8 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { fetchDistinctOrders, fetchPublicCollections } from "../../utils/apiCalls";
-import { Link as RouterLink } from "react-router-dom";
 
-const AdvancedSearch = ({ onSearch }) => {
+const AdvancedSearch = ({ initialValues, onSearch }) => {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [brainWeightRange, setBrainWeightRange] = useState([0, 1000]);
 	const [allowNAWeight, setAllowNAWeight] = useState(true);
@@ -32,6 +31,13 @@ const AdvancedSearch = ({ onSearch }) => {
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [orders, setOrders] = useState([]);
 	const [selectedOrder, setSelectedOrder] = useState("");
+
+	// const [stainings, setStainings] = useState([]);
+	// const [selectedStaining, setSelectedStaining] = useState("");
+
+	// const [brainParts, setBrainParts] = useState([]);
+	// const [selectedBrainPart, setSelectedBrainPart] = useState("");
+
 	const [collections, setCollections] = useState([]);
 	const [selectedCollections, setSelectedCollections] = useState([]);
 
@@ -45,9 +51,28 @@ const AdvancedSearch = ({ onSearch }) => {
 			}
 		};
 
+		// const fetchStainings = async () => {
+		// 	try {
+		// 		const stainingsData = await fetchDistinctStainings();
+		// 		setStainings(stainingsData);
+		// 	} catch (error) {
+		// 		console.error("Error fetching distinct stainings:", error);
+		// 	}
+		// };
+
+		// const fetchBrainParts = async () => {
+		// 	try {
+		// 		const brainPartsData = await fetchDistinctBrainParts();
+		// 		setBrainParts(brainPartsData);
+		// 	} catch (error) {
+		// 		console.error("Error fetching distinct brain parts:", error);
+		// 	}
+		// };
+
 		const fetchCollections = async () => {
 			try {
 				const collectionsData = await fetchPublicCollections();
+				console.log("collectionsData", collectionsData);
 				setCollections(collectionsData);
 			} catch (error) {
 				console.error("Error fetching public collections:", error);
@@ -55,8 +80,42 @@ const AdvancedSearch = ({ onSearch }) => {
 		};
 
 		fetchOrders();
+		// fetchStainings();
+		// fetchBrainParts();
 		fetchCollections();
 	}, []);
+
+	useEffect(() => {
+		if (initialValues) {
+			console.log("initialValues", initialValues);
+			setSearchQuery(initialValues.searchQuery || "");
+			setBrainWeightRange(
+				initialValues.brainWeightRange ? initialValues.brainWeightRange.split(",").map(Number) : [0, 1000]
+			);
+			setAllowNAWeight(
+				initialValues.allowNAWeight === undefined ||
+					initialValues.allowNAWeight === "true" ||
+					initialValues.allowNAWeight === true
+			);
+			setBodyWeightRange(
+				initialValues.bodyWeightRange ? initialValues.bodyWeightRange.split(",").map(Number) : [0, 1000]
+			);
+			setDevelopmentalStage(initialValues.developmentalStage || "");
+			setSex(initialValues.sex || "");
+			setSelectedOrder(initialValues.selectedOrder || "");
+			setSelectedCollections(
+				initialValues.selectedCollections
+					? initialValues.selectedCollections.split(",").map(
+							(colId) =>
+								collections.find((col) => col.collection_id === colId) || {
+									collection_id: colId,
+									name: "Unknown",
+								}
+					  )
+					: []
+			);
+		}
+	}, [initialValues, collections]);
 
 	const handleSearch = () => {
 		const searchParams = {
@@ -78,6 +137,13 @@ const AdvancedSearch = ({ onSearch }) => {
 	const handleNormalSearch = () => {
 		const searchParams = {
 			searchQuery,
+			brainWeightRange,
+			bodyWeightRange,
+			allowNAWeight,
+			developmentalStage,
+			sex,
+			selectedOrder,
+			selectedCollections: selectedCollections.map((col) => col.collection_id),
 			page: 1, // Start from the first page
 			limit: 10, // Default limit per page
 		};
@@ -244,6 +310,44 @@ const AdvancedSearch = ({ onSearch }) => {
 						</FormControl>
 					</Box>
 
+					{/* <Box sx={{ mb: 2 }}>
+						<FormControl fullWidth>
+							<InputLabel sx={{ color: selectedStaining === "" ? "grey" : "primary.main" }}>
+								Staining
+							</InputLabel>
+							<Select
+								value={selectedStaining}
+								onChange={(e) => setSelectedStaining(e.target.value)}
+								label="Staining"
+								sx={{ color: selectedStaining === "" ? "grey" : "primary.main" }}>
+								{stainings.map((staining) => (
+									<MenuItem key={staining} value={staining}>
+										{staining}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+					</Box>
+
+					<Box sx={{ mb: 2 }}>
+						<FormControl fullWidth>
+							<InputLabel sx={{ color: selectedBrainPart === "" ? "grey" : "primary.main" }}>
+								Brain Part
+							</InputLabel>
+							<Select
+								value={selectedBrainPart}
+								onChange={(e) => setSelectedBrainPart(e.target.value)}
+								label="Brain Part"
+								sx={{ color: selectedBrainPart === "" ? "grey" : "primary.main" }}>
+								{brainParts.map((brainPart) => (
+									<MenuItem key={brainPart} value={brainPart}>
+										{brainPart}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+					</Box> */}
+
 					<Box sx={{ mb: 2 }}>
 						<FormControl fullWidth>
 							<InputLabel>Collections</InputLabel>
@@ -265,12 +369,6 @@ const AdvancedSearch = ({ onSearch }) => {
 					<Button variant="contained" color="primary" onClick={handleSearch} sx={{ mt: 2 }}>
 						Search
 					</Button>
-
-					<Box sx={{ mt: 2 }}>
-						<Button component={RouterLink} to={`/collection/public`} variant="text">
-							Explore public collections {">"}
-						</Button>
-					</Box>
 				</Box>
 			</Drawer>
 		</Box>

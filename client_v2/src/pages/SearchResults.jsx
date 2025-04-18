@@ -5,14 +5,18 @@ import Layout from "../components/utils/Layout";
 import EntriesTable from "../components/entries/EntriesTable";
 import { fetchSearchResults } from "../utils/apiCalls";
 import TableSkeleton from "../components/utils/TableSkeleton";
+import AdvancedSearch from "../components/search/AdvancedSearch";
+import { useNavigate } from "react-router-dom";
 
 const SearchResults = () => {
 	const location = useLocation();
+	const navigate = useNavigate();
 
 	const [entries, setEntries] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [page, setPage] = useState(1);
 	const [totalPages, setTotalPages] = useState(0);
+	const [currentSearchParams, setCurrentSearchParams] = useState({});
 
 	useEffect(() => {
 		const queryParams = new URLSearchParams(location.search);
@@ -21,6 +25,9 @@ const SearchResults = () => {
 			try {
 				const searchParams = Object.fromEntries(queryParams.entries());
 				searchParams.page = page;
+				setCurrentSearchParams(searchParams);
+
+				console.log("searchParams", searchParams);
 
 				const data = await fetchSearchResults(searchParams);
 				setEntries(data.entries);
@@ -39,9 +46,17 @@ const SearchResults = () => {
 		setPage(newPage);
 	};
 
+	const handleSearch = (searchParams) => {
+		const queryParams = new URLSearchParams(searchParams).toString();
+		navigate(`/search/results?${queryParams}`);
+	};
+
 	if (loading) {
 		return (
 			<Layout>
+				<Box sx={{ width: "85%", mt: 3 }}>
+					<AdvancedSearch initialValues={currentSearchParams} onSearch={handleSearch} />
+				</Box>
 				<Typography variant="h5" gutterBottom>
 					Search Results
 				</Typography>
@@ -52,6 +67,9 @@ const SearchResults = () => {
 
 	return (
 		<Layout>
+			<Box sx={{ width: "85%", mt: 3 }}>
+				<AdvancedSearch initialValues={currentSearchParams} onSearch={handleSearch} />
+			</Box>
 			<Typography variant="h5" gutterBottom>
 				Search Results
 			</Typography>
