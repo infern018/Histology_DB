@@ -149,6 +149,22 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 		onSearch(searchParams);
 	};
 
+	const dropDownStyles = {
+		color: "white",
+		"& .MuiOutlinedInput-notchedOutline": {
+			borderColor: "white",
+		},
+		"&:hover .MuiOutlinedInput-notchedOutline": {
+			borderColor: "white",
+		},
+		"&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+			borderColor: "white",
+		},
+		"& .MuiSvgIcon-root": {
+			color: "white", // This targets the dropdown arrow
+		},
+	};
+
 	const searchStyles = {
 		mb: 1,
 		"& .MuiOutlinedInput-root": {
@@ -180,7 +196,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 				arrow
 				placement="bottom-start"
 				title={
-					<Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
+					<Typography variant="body2" sx={{ whiteSpace: "pre-line", color: "white" }}>
 						<strong>Search Formats:</strong>
 						{"\n"}
 						<strong>• species:</strong> Homo sapiens{"\n"}
@@ -242,18 +258,19 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 				PaperProps={{
 					sx: {
 						width: 350,
-						backgroundColor: "background.default",
-						color: "text.primary",
+						backgroundColor: "rgba(35, 35, 35, 0.5)", // Transparent background
+						backdropFilter: "blur(10px)", // Blurry effect
+						color: "white", // Set text color to white
 					},
 				}}>
 				<Box sx={{ p: 3 }}>
-					<Typography variant="h6" sx={{ mb: 3 }}>
+					<Typography variant="h6" sx={{ mb: 3, color: "white" }}>
 						Filtering Options
 					</Typography>
 
 					{/* Brain Weight Range */}
 					<Box sx={{ mb: 3 }}>
-						<Typography variant="subtitle1" gutterBottom>
+						<Typography variant="subtitle1" gutterBottom sx={{ color: "white" }}>
 							Brain Weight Range (g)
 						</Typography>
 						<Slider
@@ -273,7 +290,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 
 					{/* Body Weight Range */}
 					<Box sx={{ mb: 3 }}>
-						<Typography variant="subtitle1" gutterBottom>
+						<Typography variant="subtitle1" gutterBottom sx={{ color: "white" }}>
 							Body Weight Range (g)
 						</Typography>
 						<Slider
@@ -299,20 +316,31 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 									checked={allowNAWeight}
 									onChange={(e) => setAllowNAWeight(e.target.checked)}
 									color="primary"
+									sx={{
+										color: "white", // for unchecked state
+										"&.Mui-checked": {
+											color: "white", // for checked state (tick + box)
+										},
+										"& .MuiSvgIcon-root": {
+											fontSize: 24, // optional: resize the icon
+										},
+									}}
 								/>
 							}
 							label="Allow N/A Brain Weight"
+							sx={{ color: "white" }}
 						/>
 					</Box>
 
 					{/* Developmental Stage */}
 					<Box sx={{ mb: 3 }}>
 						<FormControl fullWidth>
-							<InputLabel>Developmental Stage</InputLabel>
+							<InputLabel sx={{ color: "white" }}>Developmental Stage</InputLabel>
 							<Select
 								value={developmentalStage}
 								onChange={(e) => setDevelopmentalStage(e.target.value)}
-								label="Developmental Stage">
+								label="Developmental Stage"
+								sx={dropDownStyles}>
 								<MenuItem value="embryo">Embryo</MenuItem>
 								<MenuItem value="fetus">Fetus</MenuItem>
 								<MenuItem value="neonate">Neonate</MenuItem>
@@ -326,8 +354,12 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 					{/* Sex */}
 					<Box sx={{ mb: 3 }}>
 						<FormControl fullWidth>
-							<InputLabel>Sex</InputLabel>
-							<Select value={sex} onChange={(e) => setSex(e.target.value)} label="Sex">
+							<InputLabel sx={{ color: "white" }}>Sex</InputLabel>
+							<Select
+								value={sex}
+								onChange={(e) => setSex(e.target.value)}
+								label="Sex"
+								sx={dropDownStyles}>
 								<MenuItem value="male">Male</MenuItem>
 								<MenuItem value="female">Female</MenuItem>
 								<MenuItem value="undefined">Undefined</MenuItem>
@@ -338,11 +370,12 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 					{/* Order */}
 					<Box sx={{ mb: 3 }}>
 						<FormControl fullWidth>
-							<InputLabel>Order</InputLabel>
+							<InputLabel sx={{ color: "white" }}>Order</InputLabel>
 							<Select
 								value={selectedOrder}
 								onChange={(e) => setSelectedOrder(e.target.value)}
-								label="Order">
+								label="Order"
+								sx={dropDownStyles}>
 								{orders.map((order) => (
 									<MenuItem key={order} value={order}>
 										{order}
@@ -355,12 +388,13 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 					{/* Collections */}
 					<Box sx={{ mb: 3 }}>
 						<FormControl fullWidth>
-							<InputLabel>Collections</InputLabel>
+							<InputLabel sx={{ color: "white" }}>Collections</InputLabel>
 							<Select
 								multiple
 								value={selectedCollections}
 								onChange={(e) => setSelectedCollections(e.target.value)}
-								renderValue={(selected) => selected.map((col) => col.name).join(", ")}>
+								renderValue={(selected) => selected.map((col) => col.name).join(", ")}
+								sx={dropDownStyles}>
 								{collections.map((collection) => (
 									<MenuItem key={collection.name} value={collection}>
 										<Checkbox checked={selectedCollections.indexOf(collection) > -1} />
