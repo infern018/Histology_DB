@@ -39,9 +39,10 @@ const CollectionDetails = () => {
 				sx={{
 					textAlign: "left",
 					maxWidth: "65%",
+					fontFamily: "Montserrat, sans-serif",
 				}}>
 				{collection ? (
-					<div style={{ color: "white" }}>
+					<div style={{ color: "white", fontFamily: "Montserrat, sans-serif" }}>
 						{/* Required Field */}
 						<h1>{collection.name} Collection</h1>
 
@@ -87,6 +88,7 @@ const CollectionDetails = () => {
 							sx={{
 								backgroundColor: "#212020",
 								color: "white",
+								fontFamily: "Montserrat, sans-serif",
 								"&:hover": {
 									backgroundColor: "#555", // Slightly lighter grey on hover
 								},
@@ -95,7 +97,7 @@ const CollectionDetails = () => {
 						</Button>
 					</div>
 				) : (
-					<p style={{ color: "white" }}>Loading...</p>
+					<p style={{ color: "white", fontFamily: "Montserrat, sans-serif" }}>Loading...</p>
 				)}
 			</Box>
 		</Layout>

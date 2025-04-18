@@ -1,7 +1,7 @@
 // src/pages/EntryDetailsPage.js
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { Typography, Paper, Box, Button, Divider, Grid } from "@mui/material";
+import { Typography, Paper, Box, Button, Grid } from "@mui/material";
 import { getEntryAPI, getPublicEntryAPI, getCollectionAPI, getPublicCollectionAPI } from "../../utils/apiCalls";
 import Layout from "../../components/utils/Layout";
 import { useSelector } from "react-redux";
@@ -77,58 +77,71 @@ const EntryDetailsPage = () => {
 	return (
 		<Layout>
 			<Paper
-				style={{
-					padding: "20px",
-					marginTop: "20px",
-					maxWidth: "1500px",
+				elevation={3}
+				sx={{
+					padding: 4,
+					marginTop: 4,
+					maxWidth: "1200px",
 					margin: "0 auto",
-					background: "rgba(255, 255, 255, 0.8)",
+					background: "rgba(255, 255, 255, 0.9)",
+					borderRadius: 2,
 				}}>
-				<Grid container alignItems="center" justifyContent="space-between">
-					{/* Collection Name on the Right */}
-					<Grid item>
-						<Typography variant="h6" gutterBottom>
-							Collection:{" "}
-							{collection?.name ? (
-								<a
-									href={`/collection/${collection._id}?isPublic=${isPublic}`}
-									style={{ textDecoration: "none", color: "#1976d2" }}>
-									{collection.name}
-								</a>
-							) : (
-								"N/A"
-							)}
-							<ArrowOutwardIcon sx={{ color: "#1976d2", ml: 1 }} />
-						</Typography>
-					</Grid>
+				{/* Header Section */}
+				<Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+					<Typography variant="h4" fontWeight="bold">
+						Entry Details
+					</Typography>
+					{!isPublic && user && (
+						<Button
+							component={Link}
+							variant="contained"
+							to={`/collection/${collection?._id}/entry/${entry._id}/edit`}
+							startIcon={<ArrowOutwardIcon />}>
+							Edit Entry
+						</Button>
+					)}
+				</Box>
 
-					<Grid item>
-						{!isPublic && user && (
-							<Button
-								component={Link}
-								variant="contained"
-								to={`/collection/${collection?._id}/entry/${entry._id}/edit`}
-								edge="end">
-								Edit
-							</Button>
+				{/* Collection Info */}
+				<Box mb={3}>
+					<Typography variant="h6" color="textSecondary">
+						Collection:{" "}
+						{collection?.name ? (
+							<a
+								href={`/collection/${collection._id}?isPublic=${isPublic}`}
+								style={{ textDecoration: "none", color: "#1976d2" }}>
+								{collection.name}
+							</a>
+						) : (
+							"N/A"
 						)}
-					</Grid>
-				</Grid>
+					</Typography>
+				</Box>
 
-				<Divider style={{ margin: "5px 0" }} />
-
-				<Grid container spacing={2} sx={{ maxWidth: "1000px", margin: "auto" }}>
-					{/* Thumbnail (Full Width on Small, Side on Large) */}
+				{/* Main Content */}
+				<Grid container spacing={3}>
+					{/* Thumbnail */}
 					{entry.identification.thumbnail && (
 						<Grid item xs={12} md={4}>
-							<Box sx={{ border: "1px solid #858585", padding: 2, borderRadius: "8px" }}>
-								<Typography variant="h6">Data Thumbnail</Typography>
+							<Box
+								sx={{
+									border: "1px solid #ddd",
+									padding: 2,
+									borderRadius: 2,
+									textAlign: "center",
+									backgroundColor: "#f9f9f9",
+									height: "100%",
+								}}>
+								<Typography variant="subtitle1" fontWeight="bold" mb={2}>
+									Data Thumbnail
+								</Typography>
 								<img
 									src={entry.identification.thumbnail}
 									alt="Thumbnail"
 									style={{
 										maxWidth: "100%",
 										height: "auto",
+										borderRadius: "8px",
 									}}
 								/>
 							</Box>
@@ -136,16 +149,24 @@ const EntryDetailsPage = () => {
 					)}
 
 					{/* Identification */}
-					<Grid item xs={6}>
-						<Box sx={{ border: "1px solid #858585", padding: 2, borderRadius: "8px" }}>
-							<Typography variant="h6">Identification</Typography>
-							{entry.archivalIdentification?.archivalSpeciesCode && (
-								<Typography>
-									<strong>Specimen ID: </strong> {entry.archivalIdentification.archivalSpeciesCode}
-								</Typography>
-							)}
+					<Grid item xs={12} md={8}>
+						<Box
+							sx={{
+								border: "1px solid #ddd",
+								padding: 3,
+								borderRadius: 2,
+								backgroundColor: "#f9f9f9",
+								height: "100%",
+							}}>
+							<Typography variant="h6" fontWeight="bold" mb={2}>
+								Identification
+							</Typography>
 							<Typography>
-								<strong>NCBI Taxonomy Code: </strong> {entry.identification.NCBITaxonomyCode || "N/A"}
+								<strong>Specimen ID:</strong>{" "}
+								{entry.archivalIdentification?.archivalSpeciesCode || "N/A"}
+							</Typography>
+							<Typography>
+								<strong>NCBI Taxonomy Code:</strong> {entry.identification.NCBITaxonomyCode || "N/A"}
 							</Typography>
 							<Typography>
 								<strong>Species Name:</strong> {entry.identification.bionomialSpeciesName || "N/A"}
@@ -154,13 +175,13 @@ const EntryDetailsPage = () => {
 								<strong>Order:</strong> {entry.identification.order || "N/A"}
 							</Typography>
 							<Typography>
-								<strong>Wikipedia:</strong>
+								<strong>Wikipedia:</strong>{" "}
 								{entry.identification.wikipediaSpeciesName ? (
 									<a
 										href={entry.identification.wikipediaSpeciesName}
 										target="_blank"
 										rel="noopener noreferrer">
-										{` wikipedia.org/${entry.identification.wikipediaSpeciesName.split("/").pop()}`}{" "}
+										{entry.identification.wikipediaSpeciesName.split("/").pop()}
 									</a>
 								) : (
 									"N/A"
@@ -170,9 +191,18 @@ const EntryDetailsPage = () => {
 					</Grid>
 
 					{/* Physiological Information */}
-					<Grid item xs={6}>
-						<Box sx={{ border: "1px solid #858585", padding: 2, borderRadius: "8px" }}>
-							<Typography variant="h6">Physiological Information</Typography>
+					<Grid item xs={12} md={6}>
+						<Box
+							sx={{
+								border: "1px solid #ddd",
+								padding: 3,
+								borderRadius: 2,
+								backgroundColor: "#f9f9f9",
+								height: "100%",
+							}}>
+							<Typography variant="h6" fontWeight="bold" mb={2}>
+								Physiological Information
+							</Typography>
 							<Typography>
 								<strong>Developmental Stage:</strong>{" "}
 								{entry.physiologicalInformation.age.developmentalStage || "N/A"}
@@ -192,9 +222,18 @@ const EntryDetailsPage = () => {
 					</Grid>
 
 					{/* Histological Information */}
-					<Grid item xs={6}>
-						<Box sx={{ border: "1px solid #858585", padding: 2, borderRadius: "8px" }}>
-							<Typography variant="h6">Histological Information</Typography>
+					<Grid item xs={12} md={6}>
+						<Box
+							sx={{
+								border: "1px solid #ddd",
+								padding: 3,
+								borderRadius: 2,
+								backgroundColor: "#f9f9f9",
+								height: "100%",
+							}}>
+							<Typography variant="h6" fontWeight="bold" mb={2}>
+								Histological Information
+							</Typography>
 							<Typography>
 								<strong>Brain Part:</strong> {entry.histologicalInformation.brainPart || "N/A"}
 							</Typography>
@@ -219,8 +258,17 @@ const EntryDetailsPage = () => {
 
 					{/* Links & Sources */}
 					<Grid item xs={12}>
-						<Box sx={{ border: "1px solid #858585", padding: 2, borderRadius: "8px" }}>
-							<Typography variant="h6">Links & Sources</Typography>
+						<Box
+							sx={{
+								border: "1px solid #ddd",
+								padding: 3,
+								borderRadius: 2,
+								backgroundColor: "#f9f9f9",
+								height: "100%",
+							}}>
+							<Typography variant="h6" fontWeight="bold" mb={2}>
+								Links & Sources
+							</Typography>
 							{entry.identification?.microdraw_link && (
 								<Typography>
 									<strong>MicroDraw:</strong>{" "}
@@ -234,15 +282,13 @@ const EntryDetailsPage = () => {
 									</a>
 								</Typography>
 							)}
-
 							<Typography>
-								<strong>Source:</strong>
+								<strong>Source:</strong>{" "}
 								{entry.identification.source_link ? (
 									<a
 										href={entry.identification.source_link}
 										target="_blank"
 										rel="noopener noreferrer">
-										{" "}
 										{entry.identification.source_link}
 									</a>
 								) : (
@@ -253,9 +299,10 @@ const EntryDetailsPage = () => {
 					</Grid>
 				</Grid>
 
-				<Box mt={3} textAlign="center">
+				{/* Back Button */}
+				<Box mt={2} textAlign="left">
 					<Button variant="contained" color="primary" onClick={() => window.history.back()}>
-						Back
+						{"< "}Back
 					</Button>
 				</Box>
 			</Paper>

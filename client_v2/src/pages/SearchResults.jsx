@@ -16,6 +16,7 @@ const SearchResults = () => {
 	const [loading, setLoading] = useState(true);
 	const [page, setPage] = useState(1);
 	const [totalPages, setTotalPages] = useState(0);
+	const [totalEntries, setTotalEntries] = useState(0);
 	const [currentSearchParams, setCurrentSearchParams] = useState({});
 
 	useEffect(() => {
@@ -30,6 +31,8 @@ const SearchResults = () => {
 				console.log("searchParams", searchParams);
 
 				const data = await fetchSearchResults(searchParams);
+				console.log("data", data);
+				setTotalEntries(data.totalEntries);
 				setEntries(data.entries);
 				setTotalPages(data.totalPages);
 			} catch (error) {
@@ -48,57 +51,64 @@ const SearchResults = () => {
 
 	const handleSearch = (searchParams) => {
 		const queryParams = new URLSearchParams(searchParams).toString();
+		console.log("queryParams", queryParams);
 		navigate(`/search/results?${queryParams}`);
 	};
 
 	if (loading) {
 		return (
 			<Layout>
-				<Box sx={{ width: "50%" }}>
-					<AdvancedSearch initialValues={currentSearchParams} onSearch={handleSearch} />
+				<Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+					<Box sx={{ width: "50%" }}>
+						<AdvancedSearch initialValues={currentSearchParams} onSearch={handleSearch} />
+					</Box>
+					<Typography variant="h6" gutterBottom sx={{ textAlign: "left", mt: 2, alignSelf: "flex-start" }}>
+						Loading results...
+					</Typography>
+					<TableSkeleton />
 				</Box>
-				<Typography variant="h5" gutterBottom>
-					Search Results
-				</Typography>
-				<TableSkeleton />
 			</Layout>
 		);
 	}
 
 	return (
 		<Layout>
-			<Box sx={{ width: "50%" }}>
-				<AdvancedSearch initialValues={currentSearchParams} onSearch={handleSearch} />
-			</Box>
-			<Typography variant="h5" gutterBottom>
-				Search Results
-			</Typography>
-			<EntriesTable
-				entries={entries}
-				currUserMode={"view"}
-				selectedEntries={[]}
-				onSelectEntry={() => {}}
-				onSelectAll={() => {}}
-				isPublic={true}
-			/>
-			<Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-				<Pagination
-					count={totalPages}
-					page={page}
-					onChange={handlePageChange}
-					color="primary"
-					sx={{
-						"& .MuiPaginationItem-root": {
-							color: "white", // Change the text color of pagination items to white
-						},
-						"& .MuiPaginationItem-root.Mui-selected": {
-							color: "white", // Ensure the selected item text is also white
-						},
-						"& .MuiPaginationItem-root:hover": {
-							backgroundColor: "rgba(255, 255, 255, 0.2)", // Optional: change background color on hover
-						},
-					}}
+			<Box sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+				<Box sx={{ width: "50%" }}>
+					<AdvancedSearch initialValues={currentSearchParams} onSearch={handleSearch} />
+				</Box>
+				<Typography variant="h6" gutterBottom sx={{ textAlign: "left", mt: 2, alignSelf: "flex-start" }}>
+					{totalEntries > 0
+						? `Found ${totalEntries} matching result${totalEntries > 1 ? "s" : ""}...`
+						: "No matching results found."}
+				</Typography>
+				<EntriesTable
+					entries={entries}
+					currUserMode={"view"}
+					selectedEntries={[]}
+					onSelectEntry={() => {}}
+					onSelectAll={() => {}}
+					isPublic={true}
 				/>
+				<Box sx={{ display: "flex", justifyContent: "flex-start", mt: 3, width: "100%" }}>
+					<Pagination
+						count={totalPages}
+						page={page}
+						onChange={handlePageChange}
+						color="primary"
+						sx={{
+							"& .MuiPaginationItem-root": {
+								color: "white", // Change the text color of pagination items to white
+							},
+							"& .MuiPaginationItem-root.Mui-selected": {
+								color: "white", // Ensure the selected item text is also white
+							},
+							"& .MuiPaginationItem-root:hover": {
+								backgroundColor: "rgba(255, 255, 255, 0.2)", // Optional: change background color on hover
+							},
+						}}
+					/>
+				</Box>
 			</Box>
 		</Layout>
 	);

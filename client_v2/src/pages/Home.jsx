@@ -26,26 +26,25 @@ const Home = () => {
 					justifyContent: "center",
 					height: "100vh",
 					textAlign: "center",
-					maxWidth: "65%",
+					maxWidth: "69%",
 				}}>
-				<BiotechIcon sx={{ width: 80, height: 80, fontSize: 40, color: "rgba(255, 255, 255, 0.8)" }} />
-				<Typography variant="h2">MiMe</Typography>
-				<Typography variant="h5" sx={{ mt: 2 }}>
-					Welcome to MiMe,
+				<BiotechIcon sx={{ width: 100, height: 100, color: "rgba(255, 255, 255, 0.8)", marginBottom: 2 }} />
+				<Typography variant="h2" sx={{ fontWeight: 600, marginBottom: 2 }}>
+					MiMe
 				</Typography>
-				<Typography paragraph sx={{ mt: 2 }}>
+				<Typography paragraph sx={{ fontSize: "1.2rem", lineHeight: 1.8, marginBottom: 3 }}>
 					Microscopy Metadata Index (MiMe) is a platform designed to streamline the sharing and collaboration
 					of histology data. Discover, contribute, and manage your data seamlessly.
 				</Typography>
 				<Box sx={{ width: "85%", mt: 3 }}>
 					<AdvancedSearch onSearch={handleSearch} />
 				</Box>
-				or
-				<Box sx={{ mt: 2 }}>
-					<Button component={RouterLink} to={`/collection/public`} variant="contained">
-						Explore public collections
-					</Button>
-				</Box>
+				<Typography variant="body1" sx={{ marginBottom: 2 }}>
+					or
+				</Typography>
+				<Button component={RouterLink} to={`/collection/public`} variant="contained">
+					Explore Public Collections
+				</Button>
 			</Box>
 		</Layout>
 	);

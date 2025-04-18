@@ -13,7 +13,6 @@ import {
 	InputLabel,
 	InputAdornment,
 	Tooltip,
-	Link,
 	Checkbox,
 	ListItemText,
 } from "@mui/material";
@@ -169,6 +168,9 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 		},
 		"& .MuiInputLabel-root": {
 			color: "white",
+			"&.Mui-focused": {
+				color: "white", // Prevent label from turning blue
+			},
 		},
 	};
 
@@ -195,11 +197,22 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 					fullWidth
 					value={searchQuery}
 					onChange={(e) => setSearchQuery(e.target.value)}
-					sx={searchStyles}
+					sx={{
+						...searchStyles,
+						backgroundColor: "rgba(255, 255, 255, 0.1)",
+						borderRadius: 2,
+					}}
 					InputProps={{
 						endAdornment: (
 							<InputAdornment position="end">
-								<Button onClick={handleNormalSearch} variant="contained" sx={{ color: "white" }}>
+								<Button
+									onClick={handleNormalSearch}
+									variant="contained"
+									sx={{
+										color: "white",
+										backgroundColor: "primary.main",
+										"&:hover": { backgroundColor: "primary.dark" },
+									}}>
 									<SearchIcon />
 								</Button>
 							</InputAdornment>
@@ -208,16 +221,41 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 				/>
 			</Tooltip>
 
-			<Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
-				<Link component="button" variant="body2" onClick={() => setDrawerOpen(true)} sx={{ color: "white" }}>
+			<Box sx={{ display: "flex", justifyContent: "flex-end", mt: 0 }}>
+				<Button
+					variant="text"
+					onClick={() => setDrawerOpen(true)}
+					sx={{
+						color: "white",
+						textTransform: "none",
+						fontSize: "0.95rem",
+						"&:hover": { textDecoration: "underline" },
+					}}>
 					Filters
-				</Link>
+				</Button>
 			</Box>
-			<Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-				<Box sx={{ width: 300, p: 2 }}>
-					<Typography variant="h6">Filtering Options :</Typography>
-					<Box sx={{ mb: 2, mt: 2 }}>
-						<Typography gutterBottom>Brain Weight Range (g)</Typography>
+
+			<Drawer
+				anchor="left"
+				open={drawerOpen}
+				onClose={() => setDrawerOpen(false)}
+				PaperProps={{
+					sx: {
+						width: 350,
+						backgroundColor: "background.default",
+						color: "text.primary",
+					},
+				}}>
+				<Box sx={{ p: 3 }}>
+					<Typography variant="h6" sx={{ mb: 3 }}>
+						Filtering Options
+					</Typography>
+
+					{/* Brain Weight Range */}
+					<Box sx={{ mb: 3 }}>
+						<Typography variant="subtitle1" gutterBottom>
+							Brain Weight Range (g)
+						</Typography>
 						<Slider
 							value={brainWeightRange}
 							onChange={(e, newValue) => setBrainWeightRange(newValue)}
@@ -226,12 +264,18 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 							max={1000}
 							sx={{
 								color:
-									brainWeightRange[0] === 0 && brainWeightRange[1] === 1000 ? "grey" : "primary.main",
+									brainWeightRange[0] === 0 && brainWeightRange[1] === 1000
+										? "grey.500"
+										: "primary.main",
 							}}
 						/>
 					</Box>
-					<Box sx={{ mb: 2 }}>
-						<Typography gutterBottom>Body Weight Range (g)</Typography>
+
+					{/* Body Weight Range */}
+					<Box sx={{ mb: 3 }}>
+						<Typography variant="subtitle1" gutterBottom>
+							Body Weight Range (g)
+						</Typography>
 						<Slider
 							value={bodyWeightRange}
 							onChange={(e, newValue) => setBodyWeightRange(newValue)}
@@ -240,12 +284,15 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 							max={1000}
 							sx={{
 								color:
-									bodyWeightRange[0] === 0 && bodyWeightRange[1] === 1000 ? "grey" : "primary.main",
+									bodyWeightRange[0] === 0 && bodyWeightRange[1] === 1000
+										? "grey.500"
+										: "primary.main",
 							}}
 						/>
 					</Box>
 
-					<Box sx={{ mb: 2 }}>
+					{/* Allow N/A Brain Weight */}
+					<Box sx={{ mb: 3 }}>
 						<FormControlLabel
 							control={
 								<Checkbox
@@ -258,16 +305,14 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 						/>
 					</Box>
 
-					<Box sx={{ mb: 2 }}>
+					{/* Developmental Stage */}
+					<Box sx={{ mb: 3 }}>
 						<FormControl fullWidth>
-							<InputLabel sx={{ color: developmentalStage === "" ? "grey" : "primary.main" }}>
-								Developmental Stage
-							</InputLabel>
+							<InputLabel>Developmental Stage</InputLabel>
 							<Select
 								value={developmentalStage}
 								onChange={(e) => setDevelopmentalStage(e.target.value)}
-								label="Developmental Stage"
-								sx={{ color: developmentalStage === "" ? "grey" : "primary.main" }}>
+								label="Developmental Stage">
 								<MenuItem value="embryo">Embryo</MenuItem>
 								<MenuItem value="fetus">Fetus</MenuItem>
 								<MenuItem value="neonate">Neonate</MenuItem>
@@ -277,30 +322,27 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 							</Select>
 						</FormControl>
 					</Box>
-					<Box sx={{ mb: 2 }}>
+
+					{/* Sex */}
+					<Box sx={{ mb: 3 }}>
 						<FormControl fullWidth>
-							<InputLabel sx={{ color: sex === "" ? "grey" : "primary.main" }}>Sex</InputLabel>
-							<Select
-								value={sex}
-								onChange={(e) => setSex(e.target.value)}
-								label="Sex"
-								sx={{ color: sex === "" ? "grey" : "primary.main" }}>
+							<InputLabel>Sex</InputLabel>
+							<Select value={sex} onChange={(e) => setSex(e.target.value)} label="Sex">
 								<MenuItem value="male">Male</MenuItem>
 								<MenuItem value="female">Female</MenuItem>
 								<MenuItem value="undefined">Undefined</MenuItem>
 							</Select>
 						</FormControl>
 					</Box>
-					<Box sx={{ mb: 2 }}>
+
+					{/* Order */}
+					<Box sx={{ mb: 3 }}>
 						<FormControl fullWidth>
-							<InputLabel sx={{ color: selectedOrder === "" ? "grey" : "primary.main" }}>
-								Order
-							</InputLabel>
+							<InputLabel>Order</InputLabel>
 							<Select
 								value={selectedOrder}
 								onChange={(e) => setSelectedOrder(e.target.value)}
-								label="Order"
-								sx={{ color: selectedOrder === "" ? "grey" : "primary.main" }}>
+								label="Order">
 								{orders.map((order) => (
 									<MenuItem key={order} value={order}>
 										{order}
@@ -310,45 +352,8 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 						</FormControl>
 					</Box>
 
-					{/* <Box sx={{ mb: 2 }}>
-						<FormControl fullWidth>
-							<InputLabel sx={{ color: selectedStaining === "" ? "grey" : "primary.main" }}>
-								Staining
-							</InputLabel>
-							<Select
-								value={selectedStaining}
-								onChange={(e) => setSelectedStaining(e.target.value)}
-								label="Staining"
-								sx={{ color: selectedStaining === "" ? "grey" : "primary.main" }}>
-								{stainings.map((staining) => (
-									<MenuItem key={staining} value={staining}>
-										{staining}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-					</Box>
-
-					<Box sx={{ mb: 2 }}>
-						<FormControl fullWidth>
-							<InputLabel sx={{ color: selectedBrainPart === "" ? "grey" : "primary.main" }}>
-								Brain Part
-							</InputLabel>
-							<Select
-								value={selectedBrainPart}
-								onChange={(e) => setSelectedBrainPart(e.target.value)}
-								label="Brain Part"
-								sx={{ color: selectedBrainPart === "" ? "grey" : "primary.main" }}>
-								{brainParts.map((brainPart) => (
-									<MenuItem key={brainPart} value={brainPart}>
-										{brainPart}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
-					</Box> */}
-
-					<Box sx={{ mb: 2 }}>
+					{/* Collections */}
+					<Box sx={{ mb: 3 }}>
 						<FormControl fullWidth>
 							<InputLabel>Collections</InputLabel>
 							<Select
@@ -366,7 +371,12 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 						</FormControl>
 					</Box>
 
-					<Button variant="contained" color="primary" onClick={handleSearch} sx={{ mt: 2 }}>
+					<Button
+						variant="contained"
+						color="primary"
+						onClick={handleSearch}
+						fullWidth
+						sx={{ mt: 2, py: 1.5 }}>
 						Search
 					</Button>
 				</Box>

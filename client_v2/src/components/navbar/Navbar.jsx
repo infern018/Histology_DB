@@ -39,17 +39,16 @@ const Navbar = () => {
 				position="fixed"
 				sx={{
 					boxShadow: 0,
-					bgcolor: "transparent",
-					backgroundImage: "none",
+					bgcolor: "#242424",
+					borderBottom: "1px solid",
+					borderColor: "grey.800",
 				}}>
 				<Toolbar
 					sx={{
-						fontFamily: "Roboto, sans-serif",
+						display: "flex",
 						justifyContent: "space-between",
-						backdropFilter: "blur(24px)",
-						maxHeight: 10,
-						padding: 0,
-						borderBottom: "1px solid #8f8f8f", // Only bottom border
+						alignItems: "center",
+						paddingX: 2,
 					}}>
 					<Link
 						to="/"
@@ -59,15 +58,15 @@ const Navbar = () => {
 							alignItems: "center",
 							gap: "8px",
 						}}>
-						<BiotechIcon sx={{ fontSize: 30, color: "rgba(255, 255, 255, 0.8)" }} />
-						<span
-							style={{
-								fontSize: 20,
+						<BiotechIcon sx={{ fontSize: 30, color: "grey.100" }} />
+						<Typography
+							variant="h6"
+							sx={{
 								fontWeight: "bold",
-								color: "rgba(255, 255, 255, 0.9)", // Light text for logo
+								color: "grey.100",
 							}}>
 							MiMe
-						</span>
+						</Typography>
 					</Link>
 					<Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
 						{user && user.username !== "anyone" ? (
@@ -78,12 +77,11 @@ const Navbar = () => {
 									state={{ user: user }}
 									variant="text"
 									sx={{
-										color: "#ffffff",
+										color: "grey.100",
 										textTransform: "none",
 										fontSize: "1rem",
 										"&:hover": {
 											textDecoration: "underline",
-											bgcolor: "transparent",
 										},
 									}}>
 									{user.username}
@@ -92,12 +90,11 @@ const Navbar = () => {
 									variant="text"
 									onClick={() => setOpen(true)}
 									sx={{
-										color: "#ffffff",
+										color: "grey.100",
 										textTransform: "none",
 										fontSize: "1rem",
 										"&:hover": {
 											textDecoration: "underline",
-											bgcolor: "transparent",
 										},
 									}}>
 									Logout
@@ -110,12 +107,11 @@ const Navbar = () => {
 									to="/login"
 									variant="text"
 									sx={{
-										color: "#ffffff",
+										color: "grey.100",
 										textTransform: "none",
 										fontSize: "1rem",
 										"&:hover": {
 											textDecoration: "underline",
-											bgcolor: "transparent",
 										},
 									}}>
 									Log in
@@ -123,41 +119,56 @@ const Navbar = () => {
 							</>
 						)}
 					</Box>
-					<Box sx={{ display: { sm: "", md: "none" } }}>
-						<Button variant="text" aria-label="menu" onClick={toggleDrawer(true)} sx={{ color: "#ffffff" }}>
+					<Box sx={{ display: { xs: "flex", md: "none" } }}>
+						<Button
+							variant="text"
+							aria-label="menu"
+							onClick={toggleDrawer(true)}
+							sx={{ color: "grey.100" }}>
 							<MenuIcon />
 						</Button>
 						<Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
-							<Box sx={{ p: 2, backgroundColor: "background.paper" }}>
+							<Box sx={{ p: 2, width: 250, backgroundColor: "grey.900" }}>
 								{user ? (
 									<>
 										<MenuItem
 											component={Link}
 											to={`/collection/create`}
-											onClick={toggleDrawer(false)}>
-											+
+											onClick={toggleDrawer(false)}
+											sx={{ color: "grey.100" }}>
+											Create Collection
 										</MenuItem>
 										<MenuItem
 											component={Link}
 											to={`/user/${user.username}`}
 											state={{ user: user }}
-											onClick={toggleDrawer(false)}>
+											onClick={toggleDrawer(false)}
+											sx={{ color: "grey.100" }}>
 											{user.username}
 										</MenuItem>
 										<MenuItem
 											onClick={() => {
 												toggleDrawer(false)();
 												setOpen(true);
-											}}>
+											}}
+											sx={{ color: "grey.100" }}>
 											Logout
 										</MenuItem>
 									</>
 								) : (
 									<>
-										<MenuItem component={Link} to={`/login`} onClick={toggleDrawer(false)}>
+										<MenuItem
+											component={Link}
+											to={`/login`}
+											onClick={toggleDrawer(false)}
+											sx={{ color: "grey.100" }}>
 											Log in
 										</MenuItem>
-										<MenuItem component={Link} to={`/signup`} onClick={toggleDrawer(false)}>
+										<MenuItem
+											component={Link}
+											to={`/signup`}
+											onClick={toggleDrawer(false)}
+											sx={{ color: "grey.100" }}>
 											Sign up
 										</MenuItem>
 									</>
@@ -169,13 +180,17 @@ const Navbar = () => {
 			</AppBar>
 
 			<Dialog open={open} onClose={() => setOpen(false)}>
-				<DialogTitle>Leaving so soon...</DialogTitle>
-				<DialogContent>
-					<Typography>Are you sure you want to log out? Any unsaved changes may be lost.</Typography>
+				<DialogTitle sx={{ bgcolor: "grey.900", color: "grey.100" }}>Leaving so soon...</DialogTitle>
+				<DialogContent sx={{ bgcolor: "grey.900" }}>
+					<Typography sx={{ color: "grey.100" }}>
+						Are you sure you want to log out? Any unsaved changes may be lost.
+					</Typography>
 				</DialogContent>
-				<DialogActions>
-					<Button onClick={() => setOpen(false)}>Cancel</Button>
-					<Button onClick={handleLogout} color="primary">
+				<DialogActions sx={{ bgcolor: "grey.900" }}>
+					<Button onClick={() => setOpen(false)} sx={{ color: "grey.500" }}>
+						Cancel
+					</Button>
+					<Button onClick={handleLogout} sx={{ color: "grey.100" }}>
 						Yes
 					</Button>
 				</DialogActions>

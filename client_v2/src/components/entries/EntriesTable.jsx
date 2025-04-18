@@ -45,20 +45,22 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 			sx={{
 				width: "100%",
 				maxWidth: "100%",
-				maxHeight: "900px", // Set a fixed height
-				overflowY: "auto", // Enable vertical scrolling if content overflows
-				backgroundColor: "#262625", // Optional: Dark background for better contrast
+				maxHeight: "900px",
+				overflowY: "auto",
+				backgroundColor: "#1e1e1e",
+				borderRadius: "8px",
+				boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
 			}}>
 			<Table sx={{ width: "100%" }} size="small">
 				<TableHead>
-					<TableRow sx={{ height: tableRowHeight }}>
+					<TableRow sx={{ height: tableRowHeight, backgroundColor: "#262626" }}>
 						{currUserMode !== "view" && (
-							<TableCell>
+							<TableCell padding="checkbox">
 								<Checkbox
 									sx={{
-										color: "white",
+										color: "#ffffff",
 										"&.Mui-checked": {
-											color: "white",
+											color: "#4caf50",
 										},
 										"&.Mui-checked:hover": {
 											backgroundColor: "transparent",
@@ -69,98 +71,51 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 								/>
 							</TableCell>
 						)}
-						<TableCell>
-							<Typography
-								variant="subtitle2"
-								fontWeight="bold"
-								color="white"
-								fontSize="small"
-								sx={{ cursor: "pointer" }}>
-								Specimen ID
-							</Typography>
-						</TableCell>
-						<TableCell>
-							<Typography
-								variant="subtitle2"
-								fontWeight="bold"
-								color="white"
-								fontSize="small"
-								sx={{ cursor: "pointer" }}>
-								Brain Part
-							</Typography>
-						</TableCell>
-
-						<TableCell>
-							<Typography
-								variant="subtitle2"
-								fontWeight="bold"
-								color="white"
-								fontSize="small"
-								sx={{ cursor: "pointer" }}>
-								Thumbnail
-							</Typography>
-						</TableCell>
-						<TableCell>
-							<Typography
-								variant="subtitle2"
-								fontWeight="bold"
-								color="white"
-								fontSize="small"
-								onClick={() => handleFieldSort("identification.bionomialSpeciesName")}
-								sx={{ cursor: "pointer" }}>
-								Bionomial Species Name{" "}
-								{sortField === "identification.bionomialSpeciesName" &&
-									(sortOrder === "asc" ? "↑" : "↓")}
-							</Typography>
-						</TableCell>
-						<TableCell>
-							<Typography
-								variant="subtitle2"
-								fontWeight="bold"
-								color="white"
-								fontSize="small"
-								onClick={() => handleFieldSort("physiologicalInformation.age.developmentalStage")}
-								sx={{ cursor: "pointer" }}>
-								Developmental Stage{" "}
-								{sortField === "physiologicalInformation.age.developmentalStage" &&
-									(sortOrder === "asc" ? "↑" : "↓")}
-							</Typography>
-						</TableCell>
-						<TableCell>
-							<Typography
-								variant="subtitle2"
-								fontWeight="bold"
-								color="white"
-								fontSize="small"
-								onClick={() => handleFieldSort("physiologicalInformation.sex")}
-								sx={{ cursor: "pointer" }}>
-								Sex {sortField === "physiologicalInformation.sex" && (sortOrder === "asc" ? "↑" : "↓")}
-							</Typography>
-						</TableCell>
-						<TableCell>
-							<Typography
-								variant="subtitle2"
-								fontWeight="bold"
-								color="white"
-								fontSize="small"
-								onClick={() => handleFieldSort("histologicalInformation.stainingMethod")}
-								sx={{ cursor: "pointer" }}>
-								Staining Method{" "}
-								{sortField === "histologicalInformation.stainingMethod" &&
-									(sortOrder === "asc" ? "↑" : "↓")}
-							</Typography>
-						</TableCell>
-						<TableCell>
-							<Typography
-								variant="subtitle2"
-								fontWeight="bold"
-								color="white"
-								fontSize="small"
-								onClick={() => handleFieldSort("identification.order")}
-								sx={{ cursor: "pointer" }}>
-								Order {sortField === "identification.order" && (sortOrder === "asc" ? "↑" : "↓")}
-							</Typography>
-						</TableCell>
+						{[
+							{ label: "Specimen ID" },
+							{ label: "Brain Part" },
+							{ label: "Thumbnail" },
+							{
+								label: "Bionomial Species Name",
+								sortField: "identification.bionomialSpeciesName",
+							},
+							{
+								label: "Developmental Stage",
+								sortField: "physiologicalInformation.age.developmentalStage",
+							},
+							{
+								label: "Sex",
+								sortField: "physiologicalInformation.sex",
+							},
+							{
+								label: "Staining Method",
+								sortField: "histologicalInformation.stainingMethod",
+							},
+							{
+								label: "Order",
+								sortField: "identification.order",
+							},
+						].map((column, index) => (
+							<TableCell key={index}>
+								<Typography
+									variant="subtitle2"
+									fontWeight="bold"
+									color="white"
+									fontSize="1.01rem"
+									onClick={() => column.sortField && handleFieldSort(column.sortField)}
+									sx={{
+										cursor: column.sortField ? "pointer" : "default",
+										display: "flex",
+										alignItems: "center",
+										gap: "4px",
+									}}>
+									{column.label}
+									{column.sortField && sortField === column.sortField && (
+										<span>{sortOrder === "asc" ? "↑" : "↓"}</span>
+									)}
+								</Typography>
+							</TableCell>
+						))}
 					</TableRow>
 				</TableHead>
 				<TableBody>
@@ -171,21 +126,20 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 							onClick={() => handleRowClick(entry._id)}
 							sx={{
 								height: tableRowHeight,
-								cursor: "pointer", // Makes the row indicate clickability
+								cursor: "pointer",
+								backgroundColor: "#1e1e1e",
 								"&:hover": {
-									backgroundColor: "#333333 !important", // Stronger hover color with !important
-									borderColor: "#ffffff", // Optional border color on hover
-									borderWidth: "1px",
-									borderStyle: "solid",
+									backgroundColor: "#333333",
 								},
+								transition: "background-color 0.3s ease",
 							}}>
 							{currUserMode !== "view" && (
-								<TableCell>
+								<TableCell padding="checkbox">
 									<Checkbox
 										sx={{
-											color: "white",
+											color: "#ffffff",
 											"&.Mui-checked": {
-												color: "white",
+												color: "#4caf50",
 											},
 											"&.Mui-checked:hover": {
 												backgroundColor: "transparent",
@@ -193,50 +147,52 @@ const EntriesTable = ({ entries, selectedEntries, onSelectEntry, onSelectAll, cu
 										}}
 										checked={selectedEntries.includes(entry._id)}
 										onChange={() => handleSelectEntry(entry._id)}
-										onClick={(e) => e.stopPropagation()} // Prevent checkbox click from triggering row click
+										onClick={(e) => e.stopPropagation()}
 									/>
 								</TableCell>
 							)}
 							<TableCell>
-								{entry.archivalIdentification?.archivalSpeciesCode && (
-									<Typography variant="body2" color="white">
-										{entry.archivalIdentification.archivalSpeciesCode}
-									</Typography>
-								)}
+								<Typography variant="body2" color="white">
+									{entry.archivalIdentification?.archivalSpeciesCode || "-"}
+								</Typography>
 							</TableCell>
 							<TableCell>
 								<Typography variant="body2" color="white">
-									{entry.histologicalInformation.brainPart}
+									{entry.histologicalInformation.brainPart || "-"}
 								</Typography>
 							</TableCell>
 							<TableCell>
 								{entry.identification.thumbnail ? (
 									<ImageCell src={entry.identification.thumbnail} />
-								) : null}
+								) : (
+									<Typography variant="body2" color="gray">
+										No Image
+									</Typography>
+								)}
 							</TableCell>
 							<TableCell>
 								<Typography variant="body2" color="white">
-									{entry.identification.bionomialSpeciesName}
+									{entry.identification.bionomialSpeciesName || "-"}
 								</Typography>
 							</TableCell>
 							<TableCell>
 								<Typography variant="body2" color="white">
-									{entry.physiologicalInformation.age.developmentalStage}
+									{entry.physiologicalInformation.age.developmentalStage || "-"}
 								</Typography>
 							</TableCell>
 							<TableCell>
 								<Typography variant="body2" color="white">
-									{entry.physiologicalInformation.sex}
+									{entry.physiologicalInformation.sex || "-"}
 								</Typography>
 							</TableCell>
 							<TableCell>
 								<Typography variant="body2" color="white">
-									{entry.histologicalInformation.stainingMethod}
+									{entry.histologicalInformation.stainingMethod || "-"}
 								</Typography>
 							</TableCell>
 							<TableCell>
 								<Typography variant="body2" color="white">
-									{entry.identification.order}
+									{entry.identification.order || "-"}
 								</Typography>
 							</TableCell>
 						</TableRow>
