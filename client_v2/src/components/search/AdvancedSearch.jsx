@@ -210,13 +210,13 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 
 			<Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
 				<Link component="button" variant="body2" onClick={() => setDrawerOpen(true)} sx={{ color: "white" }}>
-					Advanced Search
+					Filters
 				</Link>
 			</Box>
 			<Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
 				<Box sx={{ width: 300, p: 2 }}>
-					<Typography variant="h6">Advanced Search Options</Typography>
-					<Box sx={{ mb: 2 }}>
+					<Typography variant="h6">Filtering Options :</Typography>
+					<Box sx={{ mb: 2, mt: 2 }}>
 						<Typography gutterBottom>Brain Weight Range (g)</Typography>
 						<Slider
 							value={brainWeightRange}

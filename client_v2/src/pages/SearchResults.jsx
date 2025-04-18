@@ -54,7 +54,7 @@ const SearchResults = () => {
 	if (loading) {
 		return (
 			<Layout>
-				<Box sx={{ width: "85%", mt: 3 }}>
+				<Box sx={{ width: "50%" }}>
 					<AdvancedSearch initialValues={currentSearchParams} onSearch={handleSearch} />
 				</Box>
 				<Typography variant="h5" gutterBottom>
@@ -67,7 +67,7 @@ const SearchResults = () => {
 
 	return (
 		<Layout>
-			<Box sx={{ width: "85%", mt: 3 }}>
+			<Box sx={{ width: "50%" }}>
 				<AdvancedSearch initialValues={currentSearchParams} onSearch={handleSearch} />
 			</Box>
 			<Typography variant="h5" gutterBottom>
