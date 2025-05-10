@@ -161,7 +161,7 @@ const deleteMultipleEntries = async (req, res) => {
 			{ new: true }
 		);
 
-		invalidateCache(updatedEntries[0].collectionID); // Invalidate cache for the collection
+		invalidateCache(req.params.collectionID); // Invalidate cache for the collection
 
 		res.status(200).json(updatedEntries);
 	} catch (err) {
@@ -342,7 +342,7 @@ const processCSVEntries = async (req, res) => {
 const getOrderFromTaxonomy = (req, res) => {
 	const { taxonomyId } = req.params; // Get taxonomy ID from the request parameter
 
-	fs.readFile("server/utils/combined_taxonomy_reports.json", "utf8", (err, data) => {
+	fs.readFile("./utils/combined_taxonomy_reports.json", "utf8", (err, data) => {
 		if (err) {
 			return res.status(500).json({ error: "Error reading taxonomy data" });
 		}
@@ -370,7 +370,7 @@ const getOrderFromTaxonomy = (req, res) => {
 const getOrder = (taxonomy_id) => {
 	try {
 		// read the filer
-		const data = fs.readFileSync("combined_taxonomy_reports.json", "utf8");
+		const data = fs.readFileSync("./utils/combined_taxonomy_reports.json", "utf8");
 		const taxonomyData = JSON.parse(data);
 
 		// Search for the taxonomy data with the matching taxonomyId
