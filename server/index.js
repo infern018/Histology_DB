@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("./utils/passport");
+const redisClient = require("./utils/redisClient");
 
 //ROUTER
 const authRoute = require("./routes/auth");
@@ -43,6 +44,8 @@ app.use(
 // Passport config
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Redis Client
 
 // database connection
 mongoose

@@ -4,6 +4,7 @@ const fs = require("fs");
 const csvParser = require("csv-parser");
 const validateRowAgainstSchema = require("../utils/entryValidator");
 const crypto = require("crypto");
+const redisClient = require("../utils/redisClient");
 
 const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
@@ -392,27 +393,60 @@ const getOrder = (taxonomy_id) => {
 // make a new route that return all distinct orders from the entry.identification.order
 // return a list of orders
 const getDistinctOrders = async (req, res) => {
+	const cacheKey = "distinct_orders";
+
 	try {
+		const cached = await redisClient.get(cacheKey);
+		if (cached) return res.json(JSON.parse(cached));
+
 		const orders = await Entry.distinct("identification.order");
-		res.status(200).json(orders);
-	} catch (err) {
-		res.status(500).json(err);
+		await redisClient.setEx(cacheKey, 7200, JSON.stringify(orders));
+
+		res.json(orders);
+	} catch (error) {
+		console.error(error);
+		res.status(500).send("Server error");
 	}
 };
 
 const getDistinctStainings = async (req, res) => {
+	const cacheKey = "grouped_stainings";
+
 	try {
-		const stainings = await Entry.distinct("histologicalInformation.stainingMethod");
-		res.status(200).json(stainings);
+		const cached = await redisClient.get(cacheKey);
+		if (cached) return res.status(200).json(JSON.parse(cached));
+
+		const stainingGroups = JSON.parse(fs.readFileSync("./utils/stainingGroups.json", "utf8"));
+
+		// Fetch all distinct stainings from the database
+		const distinctStainings = await Entry.distinct("histologicalInformation.stainingMethod");
+
+		// Group stainings based on the stainingGroups.json
+		const groupedStainings = {};
+		for (const [group, stains] of Object.entries(stainingGroups)) {
+			groupedStainings[group] = stains.filter((stain) => distinctStainings.includes(stain));
+		}
+
+		await redisClient.setEx(cacheKey, 7200, JSON.stringify(groupedStainings)); // Cache for 2 hours
+
+		console.log("Grouped stainings", groupedStainings);
+
+		res.status(200).json(groupedStainings);
 	} catch (err) {
 		res.status(500).json(err);
 	}
 };
 
 const getDistinctBrainParts = async (req, res) => {
+	const cacheKey = "distinct_brain_parts";
+
 	try {
+		const cached = await redisClient.get(cacheKey);
+		if (cached) return res.status(200).json(JSON.parse(cached));
+
 		const brainParts = await Entry.distinct("histologicalInformation.brainPart");
-		console.log("brainParts", brainParts);
+		await redisClient.setEx(cacheKey, 7200, JSON.stringify(brainParts)); // Cache for 2 hours
+
 		res.status(200).json(brainParts);
 	} catch (err) {
 		res.status(500).json(err);
@@ -450,9 +484,13 @@ const advancedSearch = async (req, res) => {
 			taxonomyCode,
 			selectedOrder,
 			selectedCollections,
+			selectedStaining,
+			selectedBrainParts,
 			page = 1,
 			limit = 10,
 		} = req.query;
+
+		console.log("Advanced search query:", req.query);
 
 		const selectedCollectionsList = selectedCollections ? selectedCollections.split(",") : [];
 
@@ -518,6 +556,18 @@ const advancedSearch = async (req, res) => {
 			query["identification.order"] = selectedOrder;
 		}
 
+		if (selectedStaining && selectedStaining !== "") {
+			const stainingList = selectedStaining.split(",").map((stain) => stain.trim());
+			query["histologicalInformation.stainingMethod"] = { $in: stainingList };
+		}
+
+		if (selectedBrainParts && selectedBrainParts !== "") {
+			const brainPartsList = selectedBrainParts.split(",").map((part) => part.trim());
+			query["histologicalInformation.brainPart"] = {
+				$in: brainPartsList.map((part) => new RegExp(`^${part}`, "i")),
+			};
+		}
+
 		if (selectedCollectionsList && selectedCollectionsList.length > 0) {
 			query["collectionID"] = { $in: selectedCollectionsList };
 		} else {
@@ -527,6 +577,8 @@ const advancedSearch = async (req, res) => {
 		}
 
 		query["backupEntry"] = { $ne: true };
+
+		console.log("FINAL QUERY", query);
 
 		const skip = (page - 1) * limit;
 

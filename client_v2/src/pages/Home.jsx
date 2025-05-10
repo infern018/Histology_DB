@@ -25,7 +25,7 @@ const Home = () => {
 					alignItems: "center",
 					justifyContent: "center",
 					height: "100vh",
-					textAlign: "center", 
+					textAlign: "center",
 					maxWidth: "69%",
 				}}>
 				<BiotechIcon sx={{ width: 100, height: 100, color: "rgba(255, 255, 255, 0.8)", marginBottom: 2 }} />

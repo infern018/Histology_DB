@@ -1,0 +1,28 @@
+{
+	"Whole Brain": ["Whole Brain"],
+	"Bilateral Hemispheres": ["Bilateral Hemispheres", "Bilateral Hemispheres 1", "Bilateral Hemispheres 2"],
+	"Left Hemisphere": [
+		"Left Hemisphere",
+		"Left Hemisphere 1",
+		"Left Hemisphere 2",
+		"Left Hemisphere 3",
+		"Left Hemisphere 4",
+		"Left Hemisphere 5",
+		"Left Hemisphere 6"
+	],
+	"Right Hemisphere": [
+		"Right Hemisphere",
+		"Right Hemisphere 1",
+		"Right Hemisphere 2",
+		"Right Hemisphere 3",
+		"Right Hemisphere 4",
+		"Right Hemisphere 5",
+		"Right Hemisphere 6",
+		"Right Hemisphere 7"
+	],
+	"Brainstem": ["Brainstem"],
+	"Left Frontal Lobe": ["Left Frontal Lobe"],
+	"Right Frontal Lobe": ["Right Frontal Lobe"],
+	"Left Occipital Lobe": ["Left Occipital Lobe", "Left Occipital Pole", "Left Occipital Pole (Enucleated)"],
+	"Right Occipital Lobe": ["Right Occipital Pole", "Right Occipital Pole (Enucleated)"]
+}

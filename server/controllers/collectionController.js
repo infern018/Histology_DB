@@ -1,5 +1,6 @@
 const Collection = require("../models/Collection");
 const Entry = require("../models/Entry");
+const redisClient = require("../utils/redisClient");
 
 const generateCollectionCode = (collectionName) => {
 	collectionName = collectionName.replace(/\s/g, "");
@@ -93,9 +94,17 @@ const getCollectionNameAndNumCollaborators = async (req, res) => {
 	}
 };
 
-// get public collections
+// get public collections with Redis caching
+
 const getPublicCollections = async (req, res) => {
 	try {
+		const cacheKey = "publicCollections";
+		const cachedData = await redisClient.get(cacheKey);
+
+		if (cachedData) {
+			return res.status(200).json(JSON.parse(cachedData));
+		}
+
 		const collections = await Collection.find({ publicStatus: "approved" });
 
 		const collections_data = collections.map((collection) => ({
@@ -103,6 +112,11 @@ const getPublicCollections = async (req, res) => {
 			name: collection.name,
 			mode: "view",
 		}));
+
+		// Cache the data for 1 hour
+		await redisClient.set(cacheKey, JSON.stringify(collections_data), {
+			EX: 3600,
+		});
 
 		res.status(200).json(collections_data);
 	} catch (err) {
