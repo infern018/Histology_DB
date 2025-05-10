@@ -1,8 +1,6 @@
 // utils/redisClient.js
 const { createClient } = require("redis");
-const redisURL =
-	process.env.REDIS_URL ||
-	"rediss://default:ATIsAAIjcDFiYWZjMGVlNzU4M2Y0YzM2YmU2NzhlZWFhYzg3YjBjZHAxMA@magnetic-narwhal-12844.upstash.io:6379";
+const redisURL = process.env.REDIS_URL;
 
 const redisClient = createClient({ url: redisURL });
 
