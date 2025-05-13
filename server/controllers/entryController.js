@@ -429,8 +429,6 @@ const getDistinctStainings = async (req, res) => {
 
 		await redisClient.setEx(cacheKey, 7200, JSON.stringify(groupedStainings)); // Cache for 2 hours
 
-		console.log("Grouped stainings", groupedStainings);
-
 		res.status(200).json(groupedStainings);
 	} catch (err) {
 		res.status(500).json(err);
