@@ -1,22 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import {
-  Box,
-  Typography,
-  Pagination,
-  Chip,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-} from "@mui/material";
+import { Box, Typography, Pagination } from "@mui/material";
 import Layout from "../components/utils/Layout";
 import EntriesTable from "../components/entries/EntriesTable";
 import { fetchSearchResults } from "../utils/apiCalls";
 import TableSkeleton from "../components/utils/TableSkeleton";
 import AdvancedSearch from "../components/search/AdvancedSearch";
 import { useNavigate } from "react-router-dom";
-import categoryColors from "../components/utils/categoryColor.json";
 
 const SearchResults = () => {
   const location = useLocation();
@@ -28,7 +18,6 @@ const SearchResults = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [totalEntries, setTotalEntries] = useState(0);
   const [currentSearchParams, setCurrentSearchParams] = useState({});
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -129,14 +118,6 @@ const SearchResults = () => {
                 }...`
               : "No matching results found."}
           </Typography>
-          <Box>
-            <Button onClick={() => setDialogOpen(true)} variant="text">
-              <Typography variant="subtitle2" sx={{ color: "white" }}>
-                {" "}
-                ?{" "}
-              </Typography>
-            </Button>
-          </Box>
         </Box>
         <EntriesTable
           entries={entries}
@@ -172,25 +153,6 @@ const SearchResults = () => {
             }}
           />
         </Box>
-        {/* MUI Dialog Component */}
-        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-          <DialogTitle>Color Code Information</DialogTitle>
-          <DialogContent>
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
-              {Object.entries(categoryColors).map(([category, color]) => (
-                <Chip
-                  key={category}
-                  label={category}
-                  sx={{
-                    backgroundColor: color,
-                    color: "#fff",
-                    fontWeight: 500,
-                  }}
-                />
-              ))}
-            </Box>
-          </DialogContent>
-        </Dialog>
       </Box>
     </Layout>
   );
