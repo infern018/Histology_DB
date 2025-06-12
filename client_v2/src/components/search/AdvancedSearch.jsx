@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -11,30 +11,30 @@ import {
   FormControl,
   FormControlLabel,
   InputLabel,
-  InputAdornment,
-  Tooltip,
   Checkbox,
   ListItemText,
   Autocomplete,
-} from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+} from "@mui/material";
 import {
   fetchDistinctOrders,
   fetchPublicCollections,
   fetchDistinctStainings,
-} from '../../utils/apiCalls';
+} from "../../utils/apiCalls";
+import SearchInput from "../mui/SearchInput";
+import ButtonStyled from "../mui/Button";
+import theme from "../../theme";
 
 const AdvancedSearch = ({ initialValues, onSearch }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [brainWeightRange, setBrainWeightRange] = useState([0, 1000]);
   const [allowNAWeight, setAllowNAWeight] = useState(true);
   const [bodyWeightRange, setBodyWeightRange] = useState([0, 1000]);
-  const [developmentalStage, setDevelopmentalStage] = useState('');
-  const [sex, setSex] = useState('');
+  const [developmentalStage, setDevelopmentalStage] = useState("");
+  const [sex, setSex] = useState("");
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [orders, setOrders] = useState([]);
-  const [selectedOrder, setSelectedOrder] = useState('');
+  const [selectedOrder, setSelectedOrder] = useState("");
 
   const [stainings, setStainings] = useState({});
   const [selectedStaining, setSelectedStaining] = useState([]);
@@ -50,7 +50,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
         const ordersData = await fetchDistinctOrders();
         setOrders(ordersData);
       } catch (error) {
-        console.error('Error fetching distinct orders:', error);
+        console.error("Error fetching distinct orders:", error);
       }
     };
 
@@ -60,7 +60,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 
         setStainings(stainingsData);
       } catch (error) {
-        console.error('Error fetching distinct stainings:', error);
+        console.error("Error fetching distinct stainings:", error);
       }
     };
 
@@ -70,7 +70,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 
         setCollections(collectionsData);
       } catch (error) {
-        console.error('Error fetching public collections:', error);
+        console.error("Error fetching public collections:", error);
       }
     };
 
@@ -81,55 +81,55 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 
   useEffect(() => {
     if (initialValues) {
-      console.log('initialValues', initialValues);
-      setSearchQuery(initialValues.searchQuery || '');
+      console.log("initialValues", initialValues);
+      setSearchQuery(initialValues.searchQuery || "");
       setBrainWeightRange(
         initialValues.brainWeightRange
-          ? initialValues.brainWeightRange.split(',').map(Number)
+          ? initialValues.brainWeightRange.split(",").map(Number)
           : [0, 1000]
       );
       setAllowNAWeight(
         initialValues.allowNAWeight === undefined ||
-          initialValues.allowNAWeight === 'true' ||
+          initialValues.allowNAWeight === "true" ||
           initialValues.allowNAWeight === true
       );
       setBodyWeightRange(
         initialValues.bodyWeightRange
-          ? initialValues.bodyWeightRange.split(',').map(Number)
+          ? initialValues.bodyWeightRange.split(",").map(Number)
           : [0, 1000]
       );
-      setDevelopmentalStage(initialValues.developmentalStage || '');
-      setSex(initialValues.sex || '');
-      setSelectedOrder(initialValues.selectedOrder || '');
+      setDevelopmentalStage(initialValues.developmentalStage || "");
+      setSex(initialValues.sex || "");
+      setSelectedOrder(initialValues.selectedOrder || "");
       setSelectedCollections(
         initialValues.selectedCollections
-          ? initialValues.selectedCollections.split(',').map(
+          ? initialValues.selectedCollections.split(",").map(
               (colId) =>
                 collections.find((col) => col.collection_id === colId) || {
                   collection_id: colId,
-                  name: 'Unknown',
+                  name: "Unknown",
                 }
             )
           : []
       );
       setSelectedStaining(
         initialValues.selectedStaining
-          ? initialValues.selectedStaining.split(',').map((stain) => ({
+          ? initialValues.selectedStaining.split(",").map((stain) => ({
               option: stain,
             }))
           : []
       );
       setSelectedBrainParts(
         initialValues.selectedBrainParts
-          ? initialValues.selectedBrainParts.split(',')
+          ? initialValues.selectedBrainParts.split(",")
           : []
       );
     }
   }, [initialValues, collections]);
 
   const handleSearch = () => {
-    console.log('SELECTED STAINING', selectedStaining);
-    console.log('SELECTED BRAIN PARTS', selectedBrainParts);
+    console.log("SELECTED STAINING", selectedStaining);
+    console.log("SELECTED BRAIN PARTS", selectedBrainParts);
 
     const searchParams = {
       searchQuery,
@@ -168,107 +168,45 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
   };
 
   const dropDownStyles = {
-    'color': 'white',
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: 'white',
+    "color": "white",
+    "& .MuiOutlinedInput-notchedOutline": {
+      borderColor: "white",
     },
-    '&:hover .MuiOutlinedInput-notchedOutline': {
-      borderColor: 'white',
+    "&:hover .MuiOutlinedInput-notchedOutline": {
+      borderColor: "white",
     },
-    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: 'white',
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: "white",
     },
-    '& .MuiSvgIcon-root': {
-      color: 'white', // This targets the dropdown arrow
-    },
-  };
-
-  const searchStyles = {
-    'mb': 1,
-    '& .MuiOutlinedInput-root': {
-      'borderRadius': 2, // Set border radius here
-      '& fieldset': {
-        borderColor: 'white',
-      },
-      '&:hover fieldset': {
-        borderColor: 'white',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: 'white',
-      },
-    },
-    '& .MuiInputBase-input': {
-      color: 'white',
-    },
-    '& .MuiInputLabel-root': {
-      'color': 'white',
-      '&.Mui-focused': {
-        color: 'white', // Prevent label from turning blue
-      },
+    "& .MuiSvgIcon-root": {
+      color: "white", // This targets the dropdown arrow
     },
   };
 
   return (
     <Box>
-      <Tooltip
-        arrow
-        placement="bottom-start"
-        title={
-          <Typography
-            variant="body2"
-            sx={{ whiteSpace: 'pre-line', color: 'white' }}
-          >
-            <strong>Search Formats:</strong>
-            {'\n'}
-            <strong>• species:</strong> Homo sapiens{'\n'}
-            <strong>• common_name:</strong> Human{'\n'}
-            <strong>• taxonomy_id:</strong> 9606{'\n'}
-            <strong>• archival_name:</strong> tupa{'\n'}
-            <strong>• staining:</strong> cresyl {'\n'}
-            <strong>• speciemen_id: </strong> 1088{'\n'}
-          </Typography>
-        }
-      >
-        <TextField
-          label="Search via taxon, species..."
-          variant="outlined"
-          fullWidth
+      <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+        <SearchInput
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          sx={{
-            ...searchStyles,
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            borderRadius: 2,
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <Button
-                  onClick={handleNormalSearch}
-                  variant="contained"
-                  sx={{
-                    'color': 'white',
-                    'backgroundColor': 'primary.main',
-                    '&:hover': { backgroundColor: 'primary.dark' },
-                  }}
-                >
-                  <SearchIcon />
-                </Button>
-              </InputAdornment>
-            ),
-          }}
+          onKeyPress={handleNormalSearch}
+          placeholder="Search via taxon, species..."
         />
-      </Tooltip>
+        <ButtonStyled onClick={handleNormalSearch}>Search</ButtonStyled>
+      </Box>
 
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 0 }}>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 0 }}>
         <Button
           variant="text"
           onClick={() => setDrawerOpen(true)}
           sx={{
-            'color': 'white',
-            'textTransform': 'none',
-            'fontSize': '0.95rem',
-            '&:hover': { textDecoration: 'underline' },
+            "color": "white",
+            "textTransform": "none",
+            "fontSize": "0.95rem",
+            "&:hover": {
+              textDecoration: "underline",
+              backgroundColor: theme.palette.background.default,
+            },
           }}
         >
           Filters
@@ -281,15 +219,15 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
         onClose={() => setDrawerOpen(false)}
         PaperProps={{
           sx: {
-            width: '40%',
-            backgroundColor: 'rgba(35, 35, 35, 0.5)', // Transparent background
-            backdropFilter: 'blur(10px)', // Blurry effect
-            color: 'white', // Set text color to white
+            width: "40%",
+            backgroundColor: "rgba(35, 35, 35, 0.5)", // Transparent background
+            backdropFilter: "blur(10px)", // Blurry effect
+            color: "white", // Set text color to white
           },
         }}
       >
         <Box sx={{ p: 3 }}>
-          <Typography variant="h6" sx={{ mb: 3, color: 'white' }}>
+          <Typography variant="h6" sx={{ mb: 3, color: "white" }}>
             Filtering Options
           </Typography>
           {/* Brain Weight Range */}
@@ -297,7 +235,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
             <Typography
               variant="subtitle1"
               gutterBottom
-              sx={{ color: 'white' }}
+              sx={{ color: "white" }}
             >
               Brain Weight Range (g)
             </Typography>
@@ -310,8 +248,8 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
               sx={{
                 color:
                   brainWeightRange[0] === 0 && brainWeightRange[1] === 1000
-                    ? 'grey.500'
-                    : 'primary.main',
+                    ? "grey.500"
+                    : "primary.main",
               }}
             />
           </Box>
@@ -320,7 +258,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
             <Typography
               variant="subtitle1"
               gutterBottom
-              sx={{ color: 'white' }}
+              sx={{ color: "white" }}
             >
               Body Weight Range (g)
             </Typography>
@@ -333,8 +271,8 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
               sx={{
                 color:
                   bodyWeightRange[0] === 0 && bodyWeightRange[1] === 1000
-                    ? 'grey.500'
-                    : 'primary.main',
+                    ? "grey.500"
+                    : "primary.main",
               }}
             />
           </Box>
@@ -347,24 +285,24 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
                   onChange={(e) => setAllowNAWeight(e.target.checked)}
                   color="primary"
                   sx={{
-                    'color': 'white', // for unchecked state
-                    '&.Mui-checked': {
-                      color: 'white', // for checked state (tick + box)
+                    "color": "white", // for unchecked state
+                    "&.Mui-checked": {
+                      color: "white", // for checked state (tick + box)
                     },
-                    '& .MuiSvgIcon-root': {
+                    "& .MuiSvgIcon-root": {
                       fontSize: 24, // optional: resize the icon
                     },
                   }}
                 />
               }
               label="Allow N/A Brain Weight"
-              sx={{ color: 'white' }}
+              sx={{ color: "white" }}
             />
           </Box>
           {/* Developmental Stage */}
           <Box sx={{ mb: 3 }}>
             <FormControl fullWidth>
-              <InputLabel sx={{ color: 'white' }}>
+              <InputLabel sx={{ color: "white" }}>
                 Developmental Stage
               </InputLabel>
               <Select
@@ -385,7 +323,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
           {/* Sex */}
           <Box sx={{ mb: 3 }}>
             <FormControl fullWidth>
-              <InputLabel sx={{ color: 'white' }}>Sex</InputLabel>
+              <InputLabel sx={{ color: "white" }}>Sex</InputLabel>
               <Select
                 value={sex}
                 onChange={(e) => setSex(e.target.value)}
@@ -401,7 +339,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
           {/* Order */}
           <Box sx={{ mb: 3 }}>
             <FormControl fullWidth>
-              <InputLabel sx={{ color: 'white' }}>Order</InputLabel>
+              <InputLabel sx={{ color: "white" }}>Order</InputLabel>
               <Select
                 value={selectedOrder}
                 onChange={(e) => setSelectedOrder(e.target.value)}
@@ -419,13 +357,13 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
           {/* Collections */}
           <Box sx={{ mb: 3 }}>
             <FormControl fullWidth>
-              <InputLabel sx={{ color: 'white' }}>Collections</InputLabel>
+              <InputLabel sx={{ color: "white" }}>Collections</InputLabel>
               <Select
                 multiple
                 value={selectedCollections}
                 onChange={(e) => setSelectedCollections(e.target.value)}
                 renderValue={(selected) =>
-                  selected.map((col) => col.name).join(', ')
+                  selected.map((col) => col.name).join(", ")
                 }
                 sx={dropDownStyles}
               >
@@ -459,12 +397,12 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
                 <li key={params.key}>
                   <div
                     style={{
-                      fontWeight: 'bold',
-                      fontSize: '1rem',
-                      padding: '4px 10px',
-                      backgroundColor: '#242424',
-                      color: '#fff',
-                      borderBottom: '1px solid #444',
+                      fontWeight: "bold",
+                      fontSize: "1rem",
+                      padding: "4px 10px",
+                      backgroundColor: "#242424",
+                      color: "#fff",
+                      borderBottom: "1px solid #444",
                       marginTop: 0,
                     }}
                   >
@@ -481,31 +419,31 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
                   placeholder="Choose..."
                   sx={{
                     ...dropDownStyles,
-                    '& .MuiInputLabel-root': {
-                      color: 'white', // Set label color to white
+                    "& .MuiInputLabel-root": {
+                      color: "white", // Set label color to white
                     },
                   }}
                 />
               )}
               sx={{
-                '& .MuiAutocomplete-popupIndicator': {
-                  color: 'white',
+                "& .MuiAutocomplete-popupIndicator": {
+                  color: "white",
                 },
-                '& .MuiAutocomplete-clearIndicator': {
-                  color: 'white',
+                "& .MuiAutocomplete-clearIndicator": {
+                  color: "white",
                 },
-                '& .MuiAutocomplete-tag': {
-                  backgroundColor: '#333', // Dark background for tags
-                  color: 'white', // White text
+                "& .MuiAutocomplete-tag": {
+                  backgroundColor: "#333", // Dark background for tags
+                  color: "white", // White text
                 },
-                '& .MuiInputBase-input': {
-                  color: 'white', // White input text
+                "& .MuiInputBase-input": {
+                  color: "white", // White input text
                 },
-                '& .MuiInputLabel-root': {
-                  color: 'white', // White label text
+                "& .MuiInputLabel-root": {
+                  color: "white", // White label text
                 },
-                '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'white', // Outline color
+                "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "white", // Outline color
                 },
               }}
             />
@@ -513,24 +451,24 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
 
           <Box sx={{ mb: 3 }}>
             <FormControl fullWidth>
-              <InputLabel sx={{ color: 'white' }}>Brain Parts</InputLabel>
+              <InputLabel sx={{ color: "white" }}>Brain Parts</InputLabel>
               <Select
                 multiple
                 value={selectedBrainParts}
                 onChange={(e) => setSelectedBrainParts(e.target.value)}
-                renderValue={(selected) => selected.join(', ')}
+                renderValue={(selected) => selected.join(", ")}
                 sx={dropDownStyles}
               >
                 {[
-                  'Whole Brain',
-                  'Bilateral Hemispheres',
-                  'Left Hemisphere',
-                  'Right Hemisphere',
-                  'Brainstem',
-                  'Left Frontal Lobe',
-                  'Right Frontal Lobe',
-                  'Left Occipital Lobe',
-                  'Right Occipital Pole',
+                  "Whole Brain",
+                  "Bilateral Hemispheres",
+                  "Left Hemisphere",
+                  "Right Hemisphere",
+                  "Brainstem",
+                  "Left Frontal Lobe",
+                  "Right Frontal Lobe",
+                  "Left Occipital Lobe",
+                  "Right Occipital Pole",
                 ].map((part) => (
                   <MenuItem key={part} value={part}>
                     <Checkbox checked={selectedBrainParts.indexOf(part) > -1} />
