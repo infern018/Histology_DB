@@ -1,143 +1,180 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import {
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Typography,
-	IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  IconButton,
+  Paper,
+  Tooltip,
 } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
-import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { deleteCollectionAPI } from "../../utils/apiCalls";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import theme, { COLORS } from "../../theme";
 
 const CollectionTable = ({ collections, isPublic }) => {
-	if (!isPublic) {
-		isPublic = false;
-	}
+  if (!isPublic) {
+    isPublic = false;
+  }
 
-	const user = useSelector((state) => state.auth.currentUser);
+  const user = useSelector((state) => state.auth.currentUser);
 
-	const [displayCollections, setDisplayCollections] = useState(collections);
+  const [displayCollections, setDisplayCollections] = useState(collections);
 
-	const handleDeleteCollection = async (collectionId) => {
-		try {
-			await deleteCollectionAPI(collectionId, user.accessToken);
-			// Remove the collection from the state
-			const updatedCollections = collections.filter((collection) => collection.collection_id !== collectionId);
-			setDisplayCollections(updatedCollections);
-		} catch (error) {
-			console.error("Failed to delete collection:", error);
-		}
-	};
+  const handleDeleteCollection = async (collectionId) => {
+    try {
+      await deleteCollectionAPI(collectionId, user.accessToken);
+      // Remove the collection from the state
+      const updatedCollections = collections.filter(
+        (collection) => collection.collection_id !== collectionId
+      );
+      setDisplayCollections(updatedCollections);
+    } catch (error) {
+      console.error("Failed to delete collection:", error);
+    }
+  };
 
-	return (
-		<TableContainer sx={{ backgroundColor: "#262625" }}>
-			<Table>
-				<TableHead>
-					<TableRow sx={{ backgroundColor: "#333333" }}>
-						<TableCell>
-							<Typography variant="subtitle1" fontWeight="bold" sx={{ color: "#ffffff" }}>
-								Name
-							</Typography>
-						</TableCell>
-						{/* <TableCell>
-							<Typography variant="subtitle1" fontWeight="bold" sx={{ color: "#ffffff" }}>
-								Collaborators
-							</Typography>
-						</TableCell> */}
-						<TableCell>
-							<Typography variant="subtitle1" fontWeight="bold" sx={{ color: "#ffffff" }}>
-								Mode
-							</Typography>
-						</TableCell>
-						<TableCell align="left" sx={{ width: "50px" }}></TableCell>
-						<TableCell align="left" sx={{ width: "50px" }}></TableCell>
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{displayCollections.map((collection, index) => (
-						<TableRow
-							key={index}
-							hover
-							sx={{
-								cursor: "pointer", // Makes the row indicate clickability
-								"&:hover": {
-									backgroundColor: "#333333 !important", // Stronger hover color with !important
-									borderColor: "#ffffff", // Optional border color on hover
-									borderWidth: "1px",
-									borderStyle: "solid",
-								},
-							}}>
-							<TableCell>
-								<Link
-									to={
-										!isPublic && user
-											? `/collection/${collection.collection_id}/entries?collectionName=${collection.name}`
-											: `/collection/${collection.collection_id}?isPublic=${isPublic}`
-									}
-									style={{ textDecoration: "none", color: "inherit" }}>
-									<Typography variant="body2" color="white">
-										{collection.name}
-									</Typography>
-								</Link>
-							</TableCell>
-							{/* <TableCell>
-                                <Typography variant="body2" color="white">
-                                    {collection.numCollaborators}
-                                </Typography>
-                            </TableCell> */}
-							<TableCell>
-								<Typography variant="body2" color="white">
-									{collection.mode}
-								</Typography>
-							</TableCell>
-							<TableCell align="right" sx={{ padding: "0px 16px" }}>
-								{(collection.mode === "edit" || collection.mode === "owner") && (
-									<IconButton
-										component={Link}
-										to={`/collection/${collection.collection_id}/settings`}
-										sx={{
-											color: "#f0f0f0", // Slight red color
-											"&:hover": {
-												backgroundColor: "#0f0f0f", // Example hover background color
-											},
-											cursor: "pointer",
-										}}
-										size="small"
-										edge="end">
-										<SettingsIcon fontSize="small" />
-									</IconButton>
-								)}
-							</TableCell>
-							<TableCell align="right" sx={{ padding: "0px 16px" }}>
-								{collection.mode === "owner" && (
-									<IconButton
-										onClick={() => handleDeleteCollection(collection.collection_id)}
-										sx={{
-											color: "#f0f0f0", // Slight red color
-											"&:hover": {
-												backgroundColor: "#ff6666", // Example hover background color
-											},
-											cursor: "pointer",
-										}}
-										size="small"
-										edge="end">
-										<DeleteIcon fontSize="small" />
-									</IconButton>
-								)}
-							</TableCell>
-						</TableRow>
-					))}
-				</TableBody>
-			</Table>
-		</TableContainer>
-	);
+  const tableRowHeight = 65;
+  const tableHeaderRowHeight = 52;
+
+  return (
+    <TableContainer
+      component={Paper}
+      sx={{
+        width: "100%",
+        maxWidth: "100%",
+        overflowY: "auto",
+        borderRadius: "8px",
+        border: "1px solid",
+        borderColor: COLORS.neutral700,
+      }}
+    >
+      <Table sx={{ width: "100%" }} size="small">
+        <TableHead>
+          <TableRow
+            sx={{
+              height: tableHeaderRowHeight,
+              backgroundColor: theme.palette.background.light,
+            }}
+          >
+            <TableCell>
+              <Typography variant="subtitle2" fontWeight="bold" color="white">
+                Collection Name
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <Typography variant="subtitle2" fontWeight="bold" color="white">
+                Access Mode
+              </Typography>
+            </TableCell>
+            <TableCell align="center" sx={{ width: "120px" }}>
+              <Typography variant="subtitle2" fontWeight="bold" color="white">
+                Actions
+              </Typography>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {displayCollections.map((collection, index) => (
+            <TableRow
+              key={index}
+              hover
+              sx={{
+                "height": tableRowHeight,
+                "cursor": "pointer",
+                "backgroundColor": theme.palette.background.default,
+                "&:hover": {
+                  backgroundColor: "#333333",
+                },
+                "transition": "background-color 0.3s ease",
+              }}
+            >
+              <TableCell>
+                <Link
+                  to={
+                    !isPublic && user
+                      ? `/collection/${collection.collection_id}/entries?collectionName=${collection.name}`
+                      : `/collection/${collection.collection_id}?isPublic=${isPublic}`
+                  }
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <Typography variant="body2" color="white">
+                    {collection.name}
+                  </Typography>
+                </Link>
+              </TableCell>
+              <TableCell>
+                <Typography variant="body2" color="white">
+                  {collection.mode}
+                </Typography>
+              </TableCell>
+              <TableCell align="center">
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "4px",
+                  }}
+                >
+                  {(collection.mode === "edit" ||
+                    collection.mode === "owner") && (
+                    <Tooltip title="Collection Settings" arrow>
+                      <IconButton
+                        component={Link}
+                        to={`/collection/${collection.collection_id}/settings`}
+                        sx={{
+                          "color": theme.palette.text.secondary,
+                          "padding": "6px",
+                          "&:hover": {
+                            backgroundColor: theme.palette.action.hover,
+                            color: theme.palette.primary.main,
+                          },
+                          "transition": "all 0.2s ease",
+                        }}
+                        size="small"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <SettingsIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {collection.mode === "owner" && (
+                    <Tooltip title="Delete Collection" arrow>
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteCollection(collection.collection_id);
+                        }}
+                        sx={{
+                          "color": theme.palette.text.secondary,
+                          "padding": "6px",
+                          "&:hover": {
+                            backgroundColor: "rgba(244, 67, 54, 0.1)",
+                            color: "#f44336",
+                          },
+                          "transition": "all 0.2s ease",
+                        }}
+                        size="small"
+                      >
+                        <DeleteOutlineIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
 };
 
 export default CollectionTable;

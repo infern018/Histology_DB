@@ -72,18 +72,15 @@ const CollectionSchema = mongoose.Schema(
 		contact: {
 			name: {
 				type: String,
-				required: true,
 			},
 			email: {
 				type: String,
-				required: true,
 			},
 			phone: {
 				type: String,
 			},
 			doi: {
 				type: String,
-				required: true,
 			},
 		},
 	},

@@ -68,8 +68,11 @@ const deleteCollection = async (req, res) => {
 // API that will delete all entries with collectionID = req.params.id
 const flushCollection = async (req, res) => {
 	try {
-		await Entry.deleteMany({ collectionID: req.params.id });
-		res.status(200).json("Collection flushed successfully");
+		const result = await Entry.deleteMany({ collectionID: req.params.id });
+		res.status(200).json({
+			message: "Collection flushed successfully",
+			deletedCount: result.deletedCount,
+		});
 	} catch (err) {
 		res.status(500).json(err);
 	}

@@ -1,102 +1,107 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Box, TextField, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Card, CardContent } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import CustomTextField from "../mui/CustomTextField";
 
 const CollectionCreateForm = ({ onSubmit }) => {
-	const { register, handleSubmit } = useForm();
+  const theme = useTheme();
+  const { register, handleSubmit } = useForm();
 
-	const handleFormSubmit = (data) => {
-		onSubmit(data);
-	};
+  const handleFormSubmit = (data) => {
+    onSubmit(data);
+  };
 
-	return (
-		<Box
-			component="form"
-			onSubmit={handleSubmit(handleFormSubmit)}
-			sx={{
-				display: "flex",
-				flexDirection: "column",
-				alignItems: "center",
-				justifyContent: "center",
-				maxWidth: 400,
-				width: "100%",
-				padding: 4,
-				borderRadius: 2,
-				boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-				margin: "0 auto",
-			}}
-			noValidate
-			autoComplete="off">
-			<Typography variant="h5" sx={{ fontWeight: 500, mb: 3 }}>
-				Add a new collection
-			</Typography>
-			<TextField
-				required
-				id="name"
-				label="Collection Name"
-				variant="filled"
-				{...register("name")}
-				sx={{
-					mb: 2,
-					width: "100%",
-					borderRadius: "10px",
-					"& .MuiInputLabel-root": {
-						color: "#FFFFFF", // White label color
-					},
-					"& .MuiFilledInput-root": {
-						backgroundColor: "#3C3C3C", // Optional: set background color for the input field
-						borderRadius: "10px",
-					},
-				}}
-				InputProps={{
-					disableUnderline: true,
-				}}
-				InputLabelProps={{
-					style: {
-						color: "#FFFFFF", // White label color
-					},
-				}}
-			/>
-			<TextField
-				required
-				id="description"
-				label="Description"
-				variant="filled"
-				{...register("description")}
-				sx={{
-					mb: 2,
-					width: "100%",
-					borderRadius: "10px",
-					"& .MuiInputLabel-root": {
-						color: "#FFFFFF", // White label color
-					},
-					"& .MuiFilledInput-root": {
-						backgroundColor: "#3C3C3C", // Optional: set background color for the input field
-						borderRadius: "10px",
-					},
-				}}
-				InputProps={{
-					disableUnderline: true,
-				}}
-				InputLabelProps={{
-					style: {
-						color: "#FFFFFF", // White label color
-					},
-				}}
-			/>
-			<Button
-				variant="contained"
-				type="submit"
-				sx={{
-					width: "100%",
-					backgroundColor: "#0056b3",
-					color: "#ffffff",
-					borderRadius: "10px",
-				}}>
-				Add
-			</Button>
-		</Box>
-	);
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+      }}
+    >
+      <Card
+        sx={{
+          width: "32rem",
+
+          backgroundColor: theme.palette.background.paper,
+          borderRadius: "0.75rem",
+
+          border: `0.0625rem solid ${theme.palette.divider}`,
+        }}
+      >
+        <CardContent sx={{ padding: "2.5rem" }}>
+          <Box sx={{ textAlign: "center", marginBottom: "2rem" }}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+                color: theme.palette.text.primary,
+                marginBottom: "0.5rem",
+              }}
+            >
+              New Collection
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{ color: theme.palette.text.secondary }}
+            >
+              Create a new collection to organize your data
+            </Typography>
+          </Box>
+
+          <Box
+            component="form"
+            onSubmit={handleSubmit(handleFormSubmit)}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1.5rem",
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <CustomTextField
+              required
+              id="name"
+              label="Collection Name"
+              {...register("name")}
+            />
+
+            <CustomTextField
+              required
+              id="description"
+              label="Description"
+              multiline
+              rows={3}
+              {...register("description")}
+            />
+
+            <Button
+              variant="contained"
+              type="submit"
+              fullWidth
+              sx={{
+                "backgroundColor": theme.palette.primary.main,
+                "color": theme.palette.primary.contrastText,
+                "fontWeight": 600,
+                "borderRadius": "0.5rem",
+                "padding": "0.75rem",
+                "textTransform": "none",
+                "fontSize": "1rem",
+                "marginTop": "0.5rem",
+                "&:hover": {
+                  backgroundColor: theme.palette.primary.dark,
+                },
+              }}
+            >
+              Create Collection
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
+    </Box>
+  );
 };
 
 export default CollectionCreateForm;

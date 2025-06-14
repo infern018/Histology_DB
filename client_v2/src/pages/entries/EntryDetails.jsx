@@ -1,318 +1,403 @@
 // src/pages/EntryDetailsPage.js
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { Typography, Paper, Box, Button, Grid } from "@mui/material";
-import { getEntryAPI, getPublicEntryAPI, getCollectionAPI, getPublicCollectionAPI } from "../../utils/apiCalls";
+import {
+  Typography,
+  Box,
+  Button,
+  Grid,
+  Card,
+  CardContent,
+  Divider,
+  Chip,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import {
+  getEntryAPI,
+  getPublicEntryAPI,
+  getCollectionAPI,
+  getPublicCollectionAPI,
+} from "../../utils/apiCalls";
 import Layout from "../../components/utils/Layout";
 import { useSelector } from "react-redux";
-import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import CardSkeleton from "../../components/utils/CardSkeleton";
+import EditIcon from "@mui/icons-material/Edit";
 
 const EntryDetailsPage = () => {
-	const user = useSelector((state) => state.auth.currentUser);
+  const theme = useTheme();
+  const user = useSelector((state) => state.auth.currentUser);
+  const { entryID } = useParams();
+  const [entry, setEntry] = useState(null);
+  const [collection, setCollection] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-	const { entryID } = useParams();
-	const [entry, setEntry] = useState(null);
-	const [collection, setCollection] = useState(null);
-	const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const isPublic = queryParams.get("isPublic") === "true";
 
-	const location = useLocation();
+  useEffect(() => {
+    const fetchEntry = async () => {
+      try {
+        let data;
+        if (isPublic) {
+          data = await getPublicEntryAPI(entryID);
+        } else {
+          data = await getEntryAPI(entryID, user.accessToken);
+        }
+        setEntry(data);
+      } catch (error) {
+        console.error("Error fetching entry:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-	const queryParams = new URLSearchParams(location.search);
-	const isPublic = queryParams.get("isPublic") === "true";
+    fetchEntry();
+  }, [entryID, user, isPublic]);
 
-	useEffect(() => {
-		const fetchEntry = async () => {
-			try {
-				let data;
-				if (isPublic) {
-					data = await getPublicEntryAPI(entryID);
-				} else {
-					data = await getEntryAPI(entryID, user.accessToken);
-				}
+  useEffect(() => {
+    const fetchCollection = async () => {
+      if (entry?.collectionID) {
+        try {
+          let collection;
+          if (isPublic) {
+            collection = await getPublicCollectionAPI(entry.collectionID);
+          } else {
+            collection = await getCollectionAPI(
+              entry.collectionID,
+              user.accessToken
+            );
+          }
+          setCollection(collection);
+        } catch (error) {
+          console.error("Error fetching collection:", error);
+        }
+      }
+    };
 
-				setEntry(data);
-			} catch (error) {
-				console.error("Error fetching entry:", error);
-			} finally {
-				setLoading(false);
-			}
-		};
+    fetchCollection();
+  }, [entry, user, isPublic]);
 
-		fetchEntry();
-	}, [entryID, user, isPublic]);
+  if (loading) {
+    return (
+      <Layout>
+        <CardSkeleton />
+      </Layout>
+    );
+  }
 
-	useEffect(() => {
-		const fetchCollection = async () => {
-			if (entry?.collectionID) {
-				try {
-					let collection;
-					if (isPublic) {
-						collection = await getPublicCollectionAPI(entry.collectionID);
-					} else {
-						collection = await getCollectionAPI(entry.collectionID, user.accessToken);
-					}
-					setCollection(collection);
-				} catch (error) {
-					console.error("Error fetching collection:", error);
-				}
-			}
-		};
+  if (!entry) {
+    return (
+      <Layout>
+        <Box sx={{ width: "75%", mx: "auto", p: 3, textAlign: "center" }}>
+          <Typography variant="h6" color="text.secondary">
+            Entry not found
+          </Typography>
+        </Box>
+      </Layout>
+    );
+  }
 
-		fetchCollection();
-	}, [entry, user, isPublic]);
+  const InfoItem = ({ label, value, isLink }) => (
+    <Box sx={{ mb: 1.5 }}>
+      <Typography
+        variant="body2"
+        sx={{
+          color: theme.palette.text.secondary,
+          fontSize: "0.7rem",
+          fontWeight: 500,
+          textTransform: "uppercase",
+          letterSpacing: "0.05em",
+          mb: 0.25,
+        }}
+      >
+        {label}
+      </Typography>
+      {isLink ? (
+        <Button
+          component="a"
+          href={value}
+          target="_blank"
+          rel="noopener noreferrer"
+          startIcon={<OpenInNewIcon />}
+          sx={{
+            "color": theme.palette.primary.main,
+            "textTransform": "none",
+            "padding": 0,
+            "minWidth": "auto",
+            "justifyContent": "flex-start",
+            "fontSize": "0.875rem",
+            "&:hover": {
+              backgroundColor: "transparent",
+              textDecoration: "underline",
+            },
+          }}
+        >
+          {value?.length > 50 ? `${value.substring(0, 50)}...` : value}
+        </Button>
+      ) : (
+        <Typography
+          variant="body2"
+          sx={{
+            color: theme.palette.text.primary,
+            fontWeight: 400,
+            wordBreak: "break-word",
+            fontSize: "0.875rem",
+          }}
+        >
+          {value || "N/A"}
+        </Typography>
+      )}
+    </Box>
+  );
 
-	if (loading) {
-		return (
-			<Layout>
-				<CardSkeleton />
-			</Layout>
-		);
-	}
+  return (
+    <Layout>
+      <Box sx={{ width: "75%", mx: "auto", p: "0 2rem" }}>
+        {/* Header Card */}
+        <Card
+          sx={{
+            backgroundColor: theme.palette.background.default,
+            mb: 2,
+          }}
+        >
+          <CardContent sx={{ py: 1.5, px: 2 }}>
+            <Button
+              onClick={() => window.history.back()}
+              startIcon={<ArrowBackIcon />}
+              sx={{
+                "color": theme.palette.text.secondary,
+                "textTransform": "none",
+                "mb": 1,
+                "&:hover": {
+                  backgroundColor: theme.palette.action.hover,
+                },
+              }}
+            >
+              Back
+            </Button>
 
-	if (!entry) {
-		return <Typography variant="h6">Entry not found</Typography>;
-	}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                mb: 0.5,
+              }}
+            >
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                Entry Details
+              </Typography>
+              {!isPublic && user && (
+                <Button
+                  component={Link}
+                  to={`/collection/${collection?._id}/entry/${entry._id}/edit`}
+                  variant="contained"
+                  startIcon={<EditIcon />}
+                  size="small"
+                >
+                  Edit Entry
+                </Button>
+              )}
+            </Box>
 
-	return (
-		<Layout>
-			<Paper
-				elevation={3}
-				sx={{
-					padding: 4,
-					marginTop: 4,
-					maxWidth: "1200px",
-					margin: "0 auto",
-					background: "rgba(255, 255, 255, 0.9)",
-					borderRadius: 2,
-				}}>
-				{/* Header Section */}
-				<Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-					<Typography variant="h4" fontWeight="bold">
-						Entry Details
-					</Typography>
-					{!isPublic && user && (
-						<Button
-							component={Link}
-							variant="contained"
-							to={`/collection/${collection?._id}/entry/${entry._id}/edit`}
-							startIcon={<ArrowOutwardIcon />}>
-							Edit Entry
-						</Button>
-					)}
-				</Box>
+            {collection?.name && (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Typography variant="body2" color="text.secondary">
+                  Collection:
+                </Typography>
+                <Chip
+                  label={collection.name}
+                  size="small"
+                  variant="outlined"
+                  component={Link}
+                  to={`/collection/${collection._id}?isPublic=${isPublic}`}
+                  clickable
+                  sx={{
+                    "textDecoration": "none",
+                    "&:hover": {
+                      backgroundColor: theme.palette.action.hover,
+                    },
+                  }}
+                />
+              </Box>
+            )}
+          </CardContent>
+        </Card>
 
-				{/* Collection Info */}
-				<Box mb={3}>
-					<Typography variant="h6" color="textSecondary">
-						Collection:{" "}
-						{collection?.name ? (
-							<a
-								href={`/collection/${collection._id}?isPublic=${isPublic}`}
-								style={{ textDecoration: "none", color: "#1976d2" }}>
-								{collection.name}
-							</a>
-						) : (
-							"N/A"
-						)}
-					</Typography>
-				</Box>
+        {/* Main Content Card */}
+        <Card
+          sx={{
+            backgroundColor: theme.palette.background.default,
+          }}
+        >
+          <CardContent sx={{ p: 2 }}>
+            {/* Identification Section with Thumbnail */}
+            <Box sx={{ display: "flex", alignItems: "flex-start", mb: 2 }}>
+              <Box sx={{ flex: 1, pr: entry.identification.thumbnail ? 2 : 0 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                  Identification
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <InfoItem
+                      label="Specimen ID"
+                      value={entry.archivalIdentification?.archivalSpeciesCode}
+                    />
+                    <InfoItem
+                      label="Species Name"
+                      value={entry.identification.bionomialSpeciesName}
+                    />
+                    <InfoItem
+                      label="Order"
+                      value={entry.identification.order}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <InfoItem
+                      label="NCBI Taxonomy Code"
+                      value={entry.identification.NCBITaxonomyCode}
+                    />
+                    <InfoItem
+                      label="Wikipedia"
+                      value={entry.identification.wikipediaSpeciesName}
+                      isLink={!!entry.identification.wikipediaSpeciesName}
+                    />
+                  </Grid>
+                </Grid>
+              </Box>
 
-				{/* Main Content */}
-				<Grid container spacing={3}>
-					{/* Thumbnail */}
-					{entry.identification.thumbnail && (
-						<Grid item xs={12} md={4}>
-							<Box
-								sx={{
-									border: "1px solid #ddd",
-									padding: 2,
-									borderRadius: 2,
-									textAlign: "center",
-									backgroundColor: "#f9f9f9",
-									height: "100%",
-									display: "flex",
-									flexDirection: "column",
-									alignItems: "center",
-									justifyContent: "center",
-								}}>
-								<Typography variant="subtitle1" fontWeight="bold" mb={2}>
-									Data Thumbnail
-								</Typography>
-								<img
-									src={entry.identification.thumbnail}
-									alt="Thumbnail"
-									style={{
-										width: "140px",
-										height: "140px",
-										objectFit: "cover",
-										borderRadius: "8px",
-									}}
-								/>
-							</Box>
-						</Grid>
-					)}
+              {/* Thumbnail positioned on the right */}
+              {entry.identification.thumbnail && (
+                <Box
+                  sx={{
+                    flexShrink: 0,
+                    width: "150px",
+                    height: "150px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    src={entry.identification.thumbnail}
+                    alt="Thumbnail"
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "100%",
+                      objectFit: "contain",
+                      borderRadius: "0.5rem",
+                      border: `1px solid ${theme.palette.divider}`,
+                    }}
+                  />
+                </Box>
+              )}
+            </Box>
+            <Divider sx={{ my: 1 }} />
 
-					{/* Identification */}
-					<Grid item xs={12} md={8}>
-						<Box
-							sx={{
-								border: "1px solid #ddd",
-								padding: 3,
-								borderRadius: 2,
-								backgroundColor: "#f9f9f9",
-								height: "100%",
-							}}>
-							<Typography variant="h6" fontWeight="bold" mb={2}>
-								Identification
-							</Typography>
-							<Typography>
-								<strong>Specimen ID:</strong>{" "}
-								{entry.archivalIdentification?.archivalSpeciesCode || "N/A"}
-							</Typography>
-							<Typography>
-								<strong>NCBI Taxonomy Code:</strong> {entry.identification.NCBITaxonomyCode || "N/A"}
-							</Typography>
-							<Typography>
-								<strong>Species Name:</strong> {entry.identification.bionomialSpeciesName || "N/A"}
-							</Typography>
-							<Typography>
-								<strong>Order:</strong> {entry.identification.order || "N/A"}
-							</Typography>
-							<Typography>
-								<strong>Wikipedia:</strong>{" "}
-								{entry.identification.wikipediaSpeciesName ? (
-									<a
-										href={entry.identification.wikipediaSpeciesName}
-										target="_blank"
-										rel="noopener noreferrer">
-										{entry.identification.wikipediaSpeciesName.split("/").pop()}
-									</a>
-								) : (
-									"N/A"
-								)}
-							</Typography>
-						</Box>
-					</Grid>
+            {/* Physiological Information Section */}
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+              Physiological Information
+            </Typography>
+            <Grid container spacing={2} sx={{ mb: 2 }}>
+              <Grid item xs={12} sm={6}>
+                <InfoItem
+                  label="Developmental Stage"
+                  value={entry.physiologicalInformation.age.developmentalStage}
+                />
+                <InfoItem
+                  label="Sex"
+                  value={
+                    { m: "Male", f: "Female", u: "Undefined" }[
+                      entry.physiologicalInformation.sex
+                    ]
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <InfoItem
+                  label="Body Weight"
+                  value={
+                    entry.physiologicalInformation.bodyWeight
+                      ? `${entry.physiologicalInformation.bodyWeight} g`
+                      : null
+                  }
+                />
+                <InfoItem
+                  label="Brain Weight"
+                  value={
+                    entry.physiologicalInformation.brainWeight
+                      ? `${entry.physiologicalInformation.brainWeight} g`
+                      : null
+                  }
+                />
+              </Grid>
+            </Grid>
+            <Divider sx={{ my: 1 }} />
 
-					{/* Physiological Information */}
-					<Grid item xs={12} md={6}>
-						<Box
-							sx={{
-								border: "1px solid #ddd",
-								padding: 3,
-								borderRadius: 2,
-								backgroundColor: "#f9f9f9",
-								height: "100%",
-							}}>
-							<Typography variant="h6" fontWeight="bold" mb={2}>
-								Physiological Information
-							</Typography>
-							<Typography>
-								<strong>Developmental Stage:</strong>{" "}
-								{entry.physiologicalInformation.age.developmentalStage || "N/A"}
-							</Typography>
-							<Typography>
-								<strong>Sex:</strong>{" "}
-								{{ m: "Male", f: "Female", u: "Undefined" }[entry.physiologicalInformation.sex] ||
-									"N/A"}
-							</Typography>
-							<Typography>
-								<strong>Body Weight:</strong> {entry.physiologicalInformation.bodyWeight || "N/A"} g
-							</Typography>
-							<Typography>
-								<strong>Brain Weight:</strong> {entry.physiologicalInformation.brainWeight || "N/A"} g
-							</Typography>
-						</Box>
-					</Grid>
+            {/* Histological Information Section */}
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+              Histological Information
+            </Typography>
+            <Grid container spacing={2} sx={{ mb: 2 }}>
+              <Grid item xs={12} sm={6}>
+                <InfoItem
+                  label="Brain Part"
+                  value={entry.histologicalInformation.brainPart}
+                />
+                <InfoItem
+                  label="Staining Method"
+                  value={entry.histologicalInformation.stainingMethod}
+                />
+                <InfoItem
+                  label="Plane of Sectioning"
+                  value={entry.histologicalInformation.planeOfSectioning}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <InfoItem
+                  label="Section Thickness"
+                  value={
+                    entry.histologicalInformation.sectionThickness
+                      ? `${entry.histologicalInformation.sectionThickness} µm`
+                      : null
+                  }
+                />
+                <InfoItem
+                  label="Inter-Section Distance"
+                  value={entry.histologicalInformation.interSectionDistance}
+                />
+              </Grid>
+            </Grid>
+            <Divider sx={{ my: 1 }} />
 
-					{/* Histological Information */}
-					<Grid item xs={12} md={6}>
-						<Box
-							sx={{
-								border: "1px solid #ddd",
-								padding: 3,
-								borderRadius: 2,
-								backgroundColor: "#f9f9f9",
-								height: "100%",
-							}}>
-							<Typography variant="h6" fontWeight="bold" mb={2}>
-								Histological Information
-							</Typography>
-							<Typography>
-								<strong>Brain Part:</strong> {entry.histologicalInformation.brainPart || "N/A"}
-							</Typography>
-							<Typography>
-								<strong>Staining Method:</strong>{" "}
-								{entry.histologicalInformation.stainingMethod || "N/A"}
-							</Typography>
-							<Typography>
-								<strong>Plane of Sectioning:</strong>{" "}
-								{entry.histologicalInformation.planeOfSectioning || "N/A"}
-							</Typography>
-							<Typography>
-								<strong>Section Thickness:</strong>{" "}
-								{entry.histologicalInformation.sectionThickness || "N/A"} µm
-							</Typography>
-							<Typography>
-								<strong>Inter-Section Distance:</strong>{" "}
-								{entry.histologicalInformation.interSectionDistance || "N/A"}
-							</Typography>
-						</Box>
-					</Grid>
-
-					{/* Links & Sources */}
-					<Grid item xs={12}>
-						<Box
-							sx={{
-								border: "1px solid #ddd",
-								padding: 3,
-								borderRadius: 2,
-								backgroundColor: "#f9f9f9",
-								height: "100%",
-							}}>
-							<Typography variant="h6" fontWeight="bold" mb={2}>
-								Links & Sources
-							</Typography>
-							{entry.identification?.microdraw_link && (
-								<Typography>
-									<strong>MicroDraw:</strong>{" "}
-									<a
-										href={entry.identification.microdraw_link}
-										target="_blank"
-										rel="noopener noreferrer">
-										{entry.identification.microdraw_link.length > 50
-											? entry.identification.microdraw_link.substring(0, 50) + "..."
-											: entry.identification.microdraw_link}
-									</a>
-								</Typography>
-							)}
-							<Typography>
-								<strong>Source:</strong>{" "}
-								{entry.identification.source_link ? (
-									<a
-										href={entry.identification.source_link}
-										target="_blank"
-										rel="noopener noreferrer">
-										{entry.identification.source_link}
-									</a>
-								) : (
-									"N/A"
-								)}
-							</Typography>
-						</Box>
-					</Grid>
-				</Grid>
-
-				{/* Back Button */}
-				<Box mt={1} textAlign="left">
-					<Button variant="contained" color="primary" onClick={() => window.history.back()}>
-						{"< "}Back
-					</Button>
-				</Box>
-			</Paper>
-		</Layout>
-	);
+            {/* Links & Sources Section */}
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+              Links & Sources
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <InfoItem
+                  label="MicroDraw Link"
+                  value={entry.identification?.microdraw_link}
+                  isLink={!!entry.identification?.microdraw_link}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <InfoItem
+                  label="Source Link"
+                  value={entry.identification.source_link}
+                  isLink={!!entry.identification.source_link}
+                />
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+      </Box>
+    </Layout>
+  );
 };
 
 export default EntryDetailsPage;

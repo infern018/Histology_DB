@@ -1,129 +1,146 @@
 import React, { useEffect, useState } from "react";
 import { fetchUserCollections, fetchUserDetails } from "../../utils/apiCalls";
-import CollectionTable from "../../components/user/CollectionsTable";
-import { Box, Typography, CircularProgress, Button } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
+import { useTheme } from "@mui/material/styles";
 import Layout from "../../components/utils/Layout";
-import { Link } from "react-router-dom";
+import ProfileSidebar from "../../components/user/ProfileSidebar";
+import ProfileDetails from "../../components/user/ProfileDetails";
+import MyDataTab from "../../components/user/MyDataTab";
 
 const Profile = () => {
-	const user = useSelector((state) => state.auth.currentUser);
-	const [collections, setCollections] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const [userInfo, setUserInfo] = useState({});
-	const [error, setError] = useState(null); // Add an error state
+  const theme = useTheme();
+  const user = useSelector((state) => state.auth.currentUser);
+  const [collections, setCollections] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [userInfo, setUserInfo] = useState({});
+  const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState("profile");
 
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const userResponse = await fetchUserDetails([user._id]);
-				const { username, email, createdAt } = userResponse[0];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
 
-				const date = new Date(createdAt);
-				const formattedDate = date.toLocaleDateString("en-GB");
+        // Fetch user details
+        const userResponse = await fetchUserDetails([user._id]);
+        const { username, email, createdAt } = userResponse[0];
 
-				setUserInfo({
-					username,
-					email,
-					createdAt: formattedDate,
-				});
+        const date = new Date(createdAt);
+        const formattedDate = date.toLocaleDateString("en-GB");
 
-				const collectionsData = await fetchUserCollections(user._id);
-				// const collectionsWithStats = await Promise.all(
-				// 	collectionsData.map(async (collection) => {
-				// 		const stats = await fetchCollectionStats(collection.collection_id);
-				// 		return {
-				// 			...collection,
-				// 			numCollaborators: stats.numCollaborators,
-				// 		};
-				// 	})
-				// );
+        setUserInfo({
+          username,
+          email,
+          createdAt: formattedDate,
+        });
 
-				setCollections(collectionsData);
-				setLoading(false);
-			} catch (error) {
-				console.error("Failed to fetch data", error);
-				setError(error.message || "Failed to fetch user collections");
-				setLoading(false);
-			}
-		};
+        // Fetch collections
+        const collectionsData = await fetchUserCollections(user._id);
+        setCollections(collectionsData);
 
-		fetchData();
-	}, [user]);
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch data", error);
+        setError(error.message || "Failed to fetch user data");
+        setLoading(false);
+      }
+    };
 
-	return (
-		<Layout>
-			{/* Error Display */}
-			{error && (
-				<Typography color="error" variant="body1">
-					{error}
-				</Typography>
-			)}
-			<Box
-				sx={{
-					display: "flex",
-					flexDirection: "row",
-					gap: 3,
-					width: "100%",
-					alignItems: "flex-start",
-					justifyContent: "center",
-					padding: 2,
-					margin: "0 auto",
-				}}>
-				{/* User Meta Info Section */}
-				<Box
-					sx={{
-						flex: 1,
-						maxWidth: 400,
-						padding: 3,
-						borderRadius: 2,
-						textAlign: "left",
-						boxShadow: 3,
-					}}>
-					{loading ? (
-						<CircularProgress />
-					) : (
-						<Box>
-							<Typography variant="body1">
-								<strong>Username:</strong> {userInfo.username}
-							</Typography>
-							<Typography variant="body1">
-								<strong>Email:</strong> {userInfo.email}
-							</Typography>
-							<Typography variant="body1">
-								<strong>Joined:</strong> {userInfo.createdAt}
-							</Typography>
-						</Box>
-					)}
-				</Box>
+    if (user?._id) {
+      fetchData();
+    }
+  }, [user]);
 
-				{/* Collections Section */}
-				<Box
-					sx={{
-						flex: 2,
-						maxWidth: 800,
-						padding: 3,
-						borderRadius: 2,
-						textAlign: "center",
-						boxShadow: 3,
-						display: "flex",
-						flexDirection: "column",
-						gap: 2,
-					}}>
-					<Typography variant="h5" sx={{ fontWeight: 500, mb: 2 }} textAlign={"left"}>
-						My Collections
-					</Typography>
-					{loading ? <CircularProgress /> : <CollectionTable collections={collections} />}
-					{/* Button placed at the bottom */}
-					<Box sx={{ marginTop: "auto", textAlign: "right" }}>
-						<Button component={Link} to={`/collection/create`} variant="contained" color="primary">
-							+ Add Collection
-						</Button>
-					</Box>
-				</Box>
-			</Box>
-		</Layout>
-	);
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+  };
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "profile":
+        return <ProfileDetails userInfo={userInfo} loading={loading} />;
+      case "mydata":
+        return <MyDataTab collections={collections} loading={loading} />;
+      default:
+        return <ProfileDetails userInfo={userInfo} loading={loading} />;
+    }
+  };
+
+  return (
+    <Layout>
+      <Box
+        sx={{
+          backgroundColor: theme.palette.background.default,
+          width: "75%",
+        }}
+      >
+        <Box>
+          {/* Page Header */}
+          <Box sx={{ marginBottom: "2rem" }}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+                color: theme.palette.text.primary,
+                marginBottom: "0.5rem",
+              }}
+            >
+              Settings
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                color: theme.palette.text.secondary,
+              }}
+            >
+              Manage your account settings and preferences
+            </Typography>
+          </Box>
+
+          {/* Error Display */}
+          {error && (
+            <Box
+              sx={{
+                backgroundColor: theme.palette.error?.main || "#ef4444",
+                color: theme.palette.error?.contrastText || "#ffffff",
+                padding: "1rem",
+                borderRadius: "0.5rem",
+                marginBottom: "1.5rem",
+              }}
+            >
+              <Typography variant="body2">{error}</Typography>
+            </Box>
+          )}
+
+          {/* Main Content */}
+          <Box
+            sx={{
+              display: "flex",
+              gap: "2rem",
+              alignItems: "flex-start",
+            }}
+          >
+            {/* Sidebar */}
+            <ProfileSidebar
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
+            />
+
+            {/* Content Area */}
+            <Box
+              sx={{
+                flex: 1,
+                minHeight: "30rem",
+              }}
+            >
+              {renderTabContent()}
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    </Layout>
+  );
 };
 
 export default Profile;
