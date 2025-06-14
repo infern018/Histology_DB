@@ -63,23 +63,27 @@ const SearchResults = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            mt: -1,
+            height: "100%",
+            overflow: "hidden",
           }}
         >
-          <Box sx={{ width: "50%" }}>
+          <Box sx={{ width: "50%", flexShrink: 0, mb: 2 }}>
             <AdvancedSearch
               initialValues={currentSearchParams}
               onSearch={handleSearch}
             />
           </Box>
-          <Typography
-            variant="h6"
-            gutterBottom
-            sx={{ textAlign: "left", mt: -2, alignSelf: "flex-start" }}
-          >
+          <Typography variant="h6" gutterBottom>
             Loading results...
           </Typography>
-          <TableSkeleton />
+          <Box
+            sx={{
+              width: "69%",
+              overflow: "auto",
+            }}
+          >
+            <TableSkeleton />
+          </Box>
         </Box>
       </Layout>
     );
@@ -89,14 +93,15 @@ const SearchResults = () => {
     <Layout>
       <Box
         sx={{
-          width: "100%",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          mt: -1,
+          //   width: "100%",
+          height: "100%",
+          overflow: "hidden",
         }}
       >
-        <Box sx={{ width: "50%" }}>
+        <Box sx={{ width: "50%", flexShrink: 0 }}>
           <AdvancedSearch
             initialValues={currentSearchParams}
             onSearch={handleSearch}
@@ -108,7 +113,7 @@ const SearchResults = () => {
             justifyContent: "space-between",
             alignItems: "center",
             width: "100%",
-            mt: -2,
+            flexShrink: 0,
           }}
         >
           <Typography variant="h6" gutterBottom sx={{ textAlign: "left" }}>
@@ -119,19 +124,28 @@ const SearchResults = () => {
               : "No matching results found."}
           </Typography>
         </Box>
-        <EntriesTable
-          entries={entries}
-          currUserMode={"view"}
-          selectedEntries={[]}
-          onSelectEntry={() => {}}
-          onSelectAll={() => {}}
-          isPublic={true}
-        />
+        <Box
+          sx={{
+            width: "100%",
+            overflow: "auto",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <EntriesTable
+            entries={entries}
+            currUserMode={"view"}
+            selectedEntries={[]}
+            onSelectEntry={() => {}}
+            onSelectAll={() => {}}
+            isPublic={true}
+          />
+        </Box>
         <Box
           sx={{
             display: "flex",
             justifyContent: "flex-start",
-            mt: 1,
+            mt: 1.5,
             width: "100%",
           }}
         >
@@ -140,17 +154,6 @@ const SearchResults = () => {
             page={page}
             onChange={handlePageChange}
             color="primary"
-            sx={{
-              "& .MuiPaginationItem-root": {
-                color: "white", // Change the text color of pagination items to white
-              },
-              "& .MuiPaginationItem-root.Mui-selected": {
-                color: "white", // Ensure the selected item text is also white
-              },
-              "& .MuiPaginationItem-root:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.2)", // Optional: change background color on hover
-              },
-            }}
           />
         </Box>
       </Box>

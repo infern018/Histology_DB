@@ -19,6 +19,7 @@ import CollectionEntriesChart from "./pages/collection/CollectionEntriesChart";
 import LandingPage from "./pages/LandingPage";
 import SearchResults from "./pages/SearchResults";
 import CollectionDetails from "./pages/collection/CollectionDetails";
+import BulkUploadEntries from "./pages/collection/BulkUploadEntries";
 
 function App() {
   return (
@@ -47,6 +48,10 @@ function App() {
           <Route
             path="/collection/:collectionID/entries"
             element={<CollectionEntriesPage />}
+          />
+          <Route
+            path="/collection/:collectionID/bulk-upload"
+            element={<BulkUploadEntries />}
           />
           <Route
             path="/visualize/collection/:collectionID"

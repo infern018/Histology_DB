@@ -10,17 +10,15 @@ const theme = createTheme({
       contrastText: "#18181B", // Dark text on the primary color (similar to shadcn primary in dark mode)
       dark: "#e4e4e7", // Shadcn/ui-like darker shade for hover effect
     },
-    secondary: {
-      main: "#2E2E2E", // Darker gray for secondary backgrounds (similar to shadcn secondary in dark mode)
-      contrastText: "#F8F8F8", // Light text on the secondary color (similar to shadcn foreground in dark mode)
-    },
+
     background: {
       default: "#18181B", // Very dark gray for overall background (similar to shadcn background in dark mode)
-      paper: "#18181B", // Slightly lighter dark gray for paper elements (similar to shadcn card in dark mode)
+      paper: "#27272a", // Slightly lighter dark gray for paper elements (similar to shadcn card in dark mode)
+      light: "#27272a",
     },
     text: {
-      primary: "#F4F4F5", // Off-white for general text (similar to shadcn foreground in dark mode)
-      secondary: "#B4B4B4", // Lighter gray for secondary text (similar to shadcn muted-foreground in dark mode)
+      primary: "#FFFFFF",
+      secondary: "#d4d4d8", // Lighter gray for secondary text (similar to shadcn muted-foreground in dark mode)
     },
     divider: "rgba(255, 255, 255, 0.1)", // For borders, similar to shadcn border
     action: {
@@ -66,6 +64,7 @@ export const COLORS = {
   divider: theme.palette.divider,
   neutral700: "#3F3F46", // From Figma for search bar and feature cards
   neutral300: "#E4E4E7", // From Figma for search bar text
+  neutral800: "#424242", // For navbar border
   white: "#FFFFFF", // Explicitly define white
 };
 

@@ -7,16 +7,15 @@ import ButtonStyled from "../components/mui/Button";
 import { COLORS } from "../theme";
 import { styled, useTheme } from "@mui/material/styles";
 import AdvancedSearch from "../components/search/AdvancedSearch";
-
-import MemoryIcon from "@mui/icons-material/Memory";
-import ShareIcon from "@mui/icons-material/Share";
-import ManageSearchIcon from "@mui/icons-material/ManageSearch";
+import SearchIcon from "@mui/icons-material/Search";
+import AddIcon from "@mui/icons-material/Add";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 const FeatureCard = styled(Box)(({ theme }) => ({
   backgroundColor: COLORS.backgroundPaper,
   border: `1px solid ${COLORS.divider}`,
-  borderRadius: "8px",
-  padding: "16px",
+  borderRadius: "6px",
+  padding: "1rem 1rem 2rem 1rem",
   display: "flex",
   flexDirection: "column",
   gap: "12px",
@@ -42,19 +41,19 @@ const Home = () => {
 
   const features = [
     {
-      icon: <MemoryIcon sx={{ color: COLORS.white, fontSize: 24 }} />,
+      icon: <SearchIcon sx={{ color: COLORS.white, fontSize: 24 }} />,
       title: "Data Discovery",
       description:
         "Easily find relevant datasets using our powerful search and filtering tools.",
     },
     {
-      icon: <ShareIcon sx={{ color: COLORS.white, fontSize: 24 }} />,
+      icon: <AddIcon sx={{ color: COLORS.white, fontSize: 24 }} />,
       title: "Contribute Data",
       description:
         "Share your histological metadata entries with the community.",
     },
     {
-      icon: <ManageSearchIcon sx={{ color: COLORS.white, fontSize: 24 }} />,
+      icon: <SettingsIcon sx={{ color: COLORS.white, fontSize: 24 }} />,
       title: "Data Management",
       description:
         "Manage your datasets, track contributions, and ensure data integrity.",
@@ -65,12 +64,9 @@ const Home = () => {
     <Layout>
       <Box
         sx={{
-          minHeight: "100vh",
-          backgroundColor: theme.palette.background.default, // Overall dark background
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          padding: "20px 160px",
           [theme.breakpoints.down("lg")]: {
             padding: "20px 80px",
           },
@@ -89,8 +85,10 @@ const Home = () => {
             flexDirection: "column",
             alignItems: "center",
             textAlign: "center",
-            maxWidth: "900px",
-            margin: "1rem auto",
+            background:
+              "linear-gradient(135deg,rgba(9, 9, 11, 0.4) 0%,rgb(24, 24, 27) 100%)",
+            padding: "5rem 3.5rem 3rem 3.5rem",
+            borderRadius: "2px",
           }}
         >
           <Typography
@@ -113,7 +111,7 @@ const Home = () => {
             variant="body1"
             sx={{
               fontSize: "16px",
-              lineHeight: "1.5em",
+              lineHeight: "1.2em",
               color: theme.palette.text.primary,
               marginBottom: "40px",
             }}
@@ -133,7 +131,7 @@ const Home = () => {
           sx={{
             width: "100%",
             maxWidth: "928px",
-            margin: "80px auto",
+            margin: "3rem auto",
           }}
         >
           <Typography
@@ -141,7 +139,7 @@ const Home = () => {
             sx={{
               fontWeight: 700,
               fontSize: "35px",
-              lineHeight: "1.0285714285714285em",
+              lineHeight: "1em",
               letterSpacing: "-0.75%",
               color: theme.palette.text.primary,
               marginBottom: "16px",
@@ -153,7 +151,7 @@ const Home = () => {
             variant="body1"
             sx={{
               fontSize: "16px",
-              lineHeight: "1.5em",
+              lineHeight: "1.2em",
               color: theme.palette.text.primary,
               marginBottom: "32px",
             }}
@@ -166,7 +164,7 @@ const Home = () => {
             sx={{
               display: "flex",
               flexWrap: "wrap",
-              gap: "12px",
+              gap: "1.2rem",
               justifyContent: "center",
             }}
           >
@@ -176,9 +174,9 @@ const Home = () => {
                 <Typography
                   variant="h6"
                   sx={{
-                    fontWeight: 500,
-                    fontSize: "16px",
-                    lineHeight: "1.5em",
+                    fontWeight: 600,
+                    fontSize: "1.15rem",
+                    lineHeight: "1.2em",
                     color: theme.palette.text.primary,
                   }}
                 >
@@ -189,7 +187,7 @@ const Home = () => {
                   sx={{
                     fontSize: "14px",
                     lineHeight: "1.5em",
-                    color: theme.palette.text.primary,
+                    color: theme.palette.text.secondary,
                   }}
                 >
                   {feature.description}
@@ -200,7 +198,7 @@ const Home = () => {
         </Box>
 
         {/* Explore Public Collections Button */}
-        <Box sx={{ margin: "40px auto 80px auto" }}>
+        <Box sx={{ margin: "1.1rem auto" }}>
           <ButtonStyled
             variant="contained"
             onClick={() => navigate(`/collection/public`)}

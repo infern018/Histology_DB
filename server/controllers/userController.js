@@ -1,5 +1,6 @@
 const Collection = require("../models/Collection");
 const User = require("../models/User");
+const mongoose = require("mongoose");
 
 const updateUser = async (req, res) => {
 	if (req.body.password) {
@@ -22,36 +23,80 @@ const updateUser = async (req, res) => {
 };
 
 const getUserCollections = async (req, res) => {
+	console.time("getUserCollections");
 	try {
-		const user = await User.findById(req.params.id);
+		const userId = req.params.id;
+
+		console.time("parallelQueries");
+
+		// Run all queries in parallel with only required fields
+		const [user, ownedCollections, collaboratedCollectionIds] = await Promise.all([
+			// Check if user exists (minimal query)
+			User.findById(userId).select("_id").lean(),
+
+			// Get owned collections with only required fields
+			Collection.find({
+				ownerID: userId,
+				backupCollection: { $ne: true },
+			})
+				.select("_id name")
+				.lean(),
+
+			// Get collaborated collection IDs and modes
+			User.findById(userId).select("collaboratingCollections").lean(),
+		]);
+
+		console.timeEnd("parallelQueries");
+
 		if (!user) {
 			return res.status(404).json({ message: "User not found" });
 		}
 
-		const userOwnedCollections = await Collection.find({ ownerID: user._id, backupCollection: { $ne: true } });
+		console.time("collaboratedCollectionsQuery");
 
-		const userCollaboratedCollectionIDs = user.collaboratingCollections.map((collab) => collab.collection_id);
-		const userCollaboratedCollections = await Collection.find({
-			_id: { $in: userCollaboratedCollectionIDs },
-			backupCollection: { $ne: true },
-		});
+		// Get collaborated collections in a separate optimized query
+		let collaboratedCollections = [];
+		if (collaboratedCollectionIds?.collaboratingCollections?.length > 0) {
+			const collabIds = collaboratedCollectionIds.collaboratingCollections.map((c) => c.collection_id);
+			const collabCollections = await Collection.find({
+				_id: { $in: collabIds },
+				backupCollection: { $ne: true },
+			})
+				.select("_id name")
+				.lean();
 
-		const ownedCollections = userOwnedCollections.map((collection) => ({
+			// Create a map for faster lookup
+			const collabMap = new Map(collabCollections.map((c) => [c._id.toString(), c]));
+
+			collaboratedCollections = collaboratedCollectionIds.collaboratingCollections
+				.map((collab) => {
+					const collection = collabMap.get(collab.collection_id.toString());
+					return collection
+						? {
+								collection_id: collection._id,
+								name: collection.name,
+								mode: collab.mode,
+						  }
+						: null;
+				})
+				.filter(Boolean); // Remove null entries
+		}
+
+		console.timeEnd("collaboratedCollectionsQuery");
+
+		console.time("mapResults");
+
+		// Map owned collections
+		const ownedResults = ownedCollections.map((collection) => ({
 			collection_id: collection._id,
 			name: collection.name,
 			mode: "owner",
 		}));
 
-		const collaboratedCollections = user.collaboratingCollections.map((collab) => {
-			const collection = userCollaboratedCollections.find((col) => col._id.equals(collab.collection_id));
-			return {
-				collection_id: collection._id,
-				name: collection.name,
-				mode: collab.mode,
-			};
-		});
+		const userCollections = [...ownedResults, ...collaboratedCollections];
 
-		const userCollections = [...ownedCollections, ...collaboratedCollections];
+		console.timeEnd("mapResults");
+		console.timeEnd("getUserCollections");
 
 		res.status(200).json(userCollections);
 	} catch (err) {

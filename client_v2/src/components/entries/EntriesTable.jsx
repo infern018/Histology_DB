@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ImageCell from "../utils/ImageSkeleton";
+import theme, { COLORS } from "../../theme";
 
 const EntriesTable = ({
   entries,
@@ -58,15 +59,18 @@ const EntriesTable = ({
         maxWidth: "100%",
         maxHeight: "900px",
         overflowY: "auto",
-        backgroundColor: "#1e1e1e",
         borderRadius: "8px",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
+        border: "1px solid",
+        borderColor: COLORS.neutral700,
       }}
     >
       <Table sx={{ width: "100%" }} size="small">
         <TableHead>
           <TableRow
-            sx={{ height: tableHeaderRowHeight, backgroundColor: "#262626" }}
+            sx={{
+              height: tableHeaderRowHeight,
+              backgroundColor: theme.palette.background.light,
+            }}
           >
             {currUserMode !== "view" && (
               <TableCell padding="checkbox">
@@ -146,7 +150,7 @@ const EntriesTable = ({
               sx={{
                 "height": tableRowHeight,
                 "cursor": "pointer",
-                "backgroundColor": "#1e1e1e",
+                "backgroundColor": theme.palette.background.default,
                 "&:hover": {
                   backgroundColor: "#333333",
                 },

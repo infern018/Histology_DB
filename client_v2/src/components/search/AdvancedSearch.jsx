@@ -168,18 +168,18 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
   };
 
   const dropDownStyles = {
-    "color": "white",
+    "color": theme.palette.text.secondary,
     "& .MuiOutlinedInput-notchedOutline": {
-      borderColor: "white",
+      borderColor: theme.palette.text.secondary,
     },
     "&:hover .MuiOutlinedInput-notchedOutline": {
-      borderColor: "white",
+      borderColor: theme.palette.text.secondary,
     },
     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-      borderColor: "white",
+      borderColor: theme.palette.text.secondary,
     },
     "& .MuiSvgIcon-root": {
-      color: "white", // This targets the dropdown arrow
+      color: theme.palette.text.secondary,
     },
   };
 
@@ -189,7 +189,9 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
         <SearchInput
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyPress={handleNormalSearch}
+          onKeyPress={(e) => {
+            if (e.key === "Enter") handleNormalSearch();
+          }}
           placeholder="Search via taxon, species..."
         />
         <ButtonStyled onClick={handleNormalSearch}>Search</ButtonStyled>
@@ -219,19 +221,24 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
         onClose={() => setDrawerOpen(false)}
         PaperProps={{
           sx: {
-            width: "40%",
-            backgroundColor: "rgba(35, 35, 35, 0.5)", // Transparent background
-            backdropFilter: "blur(10px)", // Blurry effect
-            color: "white", // Set text color to white
+            width: "25%",
+            margin: "4rem 0",
+            borderRadius: "8px",
           },
         }}
       >
-        <Box sx={{ p: 3 }}>
-          <Typography variant="h6" sx={{ mb: 3, color: "white" }}>
-            Filtering Options
+        <Box
+          sx={{
+            p: 3,
+            backgroundColor: theme.palette.background.default,
+            height: "100%",
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2, color: "white" }}>
+            {"<"}
           </Typography>
           {/* Brain Weight Range */}
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ mb: 2 }}>
             <Typography
               variant="subtitle1"
               gutterBottom
@@ -254,7 +261,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
             />
           </Box>
           {/* Body Weight Range */}
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ mb: 2 }}>
             <Typography
               variant="subtitle1"
               gutterBottom
@@ -277,7 +284,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
             />
           </Box>
           {/* Allow N/A Brain Weight */}
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ mb: 2 }}>
             <FormControlLabel
               control={
                 <Checkbox
@@ -300,7 +307,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
             />
           </Box>
           {/* Developmental Stage */}
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ mb: 2 }}>
             <FormControl fullWidth>
               <InputLabel sx={{ color: "white" }}>
                 Developmental Stage
@@ -321,7 +328,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
             </FormControl>
           </Box>
           {/* Sex */}
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ mb: 2 }}>
             <FormControl fullWidth>
               <InputLabel sx={{ color: "white" }}>Sex</InputLabel>
               <Select
@@ -337,7 +344,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
             </FormControl>
           </Box>
           {/* Order */}
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ mb: 2 }}>
             <FormControl fullWidth>
               <InputLabel sx={{ color: "white" }}>Order</InputLabel>
               <Select
@@ -355,7 +362,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
             </FormControl>
           </Box>
           {/* Collections */}
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ mb: 2 }}>
             <FormControl fullWidth>
               <InputLabel sx={{ color: "white" }}>Collections</InputLabel>
               <Select
@@ -379,7 +386,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
             </FormControl>
           </Box>
           {/* Stainings */}
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ mb: 2 }}>
             <Autocomplete
               multiple
               options={Object.entries(stainings).flatMap(([group, options]) =>
@@ -427,29 +434,29 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
               )}
               sx={{
                 "& .MuiAutocomplete-popupIndicator": {
-                  color: "white",
+                  color: theme.palette.text.primary,
                 },
                 "& .MuiAutocomplete-clearIndicator": {
-                  color: "white",
+                  color: theme.palette.text.primary,
                 },
                 "& .MuiAutocomplete-tag": {
-                  backgroundColor: "#333", // Dark background for tags
-                  color: "white", // White text
+                  backgroundColor: theme.palette.background.paper,
+                  color: theme.palette.text.primary,
                 },
                 "& .MuiInputBase-input": {
-                  color: "white", // White input text
+                  color: theme.palette.text.primary,
                 },
                 "& .MuiInputLabel-root": {
-                  color: "white", // White label text
+                  color: theme.palette.text.primary,
                 },
                 "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "white", // Outline color
+                  borderColor: theme.palette.text.primary,
                 },
               }}
             />
           </Box>
 
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ mb: 2 }}>
             <FormControl fullWidth>
               <InputLabel sx={{ color: "white" }}>Brain Parts</InputLabel>
               <Select
@@ -483,7 +490,7 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
             color="primary"
             onClick={handleSearch}
             fullWidth
-            sx={{ mt: 2, py: 1.5 }}
+            sx={{ mt: 2 }}
           >
             Search
           </Button>

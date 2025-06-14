@@ -8,44 +8,50 @@ const { ObjectId } = require("mongoose").Types;
 // Add collaborator to collection's collaborators array
 // Add collection to user's collaboratingCollections array
 const createCollaborator = async (req, res) => {
-    const collectionID = req.params.id;
-    const newCollaborator = req.body.newCollaborator;
+	const collectionID = req.params.id;
+	const newCollaborator = req.body.newCollaborator;
 
-    try {
-        const collection = await Collection.findById(collectionID);
+	console.log(newCollaborator);
+	console.log(collectionID);
 
-        user_id = newCollaborator.user_id;
-        mode = newCollaborator.mode;
+	try {
+		const collection = await Collection.findById(collectionID);
 
-        const user = await User.findById(user_id);
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
+		user_id = newCollaborator.user_id;
+		mode = newCollaborator.mode;
 
-        const existingCollaborator = collection.collaborators.find(
-            (collaborator) => collaborator.user_id.toString() === user_id
-        );
+		const user = await User.findById(user_id);
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
 
-        if (existingCollaborator) {
-            return res
-                .status(200)
-                .json({ error: "Collaborator already exists, skipping" });
-        }
+		const existingCollaborator = collection.collaborators.find(
+			(collaborator) => collaborator.user_id.toString() === user_id
+		);
 
-        collection.collaborators.push({ user_id: user_id, mode: mode });
+		if (existingCollaborator) {
+			return res.status(200).json({ error: "Collaborator already exists, skipping" });
+		}
 
-        // also add the collection to the user's collections
-        user.collaboratingCollections.push({
-            collection_id: collectionID,
-            mode: mode,
-        });
-        await user.save();
+		collection.collaborators.push({ user_id: user_id, mode: mode });
+		console.log("Updated collection collaborators:", collection.collaborators);
 
-        const updatedCollection = await collection.save();
-        res.status(200).json(updatedCollection);
-    } catch (err) {
-        res.status(500).json(err);
-    }
+		// also add the collection to the user's collections
+		user.collaboratingCollections.push({
+			collection_id: collectionID,
+			mode: mode,
+		});
+		console.log("Updated user collaborating collections:", user.collaboratingCollections);
+
+		await user.save();
+
+		const updatedCollection = await collection.save();
+		console.log("Collection saved successfully:", updatedCollection);
+
+		res.status(200).json(updatedCollection);
+	} catch (err) {
+		res.status(500).json(err);
+	}
 };
 
 // UPDATE A COLLABORATOR IN A COLLECTION
@@ -54,49 +60,45 @@ const createCollaborator = async (req, res) => {
 // Update collaborator's mode in collection's collaborators array
 // Update collection's mode in user's collaboratingCollections array
 const updateCollaborator = async (req, res) => {
-    const collectionID = req.params.id;
-    const newCollaborator = req.body.updateCollaborator;
+	const collectionID = req.params.id;
+	const newCollaborator = req.body.updateCollaborator;
 
-    try {
-        user_id = newCollaborator.user_id;
-        new_mode = newCollaborator.mode;
+	try {
+		user_id = newCollaborator.user_id;
+		new_mode = newCollaborator.mode;
 
-        const collection = await Collection.findById(collectionID);
-        const user = await User.findById(user_id);
+		const collection = await Collection.findById(collectionID);
+		const user = await User.findById(user_id);
 
-        // find if the collaborator exists
-        const collaborator = collection.collaborators.find((collaborator) =>
-            collaborator.user_id.equals(user._id)
-        );
+		// find if the collaborator exists
+		const collaborator = collection.collaborators.find((collaborator) => collaborator.user_id.equals(user._id));
 
-        if (!collaborator) {
-            return res.status(404).json({ error: "Collaborator not found" });
-        }
+		if (!collaborator) {
+			return res.status(404).json({ error: "Collaborator not found" });
+		}
 
-        collection.collaborators = collection.collaborators.map((collaborator) => {
-            if (collaborator.user_id.toString() === user_id) {
-                collaborator.mode = new_mode;
-            }
-            return collaborator;
-        });
+		collection.collaborators = collection.collaborators.map((collaborator) => {
+			if (collaborator.user_id.toString() === user_id) {
+				collaborator.mode = new_mode;
+			}
+			return collaborator;
+		});
 
-        // update the mode in the user's collection object
-        user.collaboratingCollections = user.collaboratingCollections.map(
-            (collection) => {
-                if (collection.collection_id.toString() === collectionID) {
-                    collection.mode = new_mode;
-                }
-                return collection;
-            }
-        );
+		// update the mode in the user's collection object
+		user.collaboratingCollections = user.collaboratingCollections.map((collection) => {
+			if (collection.collection_id.toString() === collectionID) {
+				collection.mode = new_mode;
+			}
+			return collection;
+		});
 
-        await user.save();
+		await user.save();
 
-        const updatedCollection = await collection.save();
-        res.status(200).json(updatedCollection);
-    } catch (err) {
-        res.status(500).json(err);
-    }
+		const updatedCollection = await collection.save();
+		res.status(200).json(updatedCollection);
+	} catch (err) {
+		res.status(500).json(err);
+	}
 };
 
 // DELETE A COLLABORATOR FROM A COLLECTION
@@ -105,56 +107,56 @@ const updateCollaborator = async (req, res) => {
 // Remove collaborator from collection's collaborators array
 // Remove collection from user's collaboratingCollections array
 const deleteCollaborator = async (req, res) => {
-    const collectionID = req.params.id;
-    const collaboratorID = req.body.collaboratorID;
+	const collectionID = req.params.id;
+	const collaboratorID = req.body.collaboratorID;
 
-    try {
-        const collection = await Collection.findById(collectionID);
+	try {
+		const collection = await Collection.findById(collectionID);
 
-        const collaborator = collection.collaborators.find(
-            (collaborator) => collaborator.user_id.toString() === collaboratorID
-        );
+		const collaborator = collection.collaborators.find(
+			(collaborator) => collaborator.user_id.toString() === collaboratorID
+		);
 
-        if (!collaborator) {
-            return res.status(404).json({ error: "Collaborator not found" });
-        }
+		if (!collaborator) {
+			return res.status(404).json({ error: "Collaborator not found" });
+		}
 
-        collection.collaborators = collection.collaborators.filter(
-            (collaborator) => collaborator.user_id.toString() !== collaboratorID
-        );
+		collection.collaborators = collection.collaborators.filter(
+			(collaborator) => collaborator.user_id.toString() !== collaboratorID
+		);
 
-        // also remove the collection from the user's collections
-        const user = await User.findById(collaboratorID);
-        user.collaboratingCollections = user.collaboratingCollections.filter(
-            (collection) => collection.collection_id.toString() !== collectionID
-        );
-        await user.save();
+		// also remove the collection from the user's collections
+		const user = await User.findById(collaboratorID);
+		user.collaboratingCollections = user.collaboratingCollections.filter(
+			(collection) => collection.collection_id.toString() !== collectionID
+		);
+		await user.save();
 
-        const updatedCollection = await collection.save();
-        res.status(200).json(updatedCollection);
-    } catch (err) {
-        res.status(500).json(err);
-    }
+		const updatedCollection = await collection.save();
+		res.status(200).json(updatedCollection);
+	} catch (err) {
+		res.status(500).json(err);
+	}
 };
 
 const flushCollaborators = async (req, res) => {
-    const collectionID = req.params.id;
+	const collectionID = req.params.id;
 
-    try {
-        const collection = await Collection.findById(collectionID);
+	try {
+		const collection = await Collection.findById(collectionID);
 
-        collection.collaborators = [];
+		collection.collaborators = [];
 
-        const updatedCollection = await collection.save();
-        res.status(200).json(updatedCollection);
-    } catch (err) {
-        res.status(500).json(err);
-    }
+		const updatedCollection = await collection.save();
+		res.status(200).json(updatedCollection);
+	} catch (err) {
+		res.status(500).json(err);
+	}
 };
 
 module.exports = {
-    createCollaborator,
-    updateCollaborator,
-    deleteCollaborator,
-    flushCollaborators,
+	createCollaborator,
+	updateCollaborator,
+	deleteCollaborator,
+	flushCollaborators,
 };
