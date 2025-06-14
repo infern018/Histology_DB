@@ -14,6 +14,7 @@ import {
   Checkbox,
   ListItemText,
   Autocomplete,
+  Tooltip,
 } from "@mui/material";
 import {
   fetchDistinctOrders,
@@ -167,33 +168,80 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
     onSearch(searchParams);
   };
 
-  const dropDownStyles = {
-    "color": theme.palette.text.secondary,
-    "& .MuiOutlinedInput-notchedOutline": {
-      borderColor: theme.palette.text.secondary,
-    },
-    "&:hover .MuiOutlinedInput-notchedOutline": {
-      borderColor: theme.palette.text.secondary,
-    },
-    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-      borderColor: theme.palette.text.secondary,
-    },
-    "& .MuiSvgIcon-root": {
-      color: theme.palette.text.secondary,
-    },
-  };
+  const dropDownStyles = {};
+
+  const searchExamples = [
+    "species: Homo sapiens",
+    "common_name: Human",
+    "taxonomy_id: 9606",
+    "archival_name: tupa",
+    "staining: cresyl",
+    "specimen_id: 1088",
+  ];
+
+  const tooltipContent = (
+    <Box sx={{ p: 1 }}>
+      <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+        💡 Try these examples:
+      </Typography>
+      {searchExamples.map((example, index) => (
+        <Typography
+          key={index}
+          variant="body2"
+          sx={{
+            fontFamily: "monospace",
+            fontSize: "0.75rem",
+            mb: 0.5,
+            display: "block",
+          }}
+        >
+          {example}
+        </Typography>
+      ))}
+    </Box>
+  );
 
   return (
     <Box>
       <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-        <SearchInput
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyPress={(e) => {
-            if (e.key === "Enter") handleNormalSearch();
+        <Tooltip
+          title={tooltipContent}
+          placement="left"
+          arrow
+          enterDelay={500}
+          leaveDelay={200}
+          componentsProps={{
+            tooltip: {
+              sx: {
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                border: `1px solid ${theme.palette.divider}`,
+                borderRadius: 1,
+                maxWidth: 300,
+                fontSize: "0.75rem",
+              },
+            },
+            arrow: {
+              sx: {
+                "color": theme.palette.background.paper,
+                "&:before": {
+                  border: `1px solid ${theme.palette.divider}`,
+                },
+              },
+            },
           }}
-          placeholder="Search via taxon, species..."
-        />
+        >
+          <Box sx={{ flex: 1 }}>
+            <SearchInput
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") handleNormalSearch();
+              }}
+              placeholder="Search via taxon, species..."
+            />
+          </Box>
+        </Tooltip>
         <ButtonStyled onClick={handleNormalSearch}>Search</ButtonStyled>
       </Box>
 
@@ -432,27 +480,6 @@ const AdvancedSearch = ({ initialValues, onSearch }) => {
                   }}
                 />
               )}
-              sx={{
-                "& .MuiAutocomplete-popupIndicator": {
-                  color: theme.palette.text.primary,
-                },
-                "& .MuiAutocomplete-clearIndicator": {
-                  color: theme.palette.text.primary,
-                },
-                "& .MuiAutocomplete-tag": {
-                  backgroundColor: theme.palette.background.paper,
-                  color: theme.palette.text.primary,
-                },
-                "& .MuiInputBase-input": {
-                  color: theme.palette.text.primary,
-                },
-                "& .MuiInputLabel-root": {
-                  color: theme.palette.text.primary,
-                },
-                "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-                  borderColor: theme.palette.text.primary,
-                },
-              }}
             />
           </Box>
 

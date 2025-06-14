@@ -163,14 +163,20 @@ const CollectionEntriesPage = () => {
   if (loading) {
     return (
       <Layout>
-        <Typography
-          variant="h5"
-          gutterBottom
-          sx={{ display: "flex", textAlign: "left", marginBottom: "1.3rem" }}
-        >
-          Loading Collection...
-        </Typography>
-        <TableSkeleton />
+        <Box sx={{ width: "75%", mx: "auto", p: 3 }}>
+          <Typography
+            variant="h5"
+            gutterBottom
+            sx={{
+              display: "flex",
+              textAlign: "left",
+              marginBottom: "1.3rem",
+            }}
+          >
+            Loading Collection...
+          </Typography>
+          <TableSkeleton />
+        </Box>
       </Layout>
     );
   }

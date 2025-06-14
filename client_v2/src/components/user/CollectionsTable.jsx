@@ -12,7 +12,7 @@ import {
   Paper,
   Tooltip,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
+import SettingsIcon from "@mui/icons-material/Settings";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { deleteCollectionAPI } from "../../utils/apiCalls";
 import { useState } from "react";
@@ -141,7 +141,7 @@ const CollectionTable = ({ collections, isPublic }) => {
                         size="small"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <EditIcon fontSize="small" />
+                        <SettingsIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
                   )}
