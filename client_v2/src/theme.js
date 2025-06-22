@@ -1,76 +1,105 @@
-// theme file
 import { createTheme } from "@mui/material/styles";
 
-// color palette
+const COLORS = {
+  primaryMain: "#E6E6E6",
+  primaryContrastText: "#18181B",
+  primaryDark: "#e4e4e7",
+  backgroundDefault: "#18181B",
+  backgroundPaper: "#27272a",
+  backgroundLight: "#27272a",
+  textPrimary: "#FFFFFF",
+  textSecondary: "#d4d4d8",
+  divider: "rgba(255, 255, 255, 0.1)",
+  actionActive: "#B4B4B4",
+  actionHover: "rgba(255, 255, 255, 0.08)",
+  actionSelected: "rgba(255, 255, 255, 0.16)",
+  infoMain: "#60a5fa",
+  infoLight: "#93c5fd",
+  infoDark: "#3b82f6",
+  successMain: "#22c55e",
+  successLight: "#4ade80",
+  successDark: "#16a34a",
+  warningMain: "#f59e0b",
+  warningLight: "#fbbf24",
+  warningDark: "#d97706",
+  errorMain: "#ef4444",
+  errorLight: "#f87171",
+  errorDark: "#dc2626",
+  neutral700: "#3F3F46",
+  neutral300: "#E4E4E7",
+  neutral800: "#424242",
+  white: "#FFFFFF",
+  glassPaper: "#18181B",
+  glassCard: "#18181B",
+  glassBorder: "#18181B",
+};
+
 const theme = createTheme({
   palette: {
-    mode: "dark", // dark mode
+    mode: "dark",
     primary: {
-      main: "#E6E6E6", // Light gray for primary actions (similar to shadcn primary-foreground in dark mode)
-      contrastText: "#18181B", // Dark text on the primary color (similar to shadcn primary in dark mode)
-      dark: "#e4e4e7", // Shadcn/ui-like darker shade for hover effect
+      main: COLORS.primaryMain,
+      contrastText: COLORS.primaryContrastText,
+      dark: COLORS.primaryDark,
     },
-
     background: {
-      default: "#18181B", // Very dark gray for overall background (similar to shadcn background in dark mode)
-      paper: "#27272a", // Slightly lighter dark gray for paper elements (similar to shadcn card in dark mode)
-      light: "#27272a",
+      default: COLORS.backgroundDefault,
+      paper: COLORS.backgroundPaper,
+      light: COLORS.backgroundLight,
     },
     text: {
-      primary: "#FFFFFF",
-      secondary: "#d4d4d8", // Lighter gray for secondary text (similar to shadcn muted-foreground in dark mode)
+      primary: COLORS.textPrimary,
+      secondary: COLORS.textSecondary,
     },
-    divider: "rgba(255, 255, 255, 0.1)", // For borders, similar to shadcn border
+    divider: COLORS.divider,
     action: {
-      active: "#B4B4B4", // For active state, similar to muted-foreground
-      hover: "rgba(255, 255, 255, 0.08)", // Light hover effect
-      selected: "rgba(255, 255, 255, 0.16)", // Light selected effect
+      active: COLORS.actionActive,
+      hover: COLORS.actionHover,
+      selected: COLORS.actionSelected,
     },
-    // Enhanced colors for admin panel
     info: {
-      main: "#60a5fa", // Blue for admin elements
-      light: "#93c5fd",
-      dark: "#3b82f6",
+      main: COLORS.infoMain,
+      light: COLORS.infoLight,
+      dark: COLORS.infoDark,
     },
     success: {
-      main: "#22c55e", // Green that works well on dark
-      light: "#4ade80",
-      dark: "#16a34a",
+      main: COLORS.successMain,
+      light: COLORS.successLight,
+      dark: COLORS.successDark,
     },
     warning: {
-      main: "#f59e0b", // Amber that works well on dark
-      light: "#fbbf24",
-      dark: "#d97706",
+      main: COLORS.warningMain,
+      light: COLORS.warningLight,
+      dark: COLORS.warningDark,
     },
     error: {
-      main: "#ef4444", // Red that works well on dark
-      light: "#f87171",
-      dark: "#dc2626",
+      main: COLORS.errorMain,
+      light: COLORS.errorLight,
+      dark: COLORS.errorDark,
     },
   },
   typography: {
     fontFamily: "'Geist', sans-serif",
     h2: {
       fontWeight: "bold",
-      color: "#F4F4F5", // Using new text primary
+      color: COLORS.textPrimary,
     },
     h5: {
       fontWeight: 500,
-      color: "#F4F4F5", // Using new text primary
+      color: COLORS.textPrimary,
     },
     h6: {
-      color: "#F4F4F5", // Using new text primary
+      color: COLORS.textPrimary,
     },
     body1: {
-      fontSize: 16, // Adjusted for typical web use
-      color: "#F4F4F5", // Using new text primary
+      fontSize: 16,
+      color: COLORS.textPrimary,
     },
     subtitle1: {
-      color: "#F4F4F5", // Using new text primary
+      color: COLORS.textPrimary,
     },
   },
   components: {
-    // Enhanced Alert styling for dark mode
     MuiAlert: {
       styleOverrides: {
         root: {
@@ -80,67 +109,58 @@ const theme = createTheme({
         standardSuccess: {
           "backgroundColor": "rgba(34, 197, 94, 0.1)",
           "borderColor": "rgba(34, 197, 94, 0.3)",
-          "color": "#22c55e",
+          "color": COLORS.successMain,
           "& .MuiAlert-icon": {
-            color: "#22c55e",
+            color: COLORS.successMain,
           },
         },
         standardError: {
           "backgroundColor": "rgba(239, 68, 68, 0.1)",
           "borderColor": "rgba(239, 68, 68, 0.3)",
-          "color": "#ef4444",
+          "color": COLORS.errorMain,
           "& .MuiAlert-icon": {
-            color: "#ef4444",
+            color: COLORS.errorMain,
           },
         },
         standardWarning: {
           "backgroundColor": "rgba(245, 158, 11, 0.1)",
           "borderColor": "rgba(245, 158, 11, 0.3)",
-          "color": "#f59e0b",
+          "color": COLORS.warningMain,
           "& .MuiAlert-icon": {
-            color: "#f59e0b",
+            color: COLORS.warningMain,
           },
         },
         standardInfo: {
           "backgroundColor": "rgba(96, 165, 250, 0.1)",
           "borderColor": "rgba(96, 165, 250, 0.3)",
-          "color": "#60a5fa",
+          "color": COLORS.infoMain,
           "& .MuiAlert-icon": {
-            color: "#60a5fa",
+            color: COLORS.infoMain,
           },
         },
       },
     },
-    // Enhanced Paper styling for admin panel
     MuiPaper: {
       styleOverrides: {
         root: {
-          "backgroundImage": "none", // Remove default paper gradient
-          "border": "1px solid rgba(255, 255, 255, 0.1)",
+          "backgroundImage": "none",
+          "backgroundColor": COLORS.backgroundDefault,
           "&.admin-panel-paper": {
-            backgroundColor: "rgba(39, 39, 42, 0.6)", // Semi-transparent effect
+            backgroundColor: COLORS.backgroundDefault,
             backdropFilter: "blur(8px)",
             border: "1px solid rgba(255, 255, 255, 0.15)",
           },
         },
       },
     },
-    // Enhanced Card styling
     MuiCard: {
       styleOverrides: {
         root: {
           "backgroundImage": "none",
-          "backgroundColor": "rgba(39, 39, 42, 0.8)",
+          "backgroundColor": COLORS.backgroundDefault,
           "border": "1px solid rgba(255, 255, 255, 0.1)",
           "&.admin-metrics-card": {
-            "backgroundColor": "rgba(39, 39, 42, 0.6)",
-            "backdropFilter": "blur(8px)",
-            "border": "1px solid rgba(255, 255, 255, 0.15)",
-            "transition": "all 0.2s ease",
-            "&:hover": {
-              backgroundColor: "rgba(39, 39, 42, 0.8)",
-              borderColor: "rgba(255, 255, 255, 0.2)",
-            },
+            backgroundColor: COLORS.backgroundDefault,
           },
         },
       },
@@ -148,33 +168,5 @@ const theme = createTheme({
   },
 });
 
-export const COLORS = {
-  // Map to palette colors for direct access and new shadcn colors
-  background: theme.palette.background.default,
-  backgroundPaper: theme.palette.background.paper,
-  textPrimary: theme.palette.text.primary,
-  textSecondary: theme.palette.text.secondary,
-  primaryMain: theme.palette.primary.main,
-  primaryContrastText: theme.palette.primary.contrastText,
-  primaryDark: theme.palette.primary.dark,
-  secondaryMain: theme.palette.secondary.main,
-  secondaryContrastText: theme.palette.secondary.contrastText,
-  divider: theme.palette.divider,
-  neutral700: "#3F3F46", // From Figma for search bar and feature cards
-  neutral300: "#E4E4E7", // From Figma for search bar text
-  neutral800: "#424242", // For navbar border
-  white: "#FFFFFF", // Explicitly define white
-
-  // Admin panel colors
-  adminInfo: theme.palette.info.main,
-  adminSuccess: theme.palette.success.main,
-  adminWarning: theme.palette.warning.main,
-  adminError: theme.palette.error.main,
-
-  // Transparent backgrounds for glass effect
-  glassPaper: "rgba(39, 39, 42, 0.6)",
-  glassCard: "rgba(39, 39, 42, 0.8)",
-  glassBorder: "rgba(255, 255, 255, 0.15)",
-};
-
+export { COLORS };
 export default theme;
