@@ -10,7 +10,6 @@ const generateCollectionCode = (collectionName) => {
 
 const createCollection = async (req, res) => {
 	const newCollection = new Collection(req.body);
-
 	newCollection.ownerID = req.user.id;
 
 	try {
@@ -101,14 +100,7 @@ const getCollectionNameAndNumCollaborators = async (req, res) => {
 
 const getPublicCollections = async (req, res) => {
 	try {
-		const cacheKey = "publicCollections";
-		const cachedData = await redisClient.get(cacheKey);
-
-		if (cachedData) {
-			return res.status(200).json(JSON.parse(cachedData));
-		}
-
-		const collections = await Collection.find({ publicStatus: "approved" });
+		const collections = await Collection.find({ visibility: "public" });
 
 		const collections_data = collections.map((collection) => ({
 			collection_id: collection._id,
@@ -116,12 +108,23 @@ const getPublicCollections = async (req, res) => {
 			mode: "view",
 		}));
 
-		// Cache the data for 1 hour
-		await redisClient.set(cacheKey, JSON.stringify(collections_data), {
-			EX: 3600,
-		});
-
 		res.status(200).json(collections_data);
+	} catch (err) {
+		res.status(500).json(err);
+	}
+};
+
+// Get user's collections with publication status
+const getUserCollectionsWithStatus = async (req, res) => {
+	try {
+		const collections = await Collection.find({
+			ownerID: req.user.id,
+			backupCollection: false,
+		})
+			.select("name visibility publicationRequestStatus publicationRequestedAt adminComments")
+			.populate("adminComments.adminId", "username email");
+
+		res.status(200).json(collections);
 	} catch (err) {
 		res.status(500).json(err);
 	}
@@ -135,4 +138,5 @@ module.exports = {
 	getCollectionNameAndNumCollaborators,
 	getPublicCollections,
 	flushCollection,
+	getUserCollectionsWithStatus,
 };

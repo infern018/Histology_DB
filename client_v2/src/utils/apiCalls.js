@@ -563,3 +563,108 @@ export const incrementBrainPartUsage = async (brainPartName) => {
     throw error;
   }
 };
+
+// Admin & Publication Request APIs
+export const getUserCollectionsWithStatus = async (accessToken) => {
+  try {
+    const response = await axiosReq.get("/collections/user/status", {
+      headers: { token: `${accessToken}` },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+export const requestPublicationAPI = async (collectionID, accessToken) => {
+  try {
+    const response = await axiosReq.post(
+      `/admin/collections/${collectionID}/request-publication`,
+      {},
+      {
+        headers: { token: `${accessToken}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+export const getCollectionsInReviewAPI = async (accessToken) => {
+  try {
+    const response = await axiosReq.get("/admin/collections/review", {
+      headers: { token: `${accessToken}` },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+export const approvePublicationAPI = async (
+  collectionID,
+  comment,
+  accessToken
+) => {
+  try {
+    const response = await axiosReq.post(
+      `/admin/collections/${collectionID}/approve`,
+      { comment },
+      {
+        headers: { token: `${accessToken}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+export const requestChangesAPI = async (collectionID, comment, accessToken) => {
+  try {
+    const response = await axiosReq.post(
+      `/admin/collections/${collectionID}/request-changes`,
+      { comment },
+      {
+        headers: { token: `${accessToken}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+export const addAdminCommentAPI = async (
+  collectionID,
+  comment,
+  accessToken
+) => {
+  try {
+    const response = await axiosReq.post(
+      `/admin/collections/${collectionID}/comment`,
+      { comment },
+      {
+        headers: { token: `${accessToken}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+export const getValidationReportAPI = async (collectionID, accessToken) => {
+  try {
+    const response = await axiosReq.get(
+      `/admin/collections/${collectionID}/validation`,
+      {
+        headers: { token: `${accessToken}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};

@@ -559,19 +559,7 @@ const BulkUploadEntries = () => {
 
   const renderConfirmation = () => (
     <Box>
-      <Alert
-        severity="success"
-        sx={{
-          "mb": 3,
-          "& .MuiAlert-icon": {
-            color: "#81c784",
-          },
-          "& .MuiAlert-message": {
-            color: theme.palette.text.primary,
-          },
-          "backgroundColor": "rgba(129, 199, 132, 0.1)",
-        }}
-      >
+      <Alert severity="success" sx={{ mb: 3 }}>
         Validation complete! Review the valid entries below and confirm to
         upload.
       </Alert>

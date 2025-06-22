@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { fetchUserCollections, fetchUserDetails } from "../../utils/apiCalls";
+import {
+  fetchUserCollections,
+  fetchUserDetails,
+  getUserCollectionsWithStatus,
+} from "../../utils/apiCalls";
 import { Box, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useTheme } from "@mui/material/styles";
@@ -35,9 +39,21 @@ const Profile = () => {
           createdAt: formattedDate,
         });
 
-        // Fetch collections
-        const collectionsData = await fetchUserCollections(user._id);
-        setCollections(collectionsData);
+        // Fetch collections with publication status
+        const collectionsData = await getUserCollectionsWithStatus(
+          user.accessToken
+        );
+        // Transform the data to match the expected format
+        const formattedCollections = collectionsData.map((collection) => ({
+          collection_id: collection._id,
+          name: collection.name,
+          mode: "owner", // User is owner of their collections
+          visibility: collection.visibility,
+          publicationRequestStatus: collection.publicationRequestStatus,
+          publicationRequestedAt: collection.publicationRequestedAt,
+          adminComments: collection.adminComments,
+        }));
+        setCollections(formattedCollections);
 
         setLoading(false);
       } catch (error) {

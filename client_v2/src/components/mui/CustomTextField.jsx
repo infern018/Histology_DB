@@ -2,7 +2,7 @@ import React from "react";
 import { TextField } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
-const CustomTextField = ({ sx, ...props }) => {
+const CustomTextField = React.forwardRef(({ sx, ...props }, ref) => {
   const theme = useTheme();
 
   const defaultSx = {
@@ -29,7 +29,17 @@ const CustomTextField = ({ sx, ...props }) => {
     ...sx,
   };
 
-  return <TextField variant="outlined" fullWidth sx={defaultSx} {...props} />;
-};
+  return (
+    <TextField
+      variant="outlined"
+      fullWidth
+      sx={defaultSx}
+      ref={ref}
+      {...props}
+    />
+  );
+});
+
+CustomTextField.displayName = "CustomTextField";
 
 export default CustomTextField;

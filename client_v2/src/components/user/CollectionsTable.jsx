@@ -11,6 +11,7 @@ import {
   IconButton,
   Paper,
   Tooltip,
+  Box,
 } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -18,6 +19,7 @@ import { deleteCollectionAPI } from "../../utils/apiCalls";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import theme, { COLORS } from "../../theme";
+import PublicationRequestButton from "../collection/PublicationRequestButton";
 
 const CollectionTable = ({ collections, isPublic }) => {
   if (!isPublic) {
@@ -74,6 +76,13 @@ const CollectionTable = ({ collections, isPublic }) => {
                 Access Mode
               </Typography>
             </TableCell>
+            {!isPublic && (
+              <TableCell>
+                <Typography variant="subtitle2" fontWeight="bold" color="white">
+                  Publication Status
+                </Typography>
+              </TableCell>
+            )}
             <TableCell align="center" sx={{ width: "120px" }}>
               <Typography variant="subtitle2" fontWeight="bold" color="white">
                 Actions
@@ -115,6 +124,19 @@ const CollectionTable = ({ collections, isPublic }) => {
                   {collection.mode}
                 </Typography>
               </TableCell>
+              {!isPublic && (
+                <TableCell>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <PublicationRequestButton
+                      collection={collection}
+                      onStatusChange={() => {
+                        // Optionally refresh collections here
+                        window.location.reload();
+                      }}
+                    />
+                  </Box>
+                </TableCell>
+              )}
               <TableCell align="center">
                 <div
                   style={{

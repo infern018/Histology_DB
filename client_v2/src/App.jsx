@@ -20,6 +20,7 @@ import LandingPage from "./pages/LandingPage";
 import SearchResults from "./pages/SearchResults";
 import CollectionDetails from "./pages/collection/CollectionDetails";
 import BulkUploadEntries from "./pages/collection/BulkUploadEntries";
+import AdminPanel from "./pages/admin/AdminPanel";
 
 function App() {
   return (
@@ -72,6 +73,7 @@ function App() {
           <Route path="/entry/:entryID" element={<EntryDetailsPage />} />
           <Route path="/v2" element={<LandingPage />} />
           <Route path="/search/results" element={<SearchResults />} />
+          <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </Router>
     </ThemeProvider>
