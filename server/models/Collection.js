@@ -5,11 +5,10 @@ const visibilities = {
 	PRIVATE: "private",
 };
 
-const status = {
-	PENDING: "pending",
-	PUBLIC: "approved",
-	DECLINED: "declined",
-	UNSENT: "unsent",
+const publicationStatus = {
+	IN_REVIEW: "in_review",
+	CHANGES_REQUESTED: "changes_requested",
+	PUBLISHED: "published",
 };
 
 const CollectionSchema = mongoose.Schema(
@@ -24,10 +23,10 @@ const CollectionSchema = mongoose.Schema(
 			type: String,
 		},
 
-		//ID of the owner of collection
+		//ID of the owner of colelection
 		ownerID: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: "Owner_of_this_collection",
+			ref: "User",
 			required: true,
 		},
 
@@ -47,8 +46,6 @@ const CollectionSchema = mongoose.Schema(
 			default: false,
 		},
 
-		collaborators: [mongoose.Schema.Types.ObjectId],
-
 		collaborators: [
 			{
 				user_id: {
@@ -63,12 +60,6 @@ const CollectionSchema = mongoose.Schema(
 			},
 		],
 
-		publicStatus: {
-			type: String,
-			enum: Object.values(status).concat([null]),
-			default: "unsent",
-		},
-
 		contact: {
 			name: {
 				type: String,
@@ -82,6 +73,38 @@ const CollectionSchema = mongoose.Schema(
 			doi: {
 				type: String,
 			},
+		},
+
+		// New fields for publishing workflow
+		publicationRequestStatus: {
+			type: String,
+			enum: Object.values(publicationStatus).concat([null]),
+			default: null,
+		},
+
+		publicationRequestedAt: {
+			type: Date,
+		},
+
+		adminComments: [
+			{
+				adminId: {
+					type: mongoose.Schema.Types.ObjectId,
+					ref: "User",
+				},
+				comment: {
+					type: String,
+					required: true,
+				},
+				createdAt: {
+					type: Date,
+					default: Date.now,
+				},
+			},
+		],
+
+		validationReport: {
+			type: mongoose.Schema.Types.Mixed,
 		},
 	},
 	{ timestamps: true }

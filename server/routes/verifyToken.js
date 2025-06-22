@@ -51,7 +51,7 @@ const verifyTokenAndAdmin = (req, res, next) => {
 		if (req.user.isAdmin) {
 			next();
 		} else {
-			res.status(403).json("You are not allowed to do that");
+			res.status(403).json("You are not authorized to access admin resources");
 		}
 	});
 };
@@ -124,7 +124,7 @@ const verifyEntryReadAccess = async (req, res, next) => {
 	});
 };
 
-// a function to verify if the entry is part of a collection that has publicStatus: "approved"
+// a function to verify if the entry is part of a collection that has visibility: "public"
 const verifyPublicEntry = async (req, res, next) => {
 	const entry = await Entry.findById(req.params.id);
 
@@ -138,7 +138,7 @@ const verifyPublicEntry = async (req, res, next) => {
 		return res.status(404).json({ error: "Collection associated with entry D.N.E" });
 	}
 
-	if (collection.publicStatus === "approved") {
+	if (collection.visibility === "public") {
 		next();
 	} else {
 		res.status(403).json("Not a public collection entry");
@@ -152,7 +152,7 @@ const verifyPublicCollection = async (req, res, next) => {
 		return res.status(404).json({ error: "Collection not found" });
 	}
 
-	if (collection.publicStatus === "approved") {
+	if (collection.visibility === "public") {
 		next();
 	} else {
 		res.status(403).json("Not a public collection");

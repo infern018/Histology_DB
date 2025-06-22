@@ -92,6 +92,27 @@ const Navbar = () => {
                 >
                   {user.username}
                 </Button>
+                {user.isAdmin && (
+                  <Button
+                    component={Link}
+                    to="/admin"
+                    variant="text"
+                    sx={{
+                      "color": theme.palette.info.main,
+                      "textTransform": "none",
+                      "fontSize": "1rem",
+                      "padding": "4px 8px",
+                      "minHeight": "auto",
+                      "fontWeight": "bold",
+                      "&:hover": {
+                        backgroundColor: "rgba(96, 165, 250, 0.1)",
+                        color: theme.palette.info.light,
+                      },
+                    }}
+                  >
+                    Admin Panel
+                  </Button>
+                )}
                 <Button
                   variant="text"
                   onClick={() => setOpen(true)}
@@ -169,6 +190,22 @@ const Navbar = () => {
                     >
                       {user.username}
                     </MenuItem>
+                    {user.isAdmin && (
+                      <MenuItem
+                        component={Link}
+                        to="/admin"
+                        onClick={toggleDrawer(false)}
+                        sx={{
+                          "color": theme.palette.info.main,
+                          "fontWeight": "bold",
+                          "&:hover": {
+                            backgroundColor: "rgba(96, 165, 250, 0.1)",
+                          },
+                        }}
+                      >
+                        Admin Panel
+                      </MenuItem>
+                    )}
                     <MenuItem
                       onClick={() => {
                         toggleDrawer(false)();

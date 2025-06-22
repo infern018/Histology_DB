@@ -14,6 +14,7 @@ router.delete("/:id", verifyTokenAndAuthCollection, collectionController.deleteC
 router.delete("/:id/flush", verifyTokenAndAuthCollection, collectionController.flushCollection);
 
 router.get("/public", collectionController.getPublicCollections);
+router.get("/user/status", verifyToken, collectionController.getUserCollectionsWithStatus);
 router.get("/:id", verifyTokenAndAuthCollection, collectionController.getCollection);
 router.get("/public/:id", verifyPublicCollection, collectionController.getCollection);
 router.get("/:id/stats", collectionController.getCollectionNameAndNumCollaborators);

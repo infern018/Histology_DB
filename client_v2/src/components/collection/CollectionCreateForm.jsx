@@ -6,7 +6,11 @@ import CustomTextField from "../mui/CustomTextField";
 
 const CollectionCreateForm = ({ onSubmit }) => {
   const theme = useTheme();
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const handleFormSubmit = (data) => {
     onSubmit(data);
@@ -65,7 +69,9 @@ const CollectionCreateForm = ({ onSubmit }) => {
               required
               id="name"
               label="Collection Name"
-              {...register("name")}
+              error={!!errors.name}
+              helperText={errors.name?.message}
+              {...register("name", { required: "Collection name is required" })}
             />
 
             <CustomTextField
@@ -74,7 +80,11 @@ const CollectionCreateForm = ({ onSubmit }) => {
               label="Description"
               multiline
               rows={3}
-              {...register("description")}
+              error={!!errors.description}
+              helperText={errors.description?.message}
+              {...register("description", {
+                required: "Description is required",
+              })}
             />
 
             <Button

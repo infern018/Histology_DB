@@ -601,7 +601,7 @@ const advancedSearch = async (req, res) => {
 			query["collectionID"] = { $in: selectedCollectionsList };
 		} else {
 			query["collectionID"] = {
-				$in: await Collection.find({ publicStatus: "approved", backupCollection: { $ne: true } }).select("_id"),
+				$in: await Collection.find({ visibility: "public", backupCollection: { $ne: true } }).select("_id"),
 			};
 		}
 

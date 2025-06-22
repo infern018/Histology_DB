@@ -15,6 +15,7 @@ const roleRoute = require("./routes/roles");
 const stainingMethodRoute = require("./routes/stainingMethods");
 const brainPartRoute = require("./routes/brainParts");
 const taxonomyRoute = require("./routes/taxonomy");
+const adminRoute = require("./routes/admin");
 
 const app = express();
 const PORT = process.env.PORT;
@@ -69,6 +70,7 @@ app.use("/api/roles", roleRoute);
 app.use("/api/staining-methods", stainingMethodRoute);
 app.use("/api/brain-parts", brainPartRoute);
 app.use("/api/taxonomy", taxonomyRoute);
+app.use("/api/admin", adminRoute);
 
 // send sample response in the root URL
 app.get("/api", (req, res) => {
