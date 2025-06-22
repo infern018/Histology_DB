@@ -413,6 +413,23 @@ export const fetchSearchResults = async (searchParams) => {
   }
 };
 
+export const exportSearchResults = async (searchParams) => {
+  try {
+    // Remove pagination params and set a high limit to get all results
+    const exportParams = { ...searchParams };
+    delete exportParams.page;
+    exportParams.limit = 10000; // Set a high limit to get all results
+
+    const response = await axiosReq.get("/entries/advanced-search", {
+      params: exportParams,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error exporting search results:", error);
+    throw error;
+  }
+};
+
 export const fetchDistinctOrders = async () => {
   try {
     const response = await axiosReq.get("/entries/distinct-orders");
@@ -438,5 +455,111 @@ export const fetchDistinctBrainParts = async () => {
     return response.data;
   } catch (error) {
     throw new Error(error.message);
+  }
+};
+
+// Staining Methods API calls
+export const getStandardizedStainings = async () => {
+  try {
+    const response = await axiosReq.get("/staining-methods/standardized");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching standardized staining methods:", error);
+    throw error;
+  }
+};
+
+export const suggestStainingMethod = async (input, threshold = 0.7) => {
+  try {
+    const response = await axiosReq.post("/staining-methods/suggest", {
+      input,
+      threshold,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error getting staining method suggestions:", error);
+    throw error;
+  }
+};
+
+export const batchSuggestStainings = async (stainingMethods) => {
+  try {
+    const response = await axiosReq.post("/staining-methods/batch-suggest", {
+      staining_methods: stainingMethods,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error getting batch staining suggestions:", error);
+    throw error;
+  }
+};
+
+export const incrementStainingUsage = async (stainingMethodName) => {
+  try {
+    const response = await axiosReq.post("/staining-methods/increment-usage", {
+      name: stainingMethodName,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error incrementing staining usage:", error);
+    throw error;
+  }
+};
+
+export const getAllStandardizedStainingMethods = async () => {
+  try {
+    const response = await axiosReq.get("/staining-methods/standardized");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all standardized staining methods:", error);
+    throw error;
+  }
+};
+
+// Brain Parts API calls
+export const getAllStandardizedBrainParts = async () => {
+  try {
+    const response = await axiosReq.get("/brain-parts/standardized");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching standardized brain parts:", error);
+    throw error;
+  }
+};
+
+export const suggestBrainPart = async (input, threshold = 0.7) => {
+  try {
+    const response = await axiosReq.post("/brain-parts/suggest", {
+      input,
+      threshold,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error getting brain part suggestions:", error);
+    throw error;
+  }
+};
+
+export const batchSuggestBrainParts = async (brainParts) => {
+  try {
+    const response = await axiosReq.post("/brain-parts/batch-suggest", {
+      brain_parts: brainParts,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error getting batch brain part suggestions:", error);
+    throw error;
+  }
+};
+
+export const incrementBrainPartUsage = async (brainPartName) => {
+  try {
+    const response = await axiosReq.post("/brain-parts/increment-usage", {
+      name: brainPartName,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error incrementing brain part usage:", error);
+    throw error;
   }
 };

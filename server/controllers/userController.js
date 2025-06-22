@@ -23,11 +23,8 @@ const updateUser = async (req, res) => {
 };
 
 const getUserCollections = async (req, res) => {
-	console.time("getUserCollections");
 	try {
 		const userId = req.params.id;
-
-		console.time("parallelQueries");
 
 		// Run all queries in parallel with only required fields
 		const [user, ownedCollections, collaboratedCollectionIds] = await Promise.all([
@@ -46,13 +43,9 @@ const getUserCollections = async (req, res) => {
 			User.findById(userId).select("collaboratingCollections").lean(),
 		]);
 
-		console.timeEnd("parallelQueries");
-
 		if (!user) {
 			return res.status(404).json({ message: "User not found" });
 		}
-
-		console.time("collaboratedCollectionsQuery");
 
 		// Get collaborated collections in a separate optimized query
 		let collaboratedCollections = [];
@@ -82,10 +75,6 @@ const getUserCollections = async (req, res) => {
 				.filter(Boolean); // Remove null entries
 		}
 
-		console.timeEnd("collaboratedCollectionsQuery");
-
-		console.time("mapResults");
-
 		// Map owned collections
 		const ownedResults = ownedCollections.map((collection) => ({
 			collection_id: collection._id,
@@ -94,9 +83,6 @@ const getUserCollections = async (req, res) => {
 		}));
 
 		const userCollections = [...ownedResults, ...collaboratedCollections];
-
-		console.timeEnd("mapResults");
-		console.timeEnd("getUserCollections");
 
 		res.status(200).json(userCollections);
 	} catch (err) {

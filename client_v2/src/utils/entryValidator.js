@@ -179,6 +179,7 @@ const transformCSVRowToEntry = (csvRow, collectionID) => {
 // Main validation function
 const validateEntry = (entry) => {
   const errors = [];
+  const warnings = [];
 
   Object.entries(validationSchema).forEach(([fieldPath, rules]) => {
     const value = getNestedValue(entry, fieldPath);
@@ -225,13 +226,14 @@ const validateEntry = (entry) => {
     }
   });
 
-  return errors;
+  return { errors, warnings };
 };
 
 // Validate CSV data function
 export const validateCSVData = (csvData, collectionID) => {
   const results = [];
   const failedRows = [];
+  const warningRows = [];
 
   csvData.forEach((row, index) => {
     try {
@@ -239,16 +241,28 @@ export const validateCSVData = (csvData, collectionID) => {
       const entry = transformCSVRowToEntry(row, collectionID);
 
       // Validate the entry
-      const errors = validateEntry(entry);
+      const validation = validateEntry(entry);
+      const { errors, warnings } = validation;
 
       if (errors.length === 0) {
         results.push(entry);
+
+        // If there are warnings but no errors, add to warning rows
+        if (warnings.length > 0) {
+          warningRows.push({
+            rowNumber: index + 1,
+            originalRow: row,
+            transformedEntry: entry,
+            warnings: warnings,
+          });
+        }
       } else {
         failedRows.push({
           rowNumber: index + 1,
           originalRow: row,
           transformedEntry: entry,
           errors: errors,
+          warnings: warnings,
         });
       }
     } catch (error) {
@@ -257,16 +271,24 @@ export const validateCSVData = (csvData, collectionID) => {
         originalRow: row,
         transformedEntry: null,
         errors: [`Row processing error: ${error.message}`],
+        warnings: [],
       });
     }
   });
 
   return {
-    status: failedRows.length > 0 ? "validation_errors" : "success",
+    status:
+      failedRows.length > 0
+        ? "validation_errors"
+        : warningRows.length > 0
+        ? "validation_warnings"
+        : "success",
     validEntries: results,
     invalidEntries: failedRows,
+    warningEntries: warningRows,
     processedCount: results.length,
     failedCount: failedRows.length,
+    warningCount: warningRows.length,
     totalCount: csvData.length,
   };
 };

@@ -1,9 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Box, Typography, Pagination } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Pagination,
+  Button,
+  CircularProgress,
+} from "@mui/material";
+import { Download as DownloadIcon } from "@mui/icons-material";
 import Layout from "../components/utils/Layout";
 import EntriesTable from "../components/entries/EntriesTable";
-import { fetchSearchResults } from "../utils/apiCalls";
+import { fetchSearchResults, exportSearchResults } from "../utils/apiCalls";
+import {
+  convertToCSV,
+  downloadCSV,
+  formatDateForFilename,
+} from "../utils/exportUtils";
 import TableSkeleton from "../components/utils/TableSkeleton";
 import AdvancedSearch from "../components/search/AdvancedSearch";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +26,7 @@ const SearchResults = () => {
 
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [totalEntries, setTotalEntries] = useState(0);
@@ -28,10 +41,8 @@ const SearchResults = () => {
         searchParams.page = page;
         setCurrentSearchParams(searchParams);
 
-        console.log("searchParams", searchParams);
-
         const data = await fetchSearchResults(searchParams);
-        console.log("data", data);
+
         setTotalEntries(data.totalEntries);
         setEntries(data.entries);
         setTotalPages(data.totalPages);
@@ -52,6 +63,37 @@ const SearchResults = () => {
   const handleSearch = (searchParams) => {
     const queryParams = new URLSearchParams(searchParams).toString();
     navigate(`/search/results?${queryParams}`);
+  };
+
+  const handleExport = async () => {
+    if (totalEntries === 0) {
+      return;
+    }
+
+    setExporting(true);
+    try {
+      // Export all results (not just current page)
+      const exportData = await exportSearchResults(currentSearchParams);
+
+      if (exportData.entries && exportData.entries.length > 0) {
+        const csvContent = convertToCSV(exportData.entries);
+        const timestamp = formatDateForFilename();
+        const filename = `histology_search_results_${timestamp}.csv`;
+
+        downloadCSV(csvContent, filename);
+
+        console.log(
+          `✅ Exported ${exportData.entries.length} entries to ${filename}`
+        );
+      } else {
+        console.warn("No entries to export");
+      }
+    } catch (error) {
+      console.error("Failed to export search results:", error);
+      // You could add a toast notification here for better UX
+    } finally {
+      setExporting(false);
+    }
   };
 
   if (loading) {
@@ -114,6 +156,7 @@ const SearchResults = () => {
             alignItems: "center",
             width: "100%",
             flexShrink: 0,
+            mb: 2,
           }}
         >
           <Typography variant="h6" gutterBottom sx={{ textAlign: "left" }}>
@@ -123,6 +166,27 @@ const SearchResults = () => {
                 }...`
               : "No matching results found."}
           </Typography>
+
+          {totalEntries > 0 && (
+            <Button
+              variant="outlined"
+              startIcon={
+                exporting ? <CircularProgress size={16} /> : <DownloadIcon />
+              }
+              onClick={handleExport}
+              disabled={exporting}
+              sx={{
+                textTransform: "none",
+                borderRadius: 2,
+                px: 2,
+                py: 1,
+                fontSize: "0.875rem",
+                fontWeight: 500,
+              }}
+            >
+              {exporting ? "Exporting..." : `Export All (${totalEntries})`}
+            </Button>
+          )}
         </Box>
         <Box
           sx={{

@@ -1,12 +1,11 @@
 const Entry = require("../models/Entry");
 const Collection = require("../models/Collection");
+const taxonomyService = require("../services/taxonomyService");
 const fs = require("fs");
 const csvParser = require("csv-parser");
 const validateRowAgainstSchema = require("../utils/entryValidator");
 const crypto = require("crypto");
 const redisClient = require("../utils/redisClient");
-
-const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 function generateRandomAlphaNumeric(name) {
 	result = Math.random().toString(16).slice(2, 6);
@@ -18,63 +17,93 @@ const generateFilterHash = (filters) => {
 	return crypto.createHash("sha256").update(JSON.stringify(filters)).digest("hex");
 };
 
+/**
+ * Unified taxonomy data processing function
+ * This function handles all taxonomy-related operations in one place
+ */
+const processTaxonomyData = async (speciesName, existingNCBICode = null) => {
+	try {
+		let ncbiTaxonomyCode = existingNCBICode;
+		let scientificName = speciesName;
+		let order = null;
+
+		// Step 1: If no NCBI code provided, get it from species name
+		if (!ncbiTaxonomyCode && speciesName) {
+			console.log(`🔍 Looking up taxonomy ID for: "${speciesName}"`);
+			const taxonomyResult = await taxonomyService.getTaxonomyIDs(null, speciesName);
+			if (taxonomyResult && taxonomyResult.taxId) {
+				ncbiTaxonomyCode = taxonomyResult.taxId;
+				console.log(`✅ Found taxonomy ID: ${ncbiTaxonomyCode}`);
+			} else {
+				console.log(`❌ No taxonomy ID found for: "${speciesName}"`);
+			}
+		}
+
+		// Step 2: If we have NCBI code, get complete taxonomy data
+		if (ncbiTaxonomyCode) {
+			console.log(`📋 Fetching taxonomy data for ID: ${ncbiTaxonomyCode}`);
+
+			// Get order from our taxonomy service
+			order = await taxonomyService.getOrderByTaxId(ncbiTaxonomyCode);
+
+			// Get scientific name from our taxonomy service (it fetches from NCBI efetch)
+			const taxonomyData = await taxonomyService.fetchTaxonomyDataByTaxId(ncbiTaxonomyCode);
+			if (taxonomyData && taxonomyData.scientificName) {
+				scientificName = taxonomyData.scientificName;
+				console.log(`✅ Scientific name: ${scientificName}, Order: ${order}`);
+			}
+		}
+
+		return {
+			ncbiTaxonomyCode,
+			scientificName,
+			order,
+		};
+	} catch (error) {
+		console.error("❌ Error in processTaxonomyData:", error.message);
+		return {
+			ncbiTaxonomyCode: existingNCBICode,
+			scientificName: speciesName,
+			order: null,
+		};
+	}
+};
+
 const createEntry = async (req, res) => {
 	const newEntry = new Entry(req.body);
 	try {
-		//logic for generating alphaNumeric fields
-		let binomialName = "";
+		// Get species name from archival identification
+		const inputSpeciesName =
+			newEntry.archivalIdentification?.archivalSpeciesName || newEntry.identification?.bionomialSpeciesName;
 
-		if (newEntry.identification.NCBITaxonomyCode) {
-			const id = newEntry.identification.NCBITaxonomyCode;
+		// Process taxonomy data
+		const taxonomyData = await processTaxonomyData(inputSpeciesName, newEntry.identification?.NCBITaxonomyCode);
 
-			if (!newEntry.identification.order) {
-				const order = getOrder(newEntry.identification.NCBITaxonomyCode);
-				newEntry.identification.order = order;
-			}
-
-			//FETCH API
-			const resp = await fetch(`http://rest.ensembl.org/taxonomy/classification/${id}`, {
-				// agent:proxyAgent,
-				method: "GET",
-				headers: {
-					"Content-type": "application/json",
-				},
-			});
-
-			const data = await resp.json();
-			const nameTmp = data[0].children[0].scientific_name;
-			binomialName = nameTmp;
+		// Update entry with processed taxonomy data
+		if (taxonomyData.ncbiTaxonomyCode) {
+			newEntry.identification.NCBITaxonomyCode = taxonomyData.ncbiTaxonomyCode;
+		}
+		if (taxonomyData.order) {
+			newEntry.identification.order = taxonomyData.order;
+		}
+		if (taxonomyData.scientificName) {
+			newEntry.identification.bionomialSpeciesName = taxonomyData.scientificName;
+			newEntry.identification.wikipediaSpeciesName = `https://en.wikipedia.org/wiki/${taxonomyData.scientificName}`;
 		}
 
-		const name = newEntry.archivalIdentification.archivalSpeciesName;
-		newEntry.identification.itemCode =
-			name +
-			"_" +
-			newEntry.histologicalInformation.brainPart +
-			"_" +
-			newEntry.histologicalInformation.stainingMethod +
-			"_" +
-			generateRandomAlphaNumeric(name);
-		newEntry.identification.individualCode = name + "_" + generateRandomAlphaNumeric(name);
-		newEntry.identification.wikipediaSpeciesName = `https://en.wikipedia.org/wiki/${name}`;
-		newEntry.identification.bionomialSpeciesName = name;
-
-		if (binomialName.length > 0) {
-			newEntry.identification.bionomialSpeciesName = binomialName;
-			newEntry.identification.wikipediaSpeciesName = `https://en.wikipedia.org/wiki/${binomialName}`;
-		}
-
-		if (!newEntry.identification.order) {
-			const order = getOrder(data.NCBITaxonomyCode);
-			newEntry.identification.order = order;
-		}
+		// Generate codes
+		const finalSpeciesName = taxonomyData.scientificName || inputSpeciesName;
+		newEntry.identification.itemCode = `${finalSpeciesName}_${newEntry.histologicalInformation.brainPart}_${
+			newEntry.histologicalInformation.stainingMethod
+		}_${generateRandomAlphaNumeric(finalSpeciesName)}`;
+		newEntry.identification.individualCode = `${finalSpeciesName}_${generateRandomAlphaNumeric(finalSpeciesName)}`;
 
 		const savedEntry = await newEntry.save();
-
-		invalidateCache(savedEntry.collectionID); // Invalidate cache for the collection
+		invalidateCache(savedEntry.collectionID);
 
 		res.status(200).json(savedEntry);
 	} catch (err) {
+		console.error("❌ Error creating entry:", err);
 		res.status(500).json(err);
 	}
 };
@@ -83,49 +112,31 @@ const updateEntry = async (req, res) => {
 	const newEntry = req.body;
 
 	try {
-		let binomialName = "";
+		// Get species name for taxonomy processing
+		const inputSpeciesName =
+			newEntry.archivalIdentification?.archivalSpeciesName || newEntry.identification?.bionomialSpeciesName;
 
-		if (newEntry.identification.NCBITaxonomyCode) {
-			const id = newEntry.identification.NCBITaxonomyCode;
+		// Process taxonomy data
+		const taxonomyData = await processTaxonomyData(inputSpeciesName, newEntry.identification?.NCBITaxonomyCode);
 
-			if (!newEntry.identification.order) {
-				const order = getOrder(newEntry.identification.NCBITaxonomyCode);
-				newEntry.identification.order = order;
-			}
-
-			// const proxyAgent = new HttpProxyAgent(process.env.PROXY_UNI);
-
-			//FETCH API
-			const resp = await fetch(`http://rest.ensembl.org/taxonomy/classification/${id}`, {
-				// agent:proxyAgent,
-				method: "GET",
-				headers: {
-					"Content-type": "application/json",
-				},
-			});
-
-			const data = await resp.json();
-			const nameTmp = data[0].children[0].scientific_name;
-			binomialName = nameTmp;
+		// Update entry with processed taxonomy data
+		if (taxonomyData.ncbiTaxonomyCode) {
+			newEntry.identification.NCBITaxonomyCode = taxonomyData.ncbiTaxonomyCode;
+		}
+		if (taxonomyData.order) {
+			newEntry.identification.order = taxonomyData.order;
+		}
+		if (taxonomyData.scientificName) {
+			newEntry.identification.bionomialSpeciesName = taxonomyData.scientificName;
+			newEntry.identification.wikipediaSpeciesName = `https://en.wikipedia.org/wiki/${taxonomyData.scientificName}`;
 		}
 
-		if (binomialName.length > 0) {
-			newEntry.identification.bionomialSpeciesName = binomialName;
-			newEntry.identification.wikipediaSpeciesName = `https://en.wikipedia.org/wiki/${binomialName}`;
-		}
+		const updatedEntry = await Entry.findByIdAndUpdate(req.params.id, { $set: newEntry }, { new: true });
 
-		const updatedEntry = await Entry.findByIdAndUpdate(
-			req.params.id,
-			{
-				$set: newEntry,
-			},
-			{ new: true }
-		);
-
-		invalidateCache(updatedEntry.collectionID); // Invalidate cache for the collection
-
+		invalidateCache(updatedEntry.collectionID);
 		res.status(200).json(updatedEntry);
 	} catch (err) {
+		console.error("❌ Error updating entry:", err);
 		res.status(500).json(err);
 	}
 };
@@ -142,8 +153,7 @@ const deleteEntry = async (req, res) => {
 			{ new: true }
 		);
 
-		invalidateCache(updatedEntry.collectionID); // Invalidate cache for the collection
-
+		invalidateCache(updatedEntry.collectionID);
 		res.status(200).json(updatedEntry);
 	} catch (err) {
 		res.status(500).json(err);
@@ -162,8 +172,7 @@ const deleteMultipleEntries = async (req, res) => {
 			{ new: true }
 		);
 
-		invalidateCache(req.params.collectionID); // Invalidate cache for the collection
-
+		invalidateCache(req.params.collectionID);
 		res.status(200).json(updatedEntries);
 	} catch (err) {
 		res.status(500).json(err);
@@ -184,7 +193,7 @@ let totalEntriesCache = {}; // In-memory cache for total entries
 // get entry by collection id
 const getEntriesByCollectionId = async (req, res) => {
 	try {
-		const { page = 1, limit = 10, sortField, sortOrder = "asc" } = req.query; // Default to page 1 and limit 10
+		const { page = 1, limit = 10, sortField, sortOrder = "asc" } = req.query;
 		const collectionID = req.params.id;
 
 		const skip = (page - 1) * limit;
@@ -206,7 +215,7 @@ const getEntriesByCollectionId = async (req, res) => {
 			totalEntries = totalEntriesCache[collectionID];
 		} else {
 			totalEntries = await Entry.countDocuments(filter);
-			totalEntriesCache[collectionID] = totalEntries; // Store in cache
+			totalEntriesCache[collectionID] = totalEntries;
 		}
 
 		res.status(200).json({
@@ -234,75 +243,113 @@ const processCSVEntries = async (req, res) => {
 
 	const results = [];
 	const failedRows = [];
+	const csvRows = [];
 
+	// First, collect all CSV rows
 	fs.createReadStream(req.file.path)
-		.pipe(csvParser()) // Ensure headers are read correctly
-		.on("data", async (data) => {
-			let updatedCollection = {};
-
-			let scientificName = data.bionomialSpeciesName;
-
-			const itemCode = `${scientificName}_${data.stainingMethod}_${generateRandomAlphaNumeric(scientificName)}`;
-			const individualCode = `${scientificName}_${generateRandomAlphaNumeric(scientificName)}`;
-			const wikipediaSpeciesName = `https://en.wikipedia.org/wiki/${scientificName}`;
-			const order = getOrder(data.NCBITaxonomyCode);
-			const microdraw_link = data.microdraw_link || null;
-			const source_link = data.source_link || null;
-			const thumbnail = data.thumbnail || null;
-			const archivalCode = data.archivalCode || null;
-
-			// Add these modifications to the data object
-			updatedCollection.collectionID = collectionID;
-			updatedCollection.identification = {
-				bionomialSpeciesName: scientificName,
-				itemCode,
-				individualCode,
-				NCBITaxonomyCode: data.NCBITaxonomyCode || null,
-				wikipediaSpeciesName,
-				order,
-				microdraw_link,
-				source_link,
-				thumbnail,
-			};
-
-			updatedCollection.archivalIdentification = {
-				archivalSpeciesCode: archivalCode,
-			};
-
-			updatedCollection.physiologicalInformation = {
-				age: {
-					developmentalStage: data.developmentalStage || "adult",
-					number: data.ageNumber || null,
-					unitOfNumber: data.ageUnit || null,
-					origin: data.origin || "postNatal",
-				},
-				bodyWeight: data.bodyWeight || null,
-				brainWeight: data.brainWeight || null,
-				sex: data.sex,
-			};
-
-			updatedCollection.histologicalInformation = {
-				stainingMethod: data.stainingMethod,
-				sectionThickness: data.sectionThickness,
-				planeOfSectioning: data.planeOfSectioning || null,
-				interSectionDistance: data.interSectionDistance || null,
-				brainPart: data.brainPart || null,
-				comments: data.comments || null,
-			};
-
-			// Validate the modified data
-			const rowErrors = validateRowAgainstSchema(updatedCollection, Entry.schema);
-
-			if (rowErrors.length === 0) {
-				results.push(updatedCollection); // Push the fully modified and validated data
-			} else {
-				failedRows.push({ rowNumber: failedRows.length + 1, updatedCollection, errors: rowErrors });
-			}
+		.pipe(csvParser())
+		.on("data", (data) => {
+			csvRows.push(data);
 		})
 		.on("end", async () => {
 			try {
+				console.log(`📊 Processing ${csvRows.length} CSV rows...`);
+
+				// Process each row with taxonomy data fetching
+				for (let i = 0; i < csvRows.length; i++) {
+					const data = csvRows[i];
+					let updatedCollection = {};
+
+					try {
+						console.log(`\n🔄 Processing row ${i + 1}/${csvRows.length}: ${data.bionomialSpeciesName}`);
+
+						// Process taxonomy data using our unified function
+						const taxonomyData = await processTaxonomyData(
+							data.bionomialSpeciesName,
+							data.NCBITaxonomyCode
+						);
+
+						const scientificName = taxonomyData.scientificName;
+						const ncbiTaxonomyCode = taxonomyData.ncbiTaxonomyCode;
+						const order = taxonomyData.order;
+
+						// Generate codes
+						const itemCode = `${scientificName}_${data.stainingMethod}_${generateRandomAlphaNumeric(
+							scientificName
+						)}`;
+						const individualCode = `${scientificName}_${generateRandomAlphaNumeric(scientificName)}`;
+						const wikipediaSpeciesName = `https://en.wikipedia.org/wiki/${scientificName}`;
+
+						// Build the entry
+						updatedCollection.collectionID = collectionID;
+						updatedCollection.identification = {
+							bionomialSpeciesName: scientificName,
+							itemCode,
+							individualCode,
+							NCBITaxonomyCode: ncbiTaxonomyCode,
+							wikipediaSpeciesName,
+							order,
+							microdraw_link: data.microdraw_link || null,
+							source_link: data.source_link || null,
+							thumbnail: data.thumbnail || null,
+						};
+
+						updatedCollection.archivalIdentification = {
+							archivalSpeciesCode: data.archivalCode || null,
+						};
+
+						updatedCollection.physiologicalInformation = {
+							age: {
+								developmentalStage: data.developmentalStage || "adult",
+								number: data.ageNumber || null,
+								unitOfNumber: data.ageUnit || null,
+								origin: data.origin || "postNatal",
+							},
+							bodyWeight: data.bodyWeight || null,
+							brainWeight: data.brainWeight || null,
+							sex: data.sex,
+						};
+
+						updatedCollection.histologicalInformation = {
+							stainingMethod: data.stainingMethod,
+							sectionThickness: data.sectionThickness,
+							planeOfSectioning: data.planeOfSectioning || null,
+							interSectionDistance: data.interSectionDistance || null,
+							brainPart: data.brainPart || null,
+							comments: data.comments || null,
+						};
+
+						// Validate the modified data
+						const rowErrors = validateRowAgainstSchema(updatedCollection, Entry.schema);
+
+						if (rowErrors.length === 0) {
+							results.push(updatedCollection);
+							console.log(`✅ Row ${i + 1} processed successfully`);
+						} else {
+							console.log(`❌ Row ${i + 1} validation failed:`, rowErrors);
+							failedRows.push({
+								rowNumber: i + 1,
+								originalRow: data,
+								updatedCollection,
+								errors: rowErrors,
+							});
+						}
+					} catch (processingError) {
+						console.error(`❌ Error processing row ${i + 1}:`, processingError);
+						failedRows.push({
+							rowNumber: i + 1,
+							originalRow: data,
+							updatedCollection: null,
+							errors: [`Processing error: ${processingError.message}`],
+						});
+					}
+				}
+
+				// Insert successful entries into database
 				if (results.length > 0) {
+					console.log(`💾 Inserting ${results.length} successful entries into database...`);
 					await Entry.insertMany(results);
+					invalidateCache(collectionID);
 				}
 
 				const response = {
@@ -316,22 +363,29 @@ const processCSVEntries = async (req, res) => {
 					failedRows: failedRows.slice(0, 5), // Limit to 5 rows for detailed feedback
 				};
 
+				console.log(`\n📋 CSV Processing Complete:`);
+				console.log(`✅ Successful: ${results.length}`);
+				console.log(`❌ Failed: ${failedRows.length}`);
+
 				if (failedRows.length > 0) {
-					res.status(207).json(response); // 207 status code indicates multi-status
+					res.status(207).json(response);
 				} else {
 					res.status(200).json(response);
 				}
 			} catch (error) {
+				console.error("❌ Error processing CSV entries:", error);
 				res.status(500).json({
 					status: "error",
 					message: "Error processing CSV data",
 					details: error.message,
 				});
 			} finally {
+				// Clean up the uploaded file
 				fs.unlinkSync(req.file.path);
 			}
 		})
 		.on("error", (error) => {
+			console.error("❌ Error reading CSV file:", error);
 			res.status(500).json({
 				status: "error",
 				message: "Error reading CSV file",
@@ -341,7 +395,7 @@ const processCSVEntries = async (req, res) => {
 };
 
 const getOrderFromTaxonomy = (req, res) => {
-	const { taxonomyId } = req.params; // Get taxonomy ID from the request parameter
+	const { taxonomyId } = req.params;
 
 	fs.readFile("./utils/combined_taxonomy_reports.json", "utf8", (err, data) => {
 		if (err) {
@@ -349,11 +403,8 @@ const getOrderFromTaxonomy = (req, res) => {
 		}
 
 		const taxonomyData = JSON.parse(data);
-
-		// Search for the taxonomy data with the matching taxonomyId
 		const taxonomyItem = taxonomyData.find((item) => item.taxonomy.taxId === parseInt(taxonomyId));
 
-		// If taxonomy is found, return the order, else return an error
 		if (taxonomyItem) {
 			const order = taxonomyItem.taxonomy.classification.order;
 			if (order && order.name) {
@@ -367,17 +418,13 @@ const getOrderFromTaxonomy = (req, res) => {
 	});
 };
 
-// create a simple function that returns the order from the taxonomy_id, else return Null
+// Legacy function - kept for backward compatibility
 const getOrder = (taxonomy_id) => {
 	try {
-		// read the filer
 		const data = fs.readFileSync("./utils/combined_taxonomy_reports.json", "utf8");
 		const taxonomyData = JSON.parse(data);
-
-		// Search for the taxonomy data with the matching taxonomyId
 		const taxonomyItem = taxonomyData.find((item) => item.taxonomy.taxId === parseInt(taxonomy_id));
 
-		// If taxonomy is found, return the order, else return null
 		if (taxonomyItem) {
 			const order = taxonomyItem.taxonomy.classification.order;
 			if (order && order.name) {
@@ -390,8 +437,6 @@ const getOrder = (taxonomy_id) => {
 	return null;
 };
 
-// make a new route that return all distinct orders from the entry.identification.order
-// return a list of orders
 const getDistinctOrders = async (req, res) => {
 	const cacheKey = "distinct_orders";
 
@@ -417,18 +462,14 @@ const getDistinctStainings = async (req, res) => {
 		if (cached) return res.status(200).json(JSON.parse(cached));
 
 		const stainingGroups = JSON.parse(fs.readFileSync("./utils/stainingGroups.json", "utf8"));
-
-		// Fetch all distinct stainings from the database
 		const distinctStainings = await Entry.distinct("histologicalInformation.stainingMethod");
 
-		// Group stainings based on the stainingGroups.json
 		const groupedStainings = {};
 		for (const [group, stains] of Object.entries(stainingGroups)) {
 			groupedStainings[group] = stains.filter((stain) => distinctStainings.includes(stain));
 		}
 
-		await redisClient.setEx(cacheKey, 7200, JSON.stringify(groupedStainings)); // Cache for 2 hours
-
+		await redisClient.setEx(cacheKey, 7200, JSON.stringify(groupedStainings));
 		res.status(200).json(groupedStainings);
 	} catch (err) {
 		res.status(500).json(err);
@@ -443,7 +484,7 @@ const getDistinctBrainParts = async (req, res) => {
 		if (cached) return res.status(200).json(JSON.parse(cached));
 
 		const brainParts = await Entry.distinct("histologicalInformation.brainPart");
-		await redisClient.setEx(cacheKey, 7200, JSON.stringify(brainParts)); // Cache for 2 hours
+		await redisClient.setEx(cacheKey, 7200, JSON.stringify(brainParts));
 
 		res.status(200).json(brainParts);
 	} catch (err) {
@@ -451,22 +492,9 @@ const getDistinctBrainParts = async (req, res) => {
 	}
 };
 
-const getTaxonomyIDs = (commonName, scientificName) => {
-	// print current working directory
-	const taxonomyData = JSON.parse(fs.readFileSync("./utils/combined_taxonomy_reports.json", "utf8"));
-	let matchingTaxonomies = [];
-
-	if (scientificName) {
-		matchingTaxonomies = taxonomyData.filter((item) =>
-			new RegExp(scientificName, "i").test(item.taxonomy.currentScientificName.name)
-		);
-	} else if (commonName) {
-		matchingTaxonomies = taxonomyData.filter((item) =>
-			new RegExp(commonName, "i").test(item.taxonomy.curatorCommonName)
-		);
-	}
-
-	return matchingTaxonomies.map((item) => item.taxonomy.taxId);
+// Wrapper function for backward compatibility
+const getTaxonomyIDs = async (commonName, scientificName) => {
+	return await taxonomyService.getTaxonomyIDs(commonName, scientificName);
 };
 
 const advancedSearch = async (req, res) => {
@@ -491,20 +519,23 @@ const advancedSearch = async (req, res) => {
 		console.log("Advanced search query:", req.query);
 
 		const selectedCollectionsList = selectedCollections ? selectedCollections.split(",") : [];
-
 		const query = {};
 
 		if (searchQuery) {
 			const searchTerms = searchQuery.split(",").map((term) => term.trim());
-			searchTerms.forEach((term) => {
+			for (const term of searchTerms) {
 				const [key, value] = term.split(":").map((item) => item.trim());
 
 				if (["scientific_name", "name", "species"].includes(key)) {
-					const taxonomy_ids = getTaxonomyIDs(null, value);
-					query["identification.NCBITaxonomyCode"] = { $in: taxonomy_ids };
+					const taxonomyResult = await getTaxonomyIDs(null, value);
+					if (taxonomyResult && taxonomyResult.taxId) {
+						query["identification.NCBITaxonomyCode"] = taxonomyResult.taxId;
+					}
 				} else if (["common_name"].includes(key)) {
-					const taxonomy_ids = getTaxonomyIDs(value, null);
-					query["identification.NCBITaxonomyCode"] = { $in: taxonomy_ids };
+					const taxonomyResult = await getTaxonomyIDs(value, null);
+					if (taxonomyResult && taxonomyResult.taxId) {
+						query["identification.NCBITaxonomyCode"] = taxonomyResult.taxId;
+					}
 				} else if (["taxonomy_id", "taxon_id", "taxon"].includes(key)) {
 					query["identification.NCBITaxonomyCode"] = value;
 				} else if (["archival_name"].includes(key)) {
@@ -514,7 +545,7 @@ const advancedSearch = async (req, res) => {
 				} else if (["specimen_id", "specimen_number"].includes(key)) {
 					query["archivalIdentification.archivalSpeciesCode"] = { $regex: value, $options: "i" };
 				}
-			});
+			}
 		}
 
 		if (brainWeightRange && brainWeightRange !== "" && allowNAWeight !== "true") {
@@ -579,7 +610,6 @@ const advancedSearch = async (req, res) => {
 		console.log("FINAL QUERY", query);
 
 		const skip = (page - 1) * limit;
-
 		const entries = await Entry.find(query).skip(skip).limit(parseInt(limit));
 
 		const queryHash = generateFilterHash(query);
@@ -590,7 +620,7 @@ const advancedSearch = async (req, res) => {
 			totalEntries = totalEntriesCache[queryHash];
 		} else {
 			totalEntries = await Entry.countDocuments(query);
-			totalEntriesCache[queryHash] = totalEntries; // Cache it
+			totalEntriesCache[queryHash] = totalEntries;
 		}
 
 		res.json({
@@ -619,4 +649,6 @@ module.exports = {
 	advancedSearch,
 	getDistinctStainings,
 	getDistinctBrainParts,
+	getTaxonomyIDs,
+	processTaxonomyData, // Export the new unified function
 };

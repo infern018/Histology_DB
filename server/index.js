@@ -12,6 +12,9 @@ const userRoute = require("./routes/users");
 const entryRoute = require("./routes/entries");
 const collectionRoute = require("./routes/collections");
 const roleRoute = require("./routes/roles");
+const stainingMethodRoute = require("./routes/stainingMethods");
+const brainPartRoute = require("./routes/brainParts");
+const taxonomyRoute = require("./routes/taxonomy");
 
 const app = express();
 const PORT = process.env.PORT;
@@ -53,7 +56,9 @@ mongoose
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 	})
-	.then(console.log("Connected to MongoDB"))
+	.then(() => {
+		console.log("Connected to MongoDB");
+	})
 	.catch((err) => console.log(err));
 
 app.use("/api/auth", authRoute);
@@ -61,6 +66,9 @@ app.use("/api/users", userRoute);
 app.use("/api/entries", entryRoute);
 app.use("/api/collections", collectionRoute);
 app.use("/api/roles", roleRoute);
+app.use("/api/staining-methods", stainingMethodRoute);
+app.use("/api/brain-parts", brainPartRoute);
+app.use("/api/taxonomy", taxonomyRoute);
 
 // send sample response in the root URL
 app.get("/api", (req, res) => {
