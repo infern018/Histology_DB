@@ -16,18 +16,17 @@ class TaxonomyService {
 		// Step 1: Check MongoDB cache first
 		const cached = await TaxonomyCache.findOne({ taxId: taxId.toString() });
 		if (cached && cached.order) {
-			console.log(`📋 Cache hit for taxId ${taxId}: ${cached.order}`);
 			return cached.order;
 		}
 
 		// Step 2: If not in cache, fetch from API
-		console.log(`🔍 Cache miss for taxId ${taxId}, fetching from NCBI...`);
+
 		const taxonomyData = await this.fetchTaxonomyDataByTaxId(taxId);
 
 		if (taxonomyData && taxonomyData.order) {
 			// Step 3: Cache the result in MongoDB
 			await this.cacheData(taxId, taxonomyData);
-			console.log(`💾 Cached taxId ${taxId}: ${taxonomyData.order}`);
+
 			return taxonomyData.order;
 		}
 
@@ -53,12 +52,11 @@ class TaxonomyService {
 			});
 
 			if (cached) {
-				console.log(`📋 Cache hit for species "${searchTerm}": taxId ${cached.taxId}`);
 				return { taxId: cached.taxId, source: "cache" };
 			}
 
 			// Step 2: Use esearch API to get taxonomy ID
-			console.log(`🔍 Cache miss for species "${searchTerm}", searching NCBI...`);
+
 			const encodedName = encodeURIComponent(searchTerm);
 			const esearchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=taxonomy&term=${encodedName}&retmode=json`;
 
@@ -66,8 +64,6 @@ class TaxonomyService {
 			const taxId = response.data?.esearchresult?.idlist?.[0];
 
 			if (taxId) {
-				console.log(`✅ Found taxId ${taxId} for "${searchTerm}"`);
-
 				// Fetch full taxonomy data and cache it
 				const taxonomyData = await this.fetchTaxonomyDataByTaxId(taxId);
 				if (taxonomyData) {

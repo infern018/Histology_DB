@@ -29,20 +29,15 @@ const processTaxonomyData = async (speciesName, existingNCBICode = null) => {
 
 		// Step 1: If no NCBI code provided, get it from species name
 		if (!ncbiTaxonomyCode && speciesName) {
-			console.log(`🔍 Looking up taxonomy ID for: "${speciesName}"`);
 			const taxonomyResult = await taxonomyService.getTaxonomyIDs(null, speciesName);
 			if (taxonomyResult && taxonomyResult.taxId) {
 				ncbiTaxonomyCode = taxonomyResult.taxId;
-				console.log(`✅ Found taxonomy ID: ${ncbiTaxonomyCode}`);
 			} else {
-				console.log(`❌ No taxonomy ID found for: "${speciesName}"`);
 			}
 		}
 
 		// Step 2: If we have NCBI code, get complete taxonomy data
 		if (ncbiTaxonomyCode) {
-			console.log(`📋 Fetching taxonomy data for ID: ${ncbiTaxonomyCode}`);
-
 			// Get order from our taxonomy service
 			order = await taxonomyService.getOrderByTaxId(ncbiTaxonomyCode);
 
@@ -50,7 +45,6 @@ const processTaxonomyData = async (speciesName, existingNCBICode = null) => {
 			const taxonomyData = await taxonomyService.fetchTaxonomyDataByTaxId(ncbiTaxonomyCode);
 			if (taxonomyData && taxonomyData.scientificName) {
 				scientificName = taxonomyData.scientificName;
-				console.log(`✅ Scientific name: ${scientificName}, Order: ${order}`);
 			}
 		}
 
@@ -253,16 +247,12 @@ const processCSVEntries = async (req, res) => {
 		})
 		.on("end", async () => {
 			try {
-				console.log(`📊 Processing ${csvRows.length} CSV rows...`);
-
 				// Process each row with taxonomy data fetching
 				for (let i = 0; i < csvRows.length; i++) {
 					const data = csvRows[i];
 					let updatedCollection = {};
 
 					try {
-						console.log(`\n🔄 Processing row ${i + 1}/${csvRows.length}: ${data.bionomialSpeciesName}`);
-
 						// Process taxonomy data using our unified function
 						const taxonomyData = await processTaxonomyData(
 							data.bionomialSpeciesName,
@@ -324,9 +314,7 @@ const processCSVEntries = async (req, res) => {
 
 						if (rowErrors.length === 0) {
 							results.push(updatedCollection);
-							console.log(`✅ Row ${i + 1} processed successfully`);
 						} else {
-							console.log(`❌ Row ${i + 1} validation failed:`, rowErrors);
 							failedRows.push({
 								rowNumber: i + 1,
 								originalRow: data,
@@ -347,7 +335,6 @@ const processCSVEntries = async (req, res) => {
 
 				// Insert successful entries into database
 				if (results.length > 0) {
-					console.log(`💾 Inserting ${results.length} successful entries into database...`);
 					await Entry.insertMany(results);
 					invalidateCache(collectionID);
 				}
@@ -362,10 +349,6 @@ const processCSVEntries = async (req, res) => {
 					failedCount: failedRows.length,
 					failedRows: failedRows.slice(0, 5), // Limit to 5 rows for detailed feedback
 				};
-
-				console.log(`\n📋 CSV Processing Complete:`);
-				console.log(`✅ Successful: ${results.length}`);
-				console.log(`❌ Failed: ${failedRows.length}`);
 
 				if (failedRows.length > 0) {
 					res.status(207).json(response);
@@ -516,8 +499,6 @@ const advancedSearch = async (req, res) => {
 			limit = 10,
 		} = req.query;
 
-		console.log("Advanced search query:", req.query);
-
 		const selectedCollectionsList = selectedCollections ? selectedCollections.split(",") : [];
 		const query = {};
 
@@ -606,8 +587,6 @@ const advancedSearch = async (req, res) => {
 		}
 
 		query["backupEntry"] = { $ne: true };
-
-		console.log("FINAL QUERY", query);
 
 		const skip = (page - 1) * limit;
 		const entries = await Entry.find(query).skip(skip).limit(parseInt(limit));

@@ -23,9 +23,6 @@ const createCollection = async (req, res) => {
 const updateCollection = async (req, res) => {
 	const newCollection = req.body;
 
-	console.log("newCollection", newCollection);
-	console.log("req.body", req.body);
-
 	if (req.body.name) {
 		newCollection.collectionCode = generateCollectionCode(req.body.name);
 	}
@@ -100,13 +97,26 @@ const getCollectionNameAndNumCollaborators = async (req, res) => {
 
 const getPublicCollections = async (req, res) => {
 	try {
-		const collections = await Collection.find({ visibility: "public" });
+		const collections = await Collection.find({ visibility: "public" }).populate("ownerID", "username");
 
-		const collections_data = collections.map((collection) => ({
-			collection_id: collection._id,
-			name: collection.name,
-			mode: "view",
-		}));
+		const collections_data = await Promise.all(
+			collections.map(async (collection) => {
+				// Count entries in this collection
+				const entryCount = await require("../models/Entry").countDocuments({
+					collectionID: collection._id,
+				});
+
+				return {
+					collection_id: collection._id,
+					name: collection.name,
+					description: collection.description,
+					owner: collection.ownerID?.username,
+					entryCount: entryCount,
+					createdAt: collection.createdAt,
+					mode: "view",
+				};
+			})
+		);
 
 		res.status(200).json(collections_data);
 	} catch (err) {

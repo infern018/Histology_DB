@@ -29,9 +29,6 @@ const COLORS = {
   neutral300: "#E4E4E7",
   neutral800: "#424242",
   white: "#FFFFFF",
-  glassPaper: "#18181B",
-  glassCard: "#18181B",
-  glassBorder: "#18181B",
 };
 
 const theme = createTheme({
@@ -144,7 +141,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           "backgroundImage": "none",
-          "backgroundColor": COLORS.backgroundDefault,
+          "backgroundColor": COLORS.backgroundPaper,
           "&.admin-panel-paper": {
             backgroundColor: COLORS.backgroundDefault,
             backdropFilter: "blur(8px)",

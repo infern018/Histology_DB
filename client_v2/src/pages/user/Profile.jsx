@@ -19,7 +19,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState({});
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState("profile");
+  const [activeTab, setActiveTab] = useState("mydata");
 
   useEffect(() => {
     const fetchData = async () => {

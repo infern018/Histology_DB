@@ -11,9 +11,6 @@ const createCollaborator = async (req, res) => {
 	const collectionID = req.params.id;
 	const newCollaborator = req.body.newCollaborator;
 
-	console.log(newCollaborator);
-	console.log(collectionID);
-
 	try {
 		const collection = await Collection.findById(collectionID);
 
@@ -34,19 +31,16 @@ const createCollaborator = async (req, res) => {
 		}
 
 		collection.collaborators.push({ user_id: user_id, mode: mode });
-		console.log("Updated collection collaborators:", collection.collaborators);
 
 		// also add the collection to the user's collections
 		user.collaboratingCollections.push({
 			collection_id: collectionID,
 			mode: mode,
 		});
-		console.log("Updated user collaborating collections:", user.collaboratingCollections);
 
 		await user.save();
 
 		const updatedCollection = await collection.save();
-		console.log("Collection saved successfully:", updatedCollection);
 
 		res.status(200).json(updatedCollection);
 	} catch (err) {

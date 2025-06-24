@@ -1,0 +1,10 @@
+{
+	"watch": ["."],
+	"ext": "js,json",
+	"ignore": ["node_modules/**/*", "uploads/**/*", "ncbi_reports/**/*", "*.log", "dump.rdb"],
+	"delay": "1000",
+	"env": {
+		"NODE_ENV": "development"
+	},
+	"verbose": true
+}

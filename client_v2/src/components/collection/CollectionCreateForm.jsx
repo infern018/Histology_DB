@@ -49,8 +49,10 @@ const CollectionCreateForm = ({ onSubmit }) => {
             <Typography
               variant="body1"
               sx={{ color: theme.palette.text.secondary }}
+              textAlign="left"
             >
-              Create a new collection to organize your data
+              A Collection is a group of related histological entries that you
+              can manage and share together.
             </Typography>
           </Box>
 
