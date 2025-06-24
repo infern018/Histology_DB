@@ -122,8 +122,6 @@ const getCollectionsInReview = async (req, res) => {
 			.populate("adminComments.adminId", "username email")
 			.sort({ publicationRequestedAt: -1 });
 
-		console.log(collections);
-
 		// Generate validation reports for each collection
 		const collectionsWithReports = await Promise.all(
 			collections.map(async (collection) => {

@@ -66,7 +66,7 @@ const PublicationRequestButton = ({ collection, onStatusChange }) => {
         };
       case "changes_requested":
         return {
-          color: "error",
+          color: "info",
           text: "Changes Requested",
           description:
             "Administrators have requested changes before publication.",

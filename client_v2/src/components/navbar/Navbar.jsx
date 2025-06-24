@@ -113,7 +113,7 @@ const Navbar = () => {
                     Admin Panel
                   </Button>
                 )}
-                <Button
+                {/* <Button
                   variant="text"
                   onClick={() => setOpen(true)}
                   sx={{
@@ -125,7 +125,7 @@ const Navbar = () => {
                   }}
                 >
                   Logout
-                </Button>
+                </Button> */}
               </>
             ) : (
               <>
@@ -134,7 +134,6 @@ const Navbar = () => {
                   to="/login"
                   variant="text"
                   sx={{
-                    color: theme.palette.text.primary,
                     textTransform: "none",
                     fontSize: "1rem",
                     padding: "4px 8px",
@@ -142,6 +141,19 @@ const Navbar = () => {
                   }}
                 >
                   Log in
+                </Button>
+                <Button
+                  component={Link}
+                  to="/signup"
+                  variant="contained"
+                  sx={{
+                    textTransform: "none",
+                    fontSize: "1rem",
+                    padding: "4px 8px",
+                    minHeight: "auto",
+                  }}
+                >
+                  Sign Up
                 </Button>
               </>
             )}

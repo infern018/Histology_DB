@@ -170,7 +170,10 @@ const verifyCollectionReadAccess = async (req, res, next) => {
 
 		var hasViewAccess = false;
 
-		if (req.user.id === collection.ownerID.toString()) {
+		// Check if user is admin
+		if (req.user.isAdmin) {
+			hasViewAccess = true;
+		} else if (req.user.id === collection.ownerID.toString()) {
 			hasViewAccess = true;
 		} else {
 			collection.collaborators.forEach((collaborator) => {

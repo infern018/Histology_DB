@@ -145,7 +145,7 @@ const ValidationReportDialog = ({ open, onClose, collection }) => {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={6}>
+          {/* <Grid item xs={12} md={6}>
             <Card className="admin-metrics-card">
               <CardContent>
                 <Typography variant="h6" gutterBottom>
@@ -175,7 +175,7 @@ const ValidationReportDialog = ({ open, onClose, collection }) => {
                 </Box>
               </CardContent>
             </Card>
-          </Grid>
+          </Grid> */}
         </Grid>
 
         {/* Issues Section */}
