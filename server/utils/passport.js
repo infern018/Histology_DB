@@ -20,10 +20,11 @@ passport.use(
 				// If user doesn't exist, create a new user
 				const newUser = new User({
 					username: profile.username, // GitHub username
-					email: profile.emails[0].value, // Use the first email from the GitHub profile
+					// email: profile.emails[0].value, // Use the first email from the GitHub profile
 					// Add other fields if necessary
 					githubId: profile.id, // Add githubId field to your schema
 				});
+
 				await newUser.save();
 				done(null, newUser);
 			} catch (err) {
