@@ -87,8 +87,9 @@ const createEntry = async (req, res) => {
 
 		// Generate codes
 		const finalSpeciesName = taxonomyData.scientificName || inputSpeciesName;
-		newEntry.identification.itemCode = `${finalSpeciesName}_${newEntry.histologicalInformation.brainPart}_${newEntry.histologicalInformation.stainingMethod
-			}_${generateRandomAlphaNumeric(finalSpeciesName)}`;
+		newEntry.identification.itemCode = `${finalSpeciesName}_${newEntry.histologicalInformation.brainPart}_${
+			newEntry.histologicalInformation.stainingMethod
+		}_${generateRandomAlphaNumeric(finalSpeciesName)}`;
 		newEntry.identification.individualCode = `${finalSpeciesName}_${generateRandomAlphaNumeric(finalSpeciesName)}`;
 
 		const savedEntry = await newEntry.save();

@@ -1,33 +1,34 @@
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import {
-  Add as AddIcon,
-  Delete as DeleteIcon,
-  Visibility as VisibilityIcon,
-} from "@mui/icons-material";
-import {
-  Box,
   Button,
+  Grid,
+  Typography,
+  Box,
+  Pagination,
   Card,
   CardContent,
   Chip,
-  Grid,
-  Pagination,
-  Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {
+  Delete as DeleteIcon,
+  Visibility as VisibilityIcon,
+  Add as AddIcon,
+} from "@mui/icons-material";
 
 import VerticalAlignBottomIcon from "@mui/icons-material/VerticalAlignBottom";
-import Snackbar from "@mui/material/Snackbar";
 import { useTheme } from "@mui/material/styles";
-import { useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom";
-import EntriesTable from "../../components/entries/EntriesTable";
-import Layout from "../../components/utils/Layout";
 import {
-  deleteEntriesAPI,
   fetchEntriesByCollectionID,
+  deleteEntriesAPI,
   fetchEntriesOfPublicCollection,
 } from "../../utils/apiCalls";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import Layout from "../../components/utils/Layout";
+import { Link } from "react-router-dom";
+import EntriesTable from "../../components/entries/EntriesTable";
+import Snackbar from "@mui/material/Snackbar";
 
 import DeleteConfirmationDialog from "../../components/dialogs/DeleteConfirmationDialog";
 import TableSkeleton from "../../components/utils/TableSkeleton";
@@ -162,15 +163,7 @@ const CollectionEntriesPage = () => {
   if (loading) {
     return (
       <Layout>
-        <Box sx={{
-          width: "75%",
-          mx: "auto",
-          p: 3,
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-        }}>
+        <Box sx={{ width: "75%", mx: "auto", p: 3 }}>
           <Typography
             variant="h5"
             gutterBottom
@@ -194,10 +187,12 @@ const CollectionEntriesPage = () => {
       <Card
         sx={{
           width: "72%",
-          maxHeight: "70%",
           backgroundColor: theme.palette.background.default,
-          // paddingY: 0,
-          flexShrink: 0,          // 👈 CRITICAL
+          mb: 3,
+          paddingY: 0,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
         }}
       >
         <CardContent>
@@ -295,10 +290,7 @@ const CollectionEntriesPage = () => {
         </CardContent>
       </Card>
 
-      <Box sx={{
-        width: "75%", mx: "auto", p: 3, flex: 1,               // 👈 takes remaining height
-        overflow: "auto",
-      }}>
+      <Box sx={{ width: "75%", mx: "auto", p: 3 }}>
         <EntriesTable
           entries={entries}
           selectedEntries={selectedEntries}

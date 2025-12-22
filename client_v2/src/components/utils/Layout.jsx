@@ -1,3 +1,4 @@
+import React from "react";
 import Box from "@mui/material/Box";
 import Navbar from "../navbar/Navbar";
 
@@ -21,13 +22,13 @@ const Layout = ({ children }) => {
         sx={{
           width: "100%",
           paddingX: 2,
-          paddingTop: 3,
+          paddingTop: 5,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "flex-start",
           flex: 1,
-          overflow: "hidden",
+          overflow: "auto",
         }}
       >
         {children}

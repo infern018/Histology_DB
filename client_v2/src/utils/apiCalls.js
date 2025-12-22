@@ -4,17 +4,6 @@ const axiosReq = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
 
-export const verifyUserAPI = async (accessToken) => {
-  try {
-    const response = await axiosReq.get("/auth/verify", {
-      headers: { token: `${accessToken}` },
-    });
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-}
-
 export const registerAPI = async (newUser) => {
   try {
     const response = await axiosReq.post("/auth/register", newUser);
