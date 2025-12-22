@@ -1,15 +1,40 @@
 // Home.js
-import React from "react";
-import { Typography, Box } from "@mui/material";
-import Layout from "../components/utils/Layout";
+import AddIcon from "@mui/icons-material/Add";
+import SearchIcon from "@mui/icons-material/Search";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { Box, Typography } from "@mui/material";
+import { styled, useTheme } from "@mui/material/styles";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ButtonStyled from "../components/mui/Button";
-import { COLORS } from "../theme";
-import { styled, useTheme } from "@mui/material/styles";
 import AdvancedSearch from "../components/search/AdvancedSearch";
-import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
-import SettingsIcon from "@mui/icons-material/Settings";
+import Layout from "../components/utils/Layout";
+import { COLORS } from "../theme";
+
+const features = [
+  {
+    type: "discovery",
+    icon: <SearchIcon sx={{ color: COLORS.white, fontSize: 24 }} />,
+    title: "Data Discovery",
+    description:
+      "Easily find relevant datasets using our powerful search and filtering tools.",
+  },
+  {
+    type: "contribute",
+    icon: <AddIcon sx={{ color: COLORS.white, fontSize: 24 }} />,
+    title: "Contribute Data",
+    description:
+      "Share your histological metadata entries with the community.",
+  },
+  {
+    type: "management",
+    icon: <SettingsIcon sx={{ color: COLORS.white, fontSize: 24 }} />,
+    title: "Data Management",
+    description:
+      "Manage your datasets, track contributions, and ensure data integrity.",
+  },
+];
+
 
 const FeatureCard = styled(Box)(({ theme }) => ({
   backgroundColor: COLORS.backgroundPaper,
@@ -22,6 +47,24 @@ const FeatureCard = styled(Box)(({ theme }) => ({
   flex: "1 1 30%", // Allows cards to be responsive
   minWidth: "280px",
   maxWidth: "calc(33.33% - 12px)", // Approx 3 columns with gap
+
+  transition: `
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 200ms ease
+  `,
+
+  "&:hover": {
+    cursor: "pointer",
+    transform: "translateY(-6px)",
+    boxShadow: "0 12px 30px rgba(0, 0, 0, 0.35)",
+    borderColor: theme.palette.primary.main,
+  },
+
+  "&:active": {
+    transform: "translateY(-3px)",
+  },
+
   [theme.breakpoints.down("md")]: {
     maxWidth: "calc(50% - 12px)",
   },
@@ -30,35 +73,68 @@ const FeatureCard = styled(Box)(({ theme }) => ({
   },
 }));
 
+
+
 const Home = () => {
   const navigate = useNavigate();
   const theme = useTheme();
+
+  const currentUser = useSelector((state) => state.auth.currentUser);
+
+  const handleFeatureClick = (type) => {
+    switch (type) {
+      case "discovery":
+        // Navigate to search results (no filters)
+        navigate("/search/results");
+        break;
+
+      case "contribute":
+        if (!currentUser) {
+          navigate("/login");
+        } else {
+          navigate("/collection/create");
+        }
+        break;
+
+      case "management":
+        if (!currentUser) {
+          navigate("/login");
+        } else {
+          navigate("/user/infern018");
+        }
+        break;
+
+      default:
+        break;
+    }
+  };
+
 
   const handleSearch = (searchParams) => {
     const queryParams = new URLSearchParams(searchParams).toString();
     navigate(`/search/results?${queryParams}`);
   };
 
-  const features = [
-    {
-      icon: <SearchIcon sx={{ color: COLORS.white, fontSize: 24 }} />,
-      title: "Data Discovery",
-      description:
-        "Easily find relevant datasets using our powerful search and filtering tools.",
-    },
-    {
-      icon: <AddIcon sx={{ color: COLORS.white, fontSize: 24 }} />,
-      title: "Contribute Data",
-      description:
-        "Share your histological metadata entries with the community.",
-    },
-    {
-      icon: <SettingsIcon sx={{ color: COLORS.white, fontSize: 24 }} />,
-      title: "Data Management",
-      description:
-        "Manage your datasets, track contributions, and ensure data integrity.",
-    },
-  ];
+  // const features = [
+  //   {
+  //     icon: <SearchIcon sx={{ color: COLORS.white, fontSize: 24 }} />,
+  //     title: "Data Discovery",
+  //     description:
+  //       "Easily find relevant datasets using our powerful search and filtering tools.",
+  //   },
+  //   {
+  //     icon: <AddIcon sx={{ color: COLORS.white, fontSize: 24 }} />,
+  //     title: "Contribute Data",
+  //     description:
+  //       "Share your histological metadata entries with the community.",
+  //   },
+  //   {
+  //     icon: <SettingsIcon sx={{ color: COLORS.white, fontSize: 24 }} />,
+  //     title: "Data Management",
+  //     description:
+  //       "Manage your datasets, track contributions, and ensure data integrity.",
+  //   },
+  // ];
 
   return (
     <Layout>
@@ -169,7 +245,7 @@ const Home = () => {
             }}
           >
             {features.map((feature, index) => (
-              <FeatureCard key={index}>
+              <FeatureCard key={index} onClick={() => handleFeatureClick(feature.type)}>
                 {feature.icon}
                 <Typography
                   variant="h6"
@@ -198,7 +274,7 @@ const Home = () => {
         </Box>
 
         {/* Explore Public Collections Button */}
-        <Box sx={{ margin: "1.1rem auto" }}>
+        <Box sx={{ margin: "0 auto" }}>
           <ButtonStyled
             variant="contained"
             onClick={() => navigate(`/collection/public`)}
@@ -207,7 +283,7 @@ const Home = () => {
           </ButtonStyled>
         </Box>
       </Box>
-    </Layout>
+    </Layout >
   );
 };
 

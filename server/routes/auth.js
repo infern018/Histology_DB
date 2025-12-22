@@ -1,9 +1,15 @@
 const router = require("express").Router();
 const authController = require("../controllers/authController");
 const passport = require("passport");
+const { verifyToken } = require('./verifyToken');
 
 console.log("API URL ENV");
 console.log(process.env.API_URL);
+
+// Verification Route, if the user is authenticated (verified by JWT token)
+router.get("/verify", verifyToken, (req, res) => {
+	res.status(200).json(req.user);
+});
 
 router.post("/register", authController.register);
 
