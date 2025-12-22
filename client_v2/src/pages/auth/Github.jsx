@@ -37,7 +37,7 @@ const GithubLogin = () => {
   return (
     <>
       {loading && <Loader />}
-      <h1>Github Login</h1>
+      <h1>Github Login Page</h1>
       {/* You can render more user information or perform additional actions here */}
     </>
   );
