@@ -1,5 +1,26 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { loginAPI, logoutAPI } from "../../utils/apiCalls";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { loginAPI, logoutAPI, verifyUserAPI } from "../../utils/apiCalls";
+
+
+export const verifyUser = createAsyncThunk(
+    "user/verify",
+    async (_, { getState, rejectWithValue }) => {
+        try {
+            const state = getState();
+            const accessToken = state.auth.currentUser?.accessToken;
+
+            if (!accessToken) {
+                return rejectWithValue();
+            }
+
+            const data = await verifyUserAPI(accessToken);
+            return data;
+        } catch {
+            return rejectWithValue();
+        }
+    }
+);
+
 
 export const login = createAsyncThunk(
     "user/login",
@@ -56,6 +77,10 @@ const authSlice = createSlice({
                 state.isFetching = false;
                 state.error = true;
             })
+            .addCase(verifyUser.rejected, (state) => {
+                state.currentUser = null;
+            });
+
     },
 });
 

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { login } from "../../redux/reducers/authSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "../../components/utils/Loader";
+import { login } from "../../redux/reducers/authSlice";
 
 const GithubLogin = () => {
   const dispatch = useDispatch();

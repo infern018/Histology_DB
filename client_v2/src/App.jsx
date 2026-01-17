@@ -1,28 +1,40 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./pages/auth/Login";
-import Signup from "./pages/auth/Signup";
-import Logout from "./pages/auth/Logout";
-import Home from "./pages/Home";
-import Profile from "./pages/user/Profile";
-import CollectionCreate from "./pages/collection/CollectionCreate";
-import CollectionEdit from "./pages/collection/CollectionEdit";
-import CollectionSettings from "./pages/collection/CollectionSettings";
-import GithubLogin from "./pages/auth/Github";
-import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import theme from "./theme";
+import { ThemeProvider } from "@mui/material/styles";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import AdminPanel from "./pages/admin/AdminPanel";
+import GithubLogin from "./pages/auth/Github";
+import Login from "./pages/auth/Login";
+import Logout from "./pages/auth/Logout";
+import Signup from "./pages/auth/Signup";
+import BulkUploadEntries from "./pages/collection/BulkUploadEntries";
+import CollectionCreate from "./pages/collection/CollectionCreate";
+import CollectionDetails from "./pages/collection/CollectionDetails";
+import CollectionEdit from "./pages/collection/CollectionEdit";
 import CollectionEntriesPage from "./pages/collection/CollectionEntries";
+import CollectionEntriesChart from "./pages/collection/CollectionEntriesChart";
+import CollectionSettings from "./pages/collection/CollectionSettings";
+import PublicCollections from "./pages/collection/PublicCollections";
 import CreateEntryStepper from "./pages/entries/CreateEntryStepper";
 import EntryDetailsPage from "./pages/entries/EntryDetails";
-import PublicCollections from "./pages/collection/PublicCollections";
-import CollectionEntriesChart from "./pages/collection/CollectionEntriesChart";
+import Home from "./pages/Home";
 import LandingPage from "./pages/LandingPage";
 import SearchResults from "./pages/SearchResults";
-import CollectionDetails from "./pages/collection/CollectionDetails";
-import BulkUploadEntries from "./pages/collection/BulkUploadEntries";
-import AdminPanel from "./pages/admin/AdminPanel";
+import Profile from "./pages/user/Profile";
+import { verifyUser } from "./redux/reducers/authSlice";
+import theme from "./theme";
 
 function App() {
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.auth.currentUser);
+
+  useEffect(() => {
+    if (currentUser?.accessToken) {
+      dispatch(verifyUser());
+    }
+  }, []); // run ONCE on app load
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
