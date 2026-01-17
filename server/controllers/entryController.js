@@ -5,7 +5,7 @@ const fs = require("fs");
 const csvParser = require("csv-parser");
 const validateRowAgainstSchema = require("../utils/entryValidator");
 const crypto = require("crypto");
-const redisClient = require("../utils/redisClient");
+const memoryCache = require("../utils/memoryCache");
 
 function generateRandomAlphaNumeric(name) {
 	result = Math.random().toString(16).slice(2, 6);
@@ -424,11 +424,11 @@ const getDistinctOrders = async (req, res) => {
 	const cacheKey = "distinct_orders";
 
 	try {
-		const cached = await redisClient.get(cacheKey);
-		if (cached) return res.json(JSON.parse(cached));
+		const cached = memoryCache.get(cacheKey);
+		if (cached) return res.json(cached);
 
 		const orders = await Entry.distinct("identification.order");
-		await redisClient.setEx(cacheKey, 7200, JSON.stringify(orders));
+		memoryCache.set(cacheKey, orders, 7200);
 
 		res.json(orders);
 	} catch (error) {
@@ -441,8 +441,8 @@ const getDistinctStainings = async (req, res) => {
 	const cacheKey = "grouped_stainings";
 
 	try {
-		const cached = await redisClient.get(cacheKey);
-		if (cached) return res.status(200).json(JSON.parse(cached));
+		const cached = memoryCache.get(cacheKey);
+		if (cached) return res.status(200).json(cached);
 
 		const stainingGroups = JSON.parse(fs.readFileSync("./utils/stainingGroups.json", "utf8"));
 		const distinctStainings = await Entry.distinct("histologicalInformation.stainingMethod");
@@ -452,7 +452,7 @@ const getDistinctStainings = async (req, res) => {
 			groupedStainings[group] = stains.filter((stain) => distinctStainings.includes(stain));
 		}
 
-		await redisClient.setEx(cacheKey, 7200, JSON.stringify(groupedStainings));
+		memoryCache.set(cacheKey, groupedStainings, 7200);
 		res.status(200).json(groupedStainings);
 	} catch (err) {
 		res.status(500).json(err);
@@ -463,11 +463,11 @@ const getDistinctBrainParts = async (req, res) => {
 	const cacheKey = "distinct_brain_parts";
 
 	try {
-		const cached = await redisClient.get(cacheKey);
-		if (cached) return res.status(200).json(JSON.parse(cached));
+		const cached = memoryCache.get(cacheKey);
+		if (cached) return res.status(200).json(cached);
 
 		const brainParts = await Entry.distinct("histologicalInformation.brainPart");
-		await redisClient.setEx(cacheKey, 7200, JSON.stringify(brainParts));
+		memoryCache.set(cacheKey, brainParts, 7200);
 
 		res.status(200).json(brainParts);
 	} catch (err) {

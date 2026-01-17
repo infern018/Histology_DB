@@ -1,6 +1,6 @@
 const Collection = require("../models/Collection");
 const Entry = require("../models/Entry");
-const redisClient = require("../utils/redisClient");
+// const redisClient = require("../utils/redisClient");
 
 const generateCollectionCode = (collectionName) => {
 	collectionName = collectionName.replace(/\s/g, "");

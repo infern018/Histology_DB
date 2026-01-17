@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("./utils/passport");
-const redisClient = require("./utils/redisClient");
+// const redisClient = require("./utils/redisClient");
 
 //ROUTER
 const authRoute = require("./routes/auth");
